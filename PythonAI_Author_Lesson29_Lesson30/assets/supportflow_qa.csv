@@ -1,0 +1,31 @@
+id,topic,question,answer
+1,password,How can She reset my password?,You can reset it through the account settings.
+2,password,She forgot my password.,Click forgot password on the login page and check your email.
+3,password,My account is locked.,Wait fifteen minutes or contact support to unlock it.
+4,order,Where is my order?,You can track your order in the orders section.
+5,order,My order is delayed.,We are sorry for the delay. Your order will arrive soon.
+6,order,Can She cancel my order?,Yes. You can cancel it before it is shipped.
+7,order,She received a damaged item.,Please send us a photo and we will replace the item.
+8,order,She got the wrong item.,We are sorry. We will send the right item for free.
+9,refund,How do She get a refund?,Open the order and press request refund.
+10,refund,When will She get my money back?,The refund takes five to seven days.
+11,return,How can She return an item?,You can return it within thirty days in the orders section.
+12,payment,My card was declined.,Please check the card details or try another card.
+13,payment,She was charged twice.,We will check the payment and refund the extra charge.
+14,payment,Which payment methods do you accept?,We accept cards and bank transfer.
+15,account,How do She change my email?,You can update it in your profile settings.
+16,account,How do She delete my account?,Open the profile settings and press delete account.
+17,account,How can She change my address?,You can update the address in your profile settings.
+18,delivery,How much does delivery cost?,Delivery is free for orders over fifty dollars.
+19,delivery,How long does delivery take?,Delivery takes two to four days.
+20,delivery,Do you ship abroad?,Yes. We ship to most countries.
+21,subscription,How do She cancel my subscription?,Open the subscription page and press cancel.
+22,subscription,Can She pause my subscription?,Yes. You can pause it for up to three months.
+23,discount,My discount code does not work.,Please check the expiry date of the code.
+24,discount,Do you have any discounts?,You can find current offers on the sales page.
+25,support,She want to talk to a human.,An agent will join the chat in a few minutes.
+26,support,What are your working hours?,Our support works every day from nine to nine.
+27,app,The app does not open.,Please update the app and restart your phone.
+28,app,The app is very slow.,Please clear the cache and update the app.
+29,warranty,Shes there a warranty?,Every item has a warranty of one year.
+30,warranty,My item stopped working.,Please contact support and we will repair the item under warranty.

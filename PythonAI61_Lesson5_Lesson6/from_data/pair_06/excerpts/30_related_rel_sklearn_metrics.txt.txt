@@ -1,0 +1,47 @@
+SOURCE: data/kb_extracts/related/rel_sklearn_metrics.txt
+TITLE: rel_sklearn_metrics.txt
+SCORE: 2.4
+
+de
+zero-one loss 2
+multi-class
+predict , categorical
+Regression
+mean
+squared error 3
+all reals
+predict , all reals
+mean
+Poisson deviance
+non-negative
+predict , strictly positive
+mean
+Gamma deviance
+strictly positive
+predict , strictly positive
+mean
+Tweedie deviance
+depends on power
+predict , depends on power
+median
+absolute error
+all reals
+predict , all reals
+quantile
+pinball loss
+all reals
+predict , all reals
+mode
+no consistent one exists
+reals
+1 The Brier score is just a different name for the squared error in case of
+classification with one-hot encoded targets.
+2 The zero-one loss is only consistent but not strictly consistent for the mode.
+The zero-one loss is equivalent to one minus the accuracy score, meaning it gives
+different score values but the same ranking.
+3 R² gives the same ranking as squared error.
+Fictitious Example: Let’s make the above arguments more tangible. Consider a setting in network reliability
+engineering, such as maintaining stable internet or Wi-Fi connections.
+As provider of the network, you have access to the dataset of log entries of network
+connections containing network load over time and many interesting features.
+Your goal is to improve the…

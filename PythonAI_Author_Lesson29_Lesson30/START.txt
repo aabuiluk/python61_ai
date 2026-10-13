@@ -1,0 +1,45 @@
+Роздаток пар 29–30 (+ пара 28 як передумова).
+Пара 28: GloVe і середній вектор речення — що вони вміють і де зупиняються.
+Пара 29: мовні моделі — дані, RNN, LSTM, seq2seq, увага і трансформер.
+Пара 30: LSTM проти RNN, transfer learning з GloVe, distilGPT2, порівняння архітектур.
+Наскрізна задача: чат-бот SupportFlow AI (практичне і домашнє 6.3 ITSTEP).
+План заняття на 180 хвилин: Lesson29_30_plan_180.md
+
+1) Середовище (Python 3.10–3.14; інтернет потрібен лише для pip і distilGPT2)
+   python -m venv .venv
+   .venv\Scripts\activate          (Windows)
+   source .venv/bin/activate        (macOS / Linux)
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+   Необовʼязково: python -m pip install transformers
+
+2) Готова програма — чат-бот SupportFlow
+   python Lesson30_04_supportflow_bot.py
+   python Lesson30_04_supportflow_bot.py "my parcel is lost" "how do i pay"
+   python Lesson30_04_supportflow_bot.py --chat
+
+3) Передумова · пара 28 (Lesson28_recap.md)
+   python Lesson28_05_words_to_sequences.py   GloVe, пошуковик, межа середнього вектора (~1 с)
+
+4) Пара 29 · крок за кроком
+   python Lesson29_01_prepare_data.py         завдання 6.3.1: токени, словник, padding (~1 с)
+   python Lesson29_02_rnn_inside.py           RNN руками, пастка padding, чому LSTM (~1 с)
+   python Lesson29_03_train_rnn.py            завдання 6.3.2: RNN з аркуша, 10 епох і далі (~3 с)
+   python Lesson29_04_attention.py            увага, маска, позиційне кодування (~5 с)
+
+5) Пара 30 · крок за кроком
+   python Lesson30_01_lstm_vs_rnn.py          завдання 6.3.3: RNN / LSTM / GRU (~20 с)
+   python Lesson30_02_transfer_glove.py       transfer learning: GloVe у seq2seq (~45 с)
+   python Lesson30_03_transformer.py          завдання 6.3.4: Transformer, distilGPT2 (~20 с)
+   python Lesson30_03_transformer.py --skip-local --finetune     донавчання distilGPT2 (~15 с)
+
+6) Практичні завдання: Lesson29_tasks.md, Lesson30_tasks.md
+   Домашнє: Lesson29_homework.md, Lesson30_homework.md
+
+7) Презентації офлайн
+   Lesson28_00_presentation.html   (повторення)
+   Lesson29_00_presentation.html
+   Lesson30_00_presentation.html
+
+Локальне ядро кнопок «Запуск» у HTML (опційно):
+   python pair_kernel.py

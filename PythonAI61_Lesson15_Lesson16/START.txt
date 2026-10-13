@@ -1,0 +1,33 @@
+Штучний інтелект із використанням Python · Materials · пари 15–16
+Персептрон і MLP · PyTorch: тензори, autograd, nn.Module
+
+У браузерному Python (Pyodide) немає torch. Відкрити HTML і натиснути
+«Запуск» без локального ядра — комірка не виконається. Працюйте з venv.
+
+1. Потрібен Python 3.10+.
+2. У цій папці:
+
+   python3 -m venv .venv
+   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+
+   pip ставить CPU-збірку torch з PyPI. GPU не потрібен.
+   На диск venv займе близько 1 ГБ; у RAM імпорт torch ≈ 200 МБ.
+
+3. Перевірка середовища:
+
+   python -c "import torch; from torch import nn; print(torch.__version__)"
+   python Lesson15_01_tensor_ops.py
+
+4. Презентація з живими комірками (залишіть термінал відкритим):
+
+   python pair_kernel.py
+   # має з’явитись: pair-kernel http://127.0.0.1:8765
+
+   Далі відкрийте Lesson15_00_presentation.html (або Lesson16_00_…)
+   у браузері. Зверху має бути рядок
+   «Ядро: Python проєкту (venv). Запуск іде в pair_kernel.py.»
+
+Приклади (легко → складніше): Lesson15_01_… / Lesson16_01_…
+Офіційні завдання 1–4: results/ (аналогів X.1 немає — їх робіть самі).

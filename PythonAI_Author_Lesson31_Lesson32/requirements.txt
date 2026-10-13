@@ -1,0 +1,11 @@
+# Роздаток пар 31–32: зниження розмірності — SVD і PCA
+# Python 3.10–3.14
+# python -m venv .venv
+# .venv\Scripts\activate
+# python -m pip install -U pip
+# python -m pip install -r requirements.txt
+
+numpy>=1.26
+pandas>=2.0          # wine як DataFrame
+scikit-learn>=1.4    # load_wine, StandardScaler, TruncatedSVD, PCA, TF-IDF, Pipeline
+matplotlib>=3.8      # scatter і scree plot

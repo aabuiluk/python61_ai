@@ -1,0 +1,9 @@
+# Презентація HTML
+#   автономно: відкрийте LessonN_00_presentation.html (Pyodide в браузері)
+#   з цим venv: python pair_kernel.py   # http://127.0.0.1:8765
+#
+# Штучний інтелект із використанням Python · Materials · пари 17–18
+numpy>=1.26
+scikit-learn>=1.4
+matplotlib>=3.8
+torch>=2.2

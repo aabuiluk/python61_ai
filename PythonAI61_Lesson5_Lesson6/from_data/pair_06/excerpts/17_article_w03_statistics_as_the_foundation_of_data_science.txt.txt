@@ -1,0 +1,10 @@
+SOURCE: data/kb_extracts/articles/w03_statistics_as_the_foundation_of_data_science.txt
+TITLE: w03_statistics_as_the_foundation_of_data_science.txt
+SCORE: 2.8
+
+tion) [2]. The subject of statistical inference is hypothesis testing, the estimation of numerical characteristics, the correlation of relationships within data, and so on [1].
+The general difference between the two types of statistics is that descriptive statistics only summarizes the data without drawing conclusions, while inference statistics draw conclusions.
+Data as the core of statistics
+Press enter or click to view image in full size
+Illustration of data (image by author) Nield (2022) describes data such as a photo that provides a snapshot of a story. Sustained reality and context are not fully captured, nor are the infinite number of variables driving the story [2]. So, it can be interpreted that data is information obtained from all events that can be used as information. Data can be in the form of numbers or categories (such as good, bad, high, low, and so on). There are several characteristics of good data, such as objective, representative, up-to-date, relevant, and reliable.
+Data is closely related to all statistical activities. Data and statistics cannot be separated. We know that data is information, with statistics we can summarize and take insights from that…

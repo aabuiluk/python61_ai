@@ -1,0 +1,39 @@
+Роздаток пар 27–28.
+Пара 27: корпуси в NLP і embeddings — від one-hot до Word2Vec.
+Пара 28: Word2Vec і GloVe на практиці — сусіди, аналогії, PCA, класифікація відгуків.
+План заняття на 180 хвилин: Lesson27_28_plan_180.md
+
+1) Середовище (Python 3.10–3.14; інтернет потрібен лише для pip)
+   На Python 3.14 gensim не ставиться — це нормально: Word2Vec навчається на numpy (повільніше, лише Skip-gram).
+   python -m venv .venv
+   .venv\Scripts\activate          (Windows)
+   source .venv/bin/activate        (macOS / Linux)
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+   Перевірка: python -c "import nlp_vectors; print(nlp_vectors.BACKEND)"     → gensim або numpy
+
+2) Готова програма — дослідник слів (пара 28)
+   python Lesson28_04_word_explorer.py
+   python Lesson28_04_word_explorer.py good price funny
+   python Lesson28_04_word_explorer.py --analogy king man woman
+   python Lesson28_04_word_explorer.py --eval
+   → сусіди, схожість і аналогії у нашому Word2Vec (models/reviews_w2v.bin) і в GloVe (assets/glove/)
+
+3) Пара 27 · крок за кроком
+   python Lesson27_01_corpus_explore.py       корпуси NLTK, закон Ципфа, завдання 6.2.1 (~10 с)
+   python Lesson27_02_count_embeddings.py     one-hot → співпоявлення → PPMI + SVD (~15 с)
+   python Lesson27_03_train_word2vec.py       завдання 6.2.2, Skip-gram vs CBOW (~30 с)
+
+4) Пара 28 · крок за кроком
+   python Lesson28_01_glove_from_scratch.py   GloVe на numpy (~45 с)
+   python Lesson28_02_similarity_pca.py       завдання 6.2.3–6.2.4: таблиця сусідів, PCA, PNG (~10 с)
+   python Lesson28_03_review_sentiment.py     приклад задачі: тональність відгуків (~15 с)
+
+5) Практичні завдання: Lesson27_tasks.md, Lesson28_tasks.md
+
+6) Презентації офлайн
+   Lesson27_00_presentation.html
+   Lesson28_00_presentation.html
+
+Локальне ядро кнопок «Запуск» у HTML (опційно):
+   python pair_kernel.py

@@ -1,0 +1,16 @@
+SOURCE: data/kb_extracts/articles/w01_what_is_artificial_intelligence_ai_everything_you_need_to_know.txt
+TITLE: w01_what_is_artificial_intelligence_ai_everything_you_need_to_know.txt
+SCORE: 1.8
+
+does AI work?
+In general, AI systems work by ingesting large amounts of labeled training data, analyzing that data for correlations and patterns, and using these patterns to make predictions about future states.
+THIS ARTICLE IS PART OF
+What is enterprise AI? A complete guide for businesses
+Which also includes:
+How can AI drive revenue? Here are 10 approaches
+8 jobs that AI can't replace and why
+10 top AI and machine learning trends for 2024
+For example, an AI chatbot that is fed examples of text can learn to generate lifelike exchanges with people, and an image recognition tool can learn to identify and describe objects in images by reviewing millions of examples. Generative AI techniques, which have advanced rapidly over the past few years, can create realistic text, images, music and other media.
+Programming AI systems focuses on cognitive skills such as the following:
+Learning. This aspect of AI programming involves acquiring data and creating rules, known as algorithms, to transform it into actionable information. These algorithms provide computing devices with step-by-step instructions for completing specific tasks.
+Reasoning. This aspect involves choosing the right algorithm…

@@ -1,0 +1,16 @@
+query,expected_id
+i cannot remember my passcode,2
+how do i recover my login,1
+where is my parcel,4
+my package is late,5
+the delivery is late,5
+i want my cash back,10
+can i get a reimbursement,9
+my card was rejected,12
+they took money from me two times,13
+how can i update my mail,15
+how can i change my home address,17
+what is the shipping price,18
+how fast is shipping,19
+i need a real person,25
+the application is too slow,28

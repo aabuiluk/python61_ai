@@ -1,0 +1,16 @@
+# Роздаток пар 29–30: RNN, LSTM, Transformer, transfer learning
+# Python 3.10–3.14
+# python -m venv .venv
+# .venv\Scripts\activate
+# python -m pip install -U pip
+# python -m pip install -r requirements.txt
+
+torch>=2.2           # RNN, LSTM, GRU, Transformer; усе на CPU
+numpy>=1.26
+matplotlib>=3.8      # графік loss
+pandas>=2.0          # таблиці в прикладах презентацій
+scikit-learn>=1.4    # приклади презентацій
+nltk>=3.8
+
+# Необовʼязково, для завдання 6.3.4 (distilGPT2, ~350 МБ при першому запуску):
+# transformers>=4.40

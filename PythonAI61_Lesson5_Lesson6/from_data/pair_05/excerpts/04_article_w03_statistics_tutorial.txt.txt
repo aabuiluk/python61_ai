@@ -1,0 +1,14 @@
+SOURCE: data/kb_extracts/articles/w03_statistics_tutorial.txt
+TITLE: w03_statistics_tutorial.txt
+SCORE: 6.3
+
+Descriptive Stat Stat Frequency Tables Stat Histograms Stat Bar Graphs Stat Pie Charts Stat Box Plots Stat Average Stat Mean Stat Median Stat Mode Stat Variation Stat Range Stat Quartiles and Percentiles Stat Interquartile Range Stat Standard Deviation
+Inferential Statistics Stat Inference Stat Normal Distrib. Stat Standard Normal Distrib. Stat Students T-Distrib. Stat Estimation Stat Population Proportion Estimation Stat Population Mean Estimation Stat Hyp. Testing Stat Hyp. Testing Proportion Stat Hyp. Testing Mean
+Stat Reference Stat Z-Table Stat T-Table Stat Hyp. Testing Proportion (Left Tailed) Stat Hyp. Testing Proportion (Two Tailed) Stat Hyp. Testing Mean (Left Tailed) Stat Hyp. Testing Mean (Two Tailed) Stat Certificate
+Statistics Tutorial ❮ Home Next ❯
+Learn Statistics
+Welcome to this introductory course in Statistics.
+This course serves as an excellent primer to Data Analytics.
+Learning by Reading
+We have created 36 tutorial pages for you to learn more about some of the most important concepts in Statistics.
+Basic Concepts Introduction Gathering Data Describing Data Making Conclusions Prediction Populations Parameters Study Types Sample Types Data Types Measurement…

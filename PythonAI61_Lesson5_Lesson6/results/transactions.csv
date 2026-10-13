@@ -1,0 +1,13 @@
+order_id,customer_type,channel,amount
+1001,new,web,420
+1002,returning,web,510
+1003,new,marketplace,399
+1004,returning,app,830
+1005,new,web,470
+1006,returning,app,
+1007,new,marketplace,455
+1008,returning,web,610
+1009,new,app,390
+1010,returning,web,525
+1011,new,marketplace,480
+1012,returning,app,705

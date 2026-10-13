@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Датасети, ознаки та середовище Jupyter · методичка · Python AI Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #f3f0e8;
+  --paper-2: #ebe6da;
+  --ink: #1a1f18;
+  --mute: #5c6458;
+  --line: #cfc7b6;
+  --rail: #12160f;
+  --signal: #c8f542;
+  --signal-ink: #14200a;
+  --hot: #d4552a;
+  --ok: #1f7a4c;
+  --code: #10140e;
+  --code-ink: #e7f0d8;
+  --rail-w: 270px;
+  --font: "DM Sans", "Segoe UI", sans-serif;
+  --display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(207,199,182,.22) 28px),
+    var(--paper);
+}
+a { color: var(--hot); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+/* Mobile-first shell */
+.shell { display: block; min-height: 100dvh; width: 100%; }
+.mobile-bar {
+  display: flex;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: var(--rail); color: #f4f7ec;
+  padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 2px solid var(--signal);
+  transform: translateY(0);
+  transition: transform .22s ease;
+  will-change: transform;
+}
+.mobile-bar.is-hidden {
+  transform: translateY(-110%);
+}
+body.toc-open .mobile-bar.is-hidden {
+  transform: translateY(0);
+}
+.shell { padding-top: 58px; }
+.burger {
+  width: 44px; height: 44px; border: 1.5px solid var(--signal); background: transparent;
+  color: var(--signal); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link {
+  flex: 0 0 auto;
+  border: 1.5px solid var(--signal);
+  color: var(--signal);
+  text-decoration: none;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: .45rem .55rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.rail .menu-link {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 .75rem;
+  border: 1.5px solid var(--signal);
+  color: var(--signal-ink);
+  background: var(--signal);
+  text-decoration: none;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: .45rem .65rem;
+}
+.rail .menu-link:hover { filter: brightness(1.05); }
+.rail-backdrop {
+  display: none; position: fixed; inset: 0; background: rgba(18,22,15,.55); z-index: 45;
+}
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.35);
+  background: var(--rail); color: #d7ddcf; padding: 1rem .9rem 2rem; overflow: auto;
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--signal-ink); background: var(--signal); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.1rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #f4f7ec; font-weight: 700;
+}
+.rail .meta { color: #9aa392; font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--signal);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b8c0ae; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--signal);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--signal); }
+
+.stage { padding: .9rem .75rem 2rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 2px solid var(--ink); background: #fffdf7;
+  padding: 1rem .9rem; margin-bottom: 1rem;
+}
+.banner .kicker {
+  font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--hot);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  margin: 0 0 .5rem; font-family: var(--display);
+  font-size: clamp(1.35rem, 6vw, 2rem); line-height: 1.15;
+}
+.banner .lead { margin: 0; color: var(--mute); font-size: .95rem; }
+.goals { margin: .85rem 0 0; padding: 0; list-style: none; display: grid; gap: .4rem; }
+.goals li {
+  display: grid; grid-template-columns: auto 1fr; gap: .45rem; align-items: start;
+  font-size: .92rem;
+}
+.goals li::before {
+  content: "ЦІЛЬ"; font-size: .6rem; letter-spacing: .08em; font-weight: 700;
+  background: var(--ink); color: var(--signal); padding: .2rem .32rem; margin-top: .12rem;
+}
+.timing-strip { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; }
+.pill {
+  font-family: var(--mono); font-size: .7rem; border: 1px solid var(--ink);
+  background: var(--paper-2); padding: .18rem .4rem;
+}
+.block {
+  margin: 0 0 .85rem; border: 1.5px solid var(--ink); background: rgba(255,253,247,.95);
+}
+.block-head {
+  display: flex; flex-direction: column; gap: .45rem;
+  padding: .7rem .8rem; border-bottom: 1.5px solid var(--ink); background: var(--paper-2);
+}
+.block-head h3 { margin: 0; font-family: var(--display); font-size: 1.05rem; overflow-wrap: anywhere; }
+.clock {
+  font-family: var(--mono); font-size: .72rem; font-weight: 600;
+  background: var(--signal); color: var(--signal-ink); padding: .18rem .4rem;
+}
+.kind {
+  font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase;
+  border: 1px solid var(--ink); padding: .14rem .35rem; background: #fff;
+}
+.kind.task { background: #ffe8df; border-color: var(--hot); color: var(--hot); }
+.kind.main { background: #eef6d4; }
+.block-body { padding: .75rem .8rem .9rem; }
+.block-body p { margin: .4rem 0; }
+.block-body ul, .block-body ol { margin: .35rem 0 .65rem; padding-left: 1.1rem; }
+.block-body li { margin: .22rem 0; overflow-wrap: anywhere; }
+.say, .board, .extra, .solve {
+  margin: .7rem 0 0; padding: .65rem .7rem; border: 1px dashed var(--line);
+}
+.say { border-left: 4px solid var(--ink); background: #fff; }
+.board { border-left: 4px solid var(--hot); background: #fff7f3; }
+.extra { border-left: 4px solid #6b7c3b; background: #f3f6ea; }
+.solve { border-left: 4px solid var(--ok); background: #edf7f1; }
+.say .tag, .board .tag, .extra .tag, .solve .tag {
+  display: inline-block; font-family: var(--mono); font-size: .66rem; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 700; margin-bottom: .3rem;
+}
+.say .tag { color: var(--ink); }
+.board .tag { color: var(--hot); }
+.extra .tag { color: #4d5c28; }
+.solve .tag { color: var(--ok); }
+table {
+  width: 100%; border-collapse: collapse; margin: .55rem 0 .8rem; font-size: .88rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+th, td { border: 1px solid var(--line); padding: .4rem .45rem; text-align: left; vertical-align: top; }
+th { background: var(--paper-2); font-family: var(--display); }
+pre, code { font-family: var(--mono); }
+pre {
+  background: var(--code); color: var(--code-ink); border: 1px solid #000;
+  padding: .7rem .75rem; overflow: auto; font-size: .78rem; line-height: 1.45; margin: .5rem 0;
+  max-width: 100%; white-space: pre; -webkit-overflow-scrolling: touch;
+}
+:not(pre) > code {
+  background: #e7e1d3; border: 1px solid var(--line); padding: .05rem .28rem; font-size: .88em;
+  overflow-wrap: anywhere;
+}
+.nav { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+.nav a {
+  border: 1.5px solid var(--ink); background: #fff; color: var(--ink);
+  padding: .55rem .7rem; text-decoration: none; font-weight: 600; font-size: .88rem;
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.nav a:hover { background: var(--signal); }
+.foot {
+  margin-top: 1.2rem; padding-top: .65rem; border-top: 1px solid var(--line);
+  color: var(--mute); font-size: .78rem;
+}
+
+@media (min-width: 901px) {
+  body {
+    background:
+      linear-gradient(90deg, transparent 79px, rgba(207,199,182,.35) 80px, transparent 81px),
+      repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(207,199,182,.25) 28px),
+      var(--paper);
+  }
+  .mobile-bar { display: none; }
+  .shell { padding-top: 0; }
+  .rail-backdrop { display: none !important; }
+  .shell {
+    display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); min-height: 100vh;
+  }
+  .rail {
+    position: sticky; top: 0; height: 100vh; width: auto; transform: none;
+    box-shadow: none; z-index: 1;
+  }
+  body.toc-open { overflow: auto; }
+  #toc-close { display: none !important; }
+  .stage { padding: 1.35rem 1.5rem 3rem; }
+  .banner { box-shadow: 6px 6px 0 rgba(26,31,24,.12); padding: 1.15rem 1.2rem; }
+  .banner h2 { font-size: clamp(1.55rem, 2.5vw, 2.15rem); }
+  .block-head {
+    flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+    padding: .7rem .9rem;
+  }
+  .block-head h3 { font-size: 1.12rem; }
+  .block-body { padding: .85rem .95rem 1rem; }
+  pre { font-size: .82rem; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+</style>
+</head>
+<body>
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити меню тез" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Датасети, ознаки та середовище Jupyter</p>
+  <a class="menu-link" href="/course/python_ai_cursor/modules/1">Меню</a>
+</div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:space-between;gap:.5rem;align-items:center;margin-bottom:.55rem">
+      <div class="mark">викладач · Python AI Materials</div>
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <a class="menu-link" href="/course/python_ai_cursor/modules/1">← Меню модуля</a>
+    <h1>Датасети, ознаки та середовище Jupyter</h1>
+    <div class="meta">Сценарій пари 2/50 · 90 хв · лише для викладача</div>
+    <div class="label">Тези пари</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#dataset">Датасет і приклад</a></li><li><a href="#features">Ознаки і target</a></li><li><a href="#jupyter">Jupyter Notebook / Lab</a></li><li><a href="#cells">Комірки і команди</a></li><li><a href="#task-dataset">Завдання: міні-датасет</a></li><li><a href="#task-jupyter">Завдання: ноутбук</a></li><li><a href="#deep-schema">Глибоко: data dictionary і схема</a></li><li><a href="#teacher-notes">Нотатки викладача</a></li></ol>
+  </aside>
+  <main class="stage">
+    <header class="banner" id="agenda">
+      <p class="kicker">Python AI Materials · сценарій ведення пари</p>
+      <h2>Датасети, ознаки та середовище Jupyter</h2>
+      <p class="lead">Без розуміння даних модель безсенсовна. Ця пара переводить студентів від «алгоритмів у голові» до <b>конкретної таблиці</b> і робочого середовища експериментів.</p>
+      <div class="timing-strip"><span class="pill">dataset</span><span class="pill">features</span><span class="pill">target</span><span class="pill">Jupyter</span><span class="pill">90 хв</span><span class="pill">M1 · пара 2</span></div>
+      <ul class="goals"><li>Описати табличний датасет: спостереження, ознаки, ціль</li><li>Розрізняти числові, категоріальні, текстові, datetime та image-ознаки</li><li>Працювати з комірками Jupyter: code/markdown, порядок виконання, kernel</li><li>Зібрати міні-датасет у Python і зберегти як CSV</li></ul>
+    </header>
+    <article class="block" id="dataset"><div class="block-head"><h3>Поняття датасету</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">15 хв</span></div></div><div class="block-body">
+<p><b>Датасет</b> — структурований набір спостережень, зібраний під конкретне питання.
+У табличному вигляді:</p>
+<ul>
+  <li><b>рядок (row / sample / observation)</b> — один обʼєкт (клієнт, будинок, транзакція);</li>
+  <li><b>стовпець (column / feature)</b> — характеристика обʼєкта;</li>
+  <li><b>цільова ознака (target / label)</b> — те, що передбачаємо (якщо задача supervised).</li>
+</ul>
+<p>Приклад навчального датасету «оренда квартир»:</p>
+<table>
+  <thead><tr><th>area_m2</th><th>rooms</th><th>district</th><th>has_elevator</th><th>rent_uah</th></tr></thead>
+  <tbody>
+    <tr><td>42</td><td>1</td><td>Центр</td><td>1</td><td>18500</td></tr>
+    <tr><td>61</td><td>2</td><td>Сихів</td><td>0</td><td>15200</td></tr>
+    <tr><td>78</td><td>3</td><td>Личаків</td><td>1</td><td>24100</td></tr>
+  </tbody>
+</table>
+<p>Тут <code>rent_uah</code> — target; решта — features.</p>
+<div class="extra"><div class="tag">Додатковий матеріал</div>
+<p><b>Якість датасету</b> важливіша за «крутість» моделі на старті:</p>
+<ul>
+  <li>репрезентативність (чи покриває реальний прод?);</li>
+  <li>витоки цільової змінної (leakage);</li>
+  <li>пропуски, дублікати, помилки вимірювання;</li>
+  <li>часова коректність (train у минулому, test у майбутньому).</li>
+</ul>
+</div></div></article><article class="block" id="features"><div class="block-head"><h3>Ознаки в датасеті та цільова ознака</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">18 хв</span></div></div><div class="block-body">
+<p>Класифікація ознак (практична):</p>
+<ul>
+  <li><b>числові неперервні</b>: площа, температура, сума чека;</li>
+  <li><b>числові дискретні</b>: кількість кімнат, кількість покупок;</li>
+  <li><b>категоріальні nominal</b>: район, бренд (немає порядку);</li>
+  <li><b>категоріальні ordinal</b>: рівень освіти, rating 1–5;</li>
+  <li><b>datetime / час</b>: дата реєстрації, година кліку;</li>
+  <li><b>текст / image / audio</b>: потребують окремих пайплайнів.</li>
+</ul>
+<p><b>Цільова ознака</b> визначає тип задачі: число → регресія, клас → класифікація.</p>
+<pre><code class="language-python">import csv
+from pathlib import Path
+
+rows = [
+    {&quot;area_m2&quot;: 42, &quot;rooms&quot;: 1, &quot;district&quot;: &quot;Центр&quot;, &quot;has_elevator&quot;: 1, &quot;rent_uah&quot;: 18500},
+    {&quot;area_m2&quot;: 61, &quot;rooms&quot;: 2, &quot;district&quot;: &quot;Сихів&quot;, &quot;has_elevator&quot;: 0, &quot;rent_uah&quot;: 15200},
+    {&quot;area_m2&quot;: 78, &quot;rooms&quot;: 3, &quot;district&quot;: &quot;Личаків&quot;, &quot;has_elevator&quot;: 1, &quot;rent_uah&quot;: 24100},
+]
+
+path = Path(&quot;rent_sample.csv&quot;)
+with path.open(&quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+    writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+    writer.writeheader()
+    writer.writerows(rows)
+
+feature_cols = [&quot;area_m2&quot;, &quot;rooms&quot;, &quot;district&quot;, &quot;has_elevator&quot;]
+target_col = &quot;rent_uah&quot;
+print(&quot;X:&quot;, feature_cols)
+print(&quot;y:&quot;, target_col)
+print(&quot;saved:&quot;, path.resolve())
+</code></pre>
+<div class="extra"><div class="tag">Додатковий матеріал</div>
+<p><b>Feature store мислення:</b> одна й та сама сира колонка може перетворитись на кілька ознак
+(день тижня, is_weekend, days_since_registration). Це вже feature engineering — тема наступних модулів,
+але рамку варто закласти зараз.</p>
+<div class="callout"><b>Питання групі:</b> чи можна брати <code>price_per_m2 = rent/area</code> як ознаку,
+якщо target = <code>rent</code>? Обговоріть leakage / circularity.</div>
+</div></div></article><article class="block" id="jupyter"><div class="block-head"><h3>Знайомство з Jupyter Notebook та JupyterLab</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">15 хв</span></div></div><div class="block-body">
+<p><b>Jupyter</b> — середовище інтерактивних обчислень: код, текст, графіки в одному документі.</p>
+<ul>
+  <li><b>Notebook (.ipynb)</b> — класичний інтерфейс «лінійка комірок».</li>
+  <li><b>JupyterLab</b> — IDE-подібна оболонка: файли, кілька ноутбуків, термінал, вкладення.</li>
+  <li>Альтернативи в індустрії: VS Code notebooks, Google Colab, managed cloud notebooks.</li>
+</ul>
+<p>Встановлення (локально):</p>
+<pre><code class="language-bash">python -m pip install jupyterlab ipykernel
+python -m ipykernel install --user --name python61-ai --display-name &quot;Python AI Materials AI&quot;
+jupyter lab
+</code></pre>
+<div class="callout tip"><b>Для AI/DS:</b> ноутбук ідеальний для EDA і пояснення. Для продакшену код
+виносять у модулі <code>.py</code>, тести і пайплайни. Навчіть студентів не тримати «все життя» лише в .ipynb.</div>
+<div class="extra"><div class="tag">Додатковий матеріал</div>
+<p><b>Kernel</b> — процес Python, який виконує код. Restart kernel очищає стан змінних.
+Це критично: порядок виконання комірок ≠ порядок у файлі, якщо запускали вибірково.</p>
+</div></div></article><article class="block" id="cells"><div class="block-head"><h3>Ноутбуки, комірки та основні команди</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">12 хв</span></div></div><div class="block-body">
+<ul>
+  <li><b>Code cell</b> — виконуваний Python.</li>
+  <li><b>Markdown cell</b> — пояснення, формули, заголовки.</li>
+  <li><b>Shift+Enter</b> — виконати й перейти далі; <b>Ctrl/Cmd+Enter</b> — виконати на місці.</li>
+  <li><b>Esc</b> — command mode; <b>Enter</b> — edit mode.</li>
+  <li>Корисні magic: <code>%timeit</code>, <code>%matplotlib inline</code>, <code>!ls</code> (обережно).</li>
+</ul>
+<p>Мінімальний каркас навчального ноутбука:</p>
+<pre><code class="language-python"># 1) imports
+from pathlib import Path
+import csv
+
+# 2) parameters
+DATA = Path(&quot;rent_sample.csv&quot;)
+
+# 3) load
+with DATA.open(encoding=&quot;utf-8&quot;) as f:
+    data = list(csv.DictReader(f))
+
+# 4) quick check
+print(len(data), &quot;rows&quot;)
+print(data[0])
+</code></pre><div class="extra"><div class="tag">Додатковий матеріал</div>
+<p><b>Гігієна ноутбука для викладача:</b></p>
+<ol>
+  <li>Restart Kernel &amp; Run All перед здачею/демо.</li>
+  <li>Верхня комірка — imports + константи.</li>
+  <li>Не тримати секрети (API keys) у .ipynb.</li>
+  <li>Великі виводи / сирі логи — згортати або прибирати.</li>
+</ol>
+</div></div></article><article class="block" id="task-dataset"><div class="block-head"><h3>Завдання 1. Зібрати міні-датасет</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">робота в аудиторії</span><span class="clock">12 хв</span></div></div><div class="block-body">
+<p><b>Умова.</b> Створіть CSV з ≥8 рядками на тему на ваш вибір (студенти / фільми / спорт).
+Окремо перелічіть feature-колонки і target. Коротко обґрунтуйте тип задачі.</p>
+<div class="solve"><div class="tag">Приклад розвʼязання</div><pre><code class="language-python">import csv
+from pathlib import Path
+
+rows = [
+    {&quot;hours_study&quot;: 2, &quot;sleep_h&quot;: 7, &quot;practice_tasks&quot;: 1, &quot;passed&quot;: 0},
+    {&quot;hours_study&quot;: 4, &quot;sleep_h&quot;: 6, &quot;practice_tasks&quot;: 3, &quot;passed&quot;: 0},
+    {&quot;hours_study&quot;: 5, &quot;sleep_h&quot;: 8, &quot;practice_tasks&quot;: 4, &quot;passed&quot;: 1},
+    {&quot;hours_study&quot;: 6, &quot;sleep_h&quot;: 7, &quot;practice_tasks&quot;: 5, &quot;passed&quot;: 1},
+    {&quot;hours_study&quot;: 1, &quot;sleep_h&quot;: 5, &quot;practice_tasks&quot;: 0, &quot;passed&quot;: 0},
+    {&quot;hours_study&quot;: 7, &quot;sleep_h&quot;: 8, &quot;practice_tasks&quot;: 6, &quot;passed&quot;: 1},
+    {&quot;hours_study&quot;: 3, &quot;sleep_h&quot;: 6, &quot;practice_tasks&quot;: 2, &quot;passed&quot;: 0},
+    {&quot;hours_study&quot;: 8, &quot;sleep_h&quot;: 7, &quot;practice_tasks&quot;: 7, &quot;passed&quot;: 1},
+]
+path = Path(&quot;exam_pass.csv&quot;)
+with path.open(&quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+    w = csv.DictWriter(f, fieldnames=rows[0].keys())
+    w.writeheader(); w.writerows(rows)
+
+print(&quot;features:&quot;, [&quot;hours_study&quot;, &quot;sleep_h&quot;, &quot;practice_tasks&quot;])
+print(&quot;target: passed  # supervised classification&quot;)
+</code></pre></div></div></article><article class="block" id="task-jupyter"><div class="block-head"><h3>Завдання 2. Ноутбук з перевіркою даних</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">робота в аудиторії</span><span class="clock">10 хв</span></div></div><div class="block-body">
+<p><b>Умова.</b> У Jupyter створіть ноутбук з markdown-описом датасету і code-комірками:
+завантаження CSV, друк кількості рядків, список колонок, перший запис.</p>
+<div class="solve"><div class="tag">Приклад розвʼязання</div><pre><code class="language-python">from pathlib import Path
+import csv
+
+data_path = Path(&quot;exam_pass.csv&quot;)
+with data_path.open(encoding=&quot;utf-8&quot;) as f:
+    rows = list(csv.DictReader(f))
+
+columns = list(rows[0].keys()) if rows else []
+print(&quot;rows:&quot;, len(rows))
+print(&quot;columns:&quot;, columns)
+print(&quot;first:&quot;, rows[0] if rows else None)
+
+# Markdown у сусідній комірці:
+# # Exam pass dataset
+# Мета: передбачити `passed` за годинами навчання, сном і кількістю практик.
+</code></pre></div></div></article><article class="block" id="deep-schema"><div class="block-head"><h3>Глибоко: data dictionary і схема</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">8 хв</span></div></div><div class="block-body">
+<p>Перед моделюванням заведіть <b>data dictionary</b> — навіть на 1 сторінку:</p>
+<table>
+  <thead><tr><th>Колонка</th><th>Тип</th><th>Опис</th><th>Допустимі значення</th><th>Роль</th></tr></thead>
+  <tbody>
+    <tr><td>area_m2</td><td>float</td><td>площа</td><td>&gt; 0</td><td>feature</td></tr>
+    <tr><td>district</td><td>category</td><td>район</td><td>довідник районів</td><td>feature</td></tr>
+    <tr><td>rent_uah</td><td>float</td><td>оренда/міс</td><td>&gt; 0</td><td>target</td></tr>
+  </tbody>
+</table>
+<pre><code class="language-python">schema = {
+    &quot;area_m2&quot;: {&quot;dtype&quot;: &quot;float&quot;, &quot;role&quot;: &quot;feature&quot;, &quot;checks&quot;: [&quot; &gt; 0 &quot;]},
+    &quot;district&quot;: {&quot;dtype&quot;: &quot;category&quot;, &quot;role&quot;: &quot;feature&quot;, &quot;checks&quot;: [&quot;in dictionary&quot;]},
+    &quot;rent_uah&quot;: {&quot;dtype&quot;: &quot;float&quot;, &quot;role&quot;: &quot;target&quot;, &quot;checks&quot;: [&quot; &gt; 0 &quot;]},
+}
+for col, meta in schema.items():
+    print(col, meta[&quot;role&quot;], meta[&quot;dtype&quot;])
+</code></pre><div class="extra"><div class="tag">Додатковий матеріал</div>
+<p>У командах це рятує від «тихої» зміни сенсу колонки (наприклад, rent у грн vs дол.).
+На курсі вимагайте короткий dictionary у кожному ноутбуці EDA.</p>
+</div></div></article><article class="block" id="teacher-notes"><div class="block-head"><h3>Нотатки викладача / таймінг пари</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">основний блок</span><span class="clock">3 хв</span></div></div><div class="block-body">
+<ul>
+  <li>Перевірити, що в аудиторії піднімається JupyterLab або VS Code notebook.</li>
+  <li>Зробити спільне «Run All» і показати проблему out-of-order execution.</li>
+  <li>До кінця модуля 1 кожен студент має мати 1 CSV + 1 .ipynb у своєму репозиторії/папці.</li>
+</ul>
+<div class="extra"><div class="tag">Додатковий матеріал</div>
+<p>Місток до модуля 2: той самий CSV наступної пари відкриємо через <code>pandas.read_csv</code>
+і порівняємо зі списками/словниками.</p>
+</div></div></article>
+    <div class="nav"><a href="/api/courses/python_ai_cursor/pairs/1">← Попередня пара</a><a href="/course/python_ai_cursor/modules/1">← Меню модуля</a><a href="/course/python_ai_cursor">Курс</a><a href="/api/courses/python_ai_cursor/pairs/3">Наступна пара →</a></div>
+    <p class="foot">Python AI Materials · оригінальний сценарій викладача · модуль 1 · пара 2/50</p>
+  </main>
+</div>
+<script>
+(() => {
+  const body = document.body;
+  const openBtn = document.getElementById("toc-open");
+  const closeBtn = document.getElementById("toc-close");
+  const backdrop = document.getElementById("toc-backdrop");
+  const mobileBar = document.querySelector(".mobile-bar");
+  const setOpen = (on) => {
+    body.classList.toggle("toc-open", on);
+    if (openBtn) openBtn.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on && mobileBar) mobileBar.classList.remove("is-hidden");
+  };
+  openBtn?.addEventListener("click", () => setOpen(true));
+  closeBtn?.addEventListener("click", () => setOpen(false));
+  backdrop?.addEventListener("click", () => setOpen(false));
+  document.querySelectorAll(".toc a").forEach((a) => {
+    a.addEventListener("click", () => setOpen(false));
+  });
+
+  if (!mobileBar) return;
+  let lastY = window.scrollY || 0;
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      const y = window.scrollY || 0;
+      const delta = y - lastY;
+      if (body.classList.contains("toc-open") || y < 8) {
+        mobileBar.classList.remove("is-hidden");
+      } else if (delta > 6) {
+        mobileBar.classList.add("is-hidden");
+      } else if (delta < -6) {
+        mobileBar.classList.remove("is-hidden");
+      }
+      lastY = y;
+      ticking = false;
+    });
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+})();
+</script>
+<script src="Lesson2_ae_term_glossary.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/8_data_processing_8_introduction_to_skewness_and_normal_distribution.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 8. Data Processing / 8. Introduction to Skewness and Normal Distribution
+SCORE: 4.0
+
+# 8. Data Processing / 8. Introduction to Skewness and Normal Distribution
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/8. Data Processing/8. Introduction to Skewness and Normal Distribution.srt
+A very big hello and welcome back. So in the previous section, we learned about different ways of dealing with categorical variables, and in this section we are going to learn about data transformation. So let us start the lecture with the introduction to Skewness and normal distribution. A normal distribution is a type of continuous probability distribution for a real value, random variable, the normal distribution is symmetric about the meat showing the data near the mean are more frequent an occurrence than data which are far from the normal distribution appeals. As a bell curve shape, the mean median and mode are equal, and sixty eight percent of the data lies within one standard deviation. Ninety five percent within two standard deviations and ninety nine point seven percent data lies within three standard…

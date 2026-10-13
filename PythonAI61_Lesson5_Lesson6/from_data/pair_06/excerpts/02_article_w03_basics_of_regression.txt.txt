@@ -1,0 +1,15 @@
+SOURCE: data/kb_extracts/articles/w03_basics_of_regression.txt
+TITLE: w03_basics_of_regression.txt
+SCORE: 4.8
+
+le, Scatterplot, Pearson’s r
+Basics of Regression
+Elementary Probability
+Random Variables and Probability Distributions
+Normal Distribution, Binomial Distribution & Poisson Distribution
+Basics of Regression
+Regression Basics
+Regression analysis allows you to infer that there is a relationship between two or more variables. These relationships are seldom exact because there is variation caused by many variables, not just the variables being studied.
+Regression – A statistical Technique
+Regression is a statistical technique used to analyze the relationship between two or more variables. The basic idea behind regression is to predict the value of a dependent variable based on the values of one or more independent variables. The dependent variable is also known as the response variable or outcome variable, while the independent variable is also known as the predictor variable or explanatory variable.
+The most commonly used type of regression is linear regression, which involves fitting a straight line to the data. In linear regression, the dependent variable is assumed to have a linear relationship with the independent variable(s). The line of best fit is determined using a method…

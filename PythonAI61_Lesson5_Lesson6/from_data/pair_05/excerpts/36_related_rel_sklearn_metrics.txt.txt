@@ -1,0 +1,22 @@
+SOURCE: data/kb_extracts/related/rel_sklearn_metrics.txt
+TITLE: rel_sklearn_metrics.txt
+SCORE: 3.4
+
+ediction (or point forecast)
+by choosing a property or functional of that distribution \(F\) .
+Typical examples are the mean (expected value), the median or a quantile of the
+response variable \(Y\) (conditionally on \(X\) ).
+Once that is settled, use a strictly consistent scoring function for that
+(target) functional, see [Gneiting2009] .
+This means using a scoring function that is aligned with measuring the distance
+between predictions y_pred and the true target functional using observations of \(Y\) , i.e. y_true .
+For classification strictly proper scoring rules , see Wikipedia entry for Scoring rule and [Gneiting2007] , coincide with strictly consistent scoring functions.
+The table further below provides examples.
+One could say that consistent scoring functions act as truth serum in that
+they guarantee “that truth telling […] is an optimal strategy in
+expectation” [Gneiting2014] .
+Once a strictly consistent scoring function is chosen, it is best used for both: as
+loss function for model training and as metric/score in model evaluation and model
+comparison.
+Note that for regressors, the prediction is done with predict while for
+classifiers it is usually predict_proba…

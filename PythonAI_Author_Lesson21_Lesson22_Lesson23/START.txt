@@ -1,0 +1,27 @@
+Роздаток пар 21–23. Презентації відкриваються з диска, журнал не потрібен.
+
+1. Lesson21_00_presentation.html
+2. Lesson22_00_presentation.html
+3. Lesson23_00_presentation.html
+
+Підказки термінів уже всередині файлу.
+Кнопка «Запуск» у презентації йде в локальне ядро, якщо воно запущене:
+
+  python pair_kernel.py
+
+Середовище Windows:
+
+  python -m venv .venv
+  .venv\Scripts\activate
+  python -m pip install -U pip
+  python -m pip install -r requirements.txt
+
+Середовище macOS / Linux:
+
+  python3 -m venv .venv
+  source .venv/bin/activate
+  python -m pip install -U pip
+  python -m pip install -r requirements.txt
+
+Приклади: Lesson21_01_….py, Lesson22_01_….py, Lesson23_01_….py
+Рішення домашніх пунктів 1–4: тека results/

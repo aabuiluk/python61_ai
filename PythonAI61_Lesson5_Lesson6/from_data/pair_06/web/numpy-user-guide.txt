@@ -1,0 +1,47 @@
+# NumPy User Guide
+# source: https://numpy.org/doc/stable/user/
+# fetched_via: curl
+# pairs: 3,4,5,6,7,8
+
+NumPy user guide — NumPy v2.5 Manual 
+Skip to main content 
+Back to top Ctrl + K 
+
+Choose version 
+
+GitHub 
+
+Collapse Sidebar Expand Sidebar 
+
+NumPy user guide # 
+This guide is an overview and explains the important features;
+details are found in NumPy reference . 
+
+Getting started 
+What is NumPy? 
+Installation 
+NumPy quickstart 
+NumPy: the absolute basics for beginners 
+
+Fundamentals and usage 
+NumPy fundamentals 
+Array creation 
+Indexing on ndarrays 
+I/O with NumPy 
+Data types 
+Broadcasting 
+Copies and views 
+Working with Arrays of Strings And Bytes 
+Structured arrays 
+Universal functions ( ufunc ) basics 
+
+NumPy for MATLAB users 
+NumPy tutorials 
+NumPy how-tos 
+
+Advanced usage and interoperability 
+Using NumPy C-API 
+F2PY user guide and reference manual 
+Under-the-hood documentation for developers 
+Interoperability with NumPy 
+Writing Performant NumPy Code with Multi-Core CPUs

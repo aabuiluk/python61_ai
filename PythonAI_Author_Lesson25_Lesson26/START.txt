@@ -1,0 +1,44 @@
+Роздаток пар 25–26.
+Пара 25: архітектури CNN і визначення пневмонії за рентгенівським знімком.
+Пара 26: обробка природної мови з NLTK на тексті, розпізнаному з картинки.
+План заняття на 180 хвилин: Lesson25_26_plan_180.md
+
+1) Середовище
+   python -m venv .venv
+   .venv\Scripts\activate          (Windows)
+   source .venv/bin/activate        (macOS / Linux)
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+
+2) Готова програма 1 — пневмонія за знімком (пара 25)
+   python Lesson25_04_predict_xray.py
+   python Lesson25_04_predict_xray.py мій_знімок.png
+   python Lesson25_04_predict_xray.py --dir test_data/xray
+   → NORMAL / PNEUMONIA і ймовірність; модель models/pneumonia_cnn.pth
+   → з --dir: метрики й confusion matrix на 60 тестових знімках
+
+3) Готова програма 2 — розпізнавання тексту (пара 26)
+   python Lesson26_02_read_text_image.py
+   python Lesson26_02_read_text_image.py моя_картинка.png
+   python Lesson26_02_read_text_image.py --dir test_data/ocr
+   → текст з картинки, CER проти еталону; модель models/ocr_char_cnn.pth
+   python Lesson26_03_nltk_pipeline.py
+   → токени, стоп-слова, стеми, леми, частоти в results/word_freq.csv
+
+4) Пара 25 · крок за кроком
+   python Lesson25_01_architectures.py          LeNet / AlexNet / ResNet: форми й параметри
+   python Lesson25_02_train_pneumonia_cnn.py    навчити свою CNN (~1–2 хв на CPU)
+   python Lesson25_03_resnet18_transfer.py      ResNet18 transfer learning (домашнє; ~3 хв,
+                                                перший запуск завантажує ваги ImageNet ~45 МБ)
+
+5) Пара 26 · крок за кроком
+   python Lesson26_01_train_char_cnn.py         навчити CharCNN на A–Z, 0–9 (~1 хв)
+   python Lesson26_02_read_text_image.py --model ocr_char_cnn.pth
+   python Lesson26_03_nltk_pipeline.py --truth  NLTK на еталонних текстах
+
+6) Презентації офлайн
+   Lesson25_00_presentation.html
+   Lesson26_00_presentation.html
+
+Локальне ядро кнопок «Запуск» у HTML (опційно):
+   python pair_kernel.py

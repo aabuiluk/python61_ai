@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Розподіли, коваріація та кореляція: рівномірний, нормальний і Пуассона · Python AI Cursor Modify Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+:root {
+  --bg: #0f1412;
+  --panel: #18211c;
+  --panel-2: #1e2a24;
+  --ink: #e8f0e7;
+  --mute: #9aafa0;
+  --line: #2f4137;
+  --accent: #7dffb3;
+  --accent-ink: #062416;
+  --warm: #ffb86b;
+  --blue: #7ec8ff;
+  --rose: #ff8fab;
+  --font: "Manrope", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rail-w: 300px;
+}
+* { box-sizing: border-box; }
+
+/* --- overflow containment: keep block radius visible on mobile --- */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.shell,
+.stage {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.mobile-bar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  left: 0;
+  right: 0;
+}
+.banner,
+.block,
+.nav,
+.foot {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.block-body {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* display:block on <table> expands parents; keep real table + scroll on body */
+.block-body table {
+  display: table !important;
+  width: 100% !important;
+  max-width: 100%;
+  table-layout: auto;
+}
+.viz,
+.viz-grid,
+.diagram,
+.chart-wrap,
+.cards,
+.flow,
+.pre,
+pre {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.diagram svg {
+  overflow: hidden;
+}
+
+/* --- force block width within stage --- */
+.stage > .banner,
+.stage > .block {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(125,255,179,.12), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(126,200,255,.10), transparent 55%),
+    var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+.shell { display: block; min-height: 100dvh; width: 100%; padding-top: 58px; }
+.mobile-bar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(15,20,18,.92); backdrop-filter: blur(10px);
+  color: var(--ink); padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 1px solid var(--line);
+}
+.burger {
+  width: 44px; height: 44px; border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link, .rail .menu-link {
+  border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent);
+  text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: .45rem .55rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.rail .menu-link { margin: 0 0 .75rem; }
+.lh-nb-toggle {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font: 800 .82rem var(--font);
+  letter-spacing: .04em;
+  padding: .45rem .95rem;
+  min-height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.lh-nb-toggle.is-pressed {
+  background: rgba(125, 255, 179, 0.18);
+  color: var(--accent);
+  border-color: rgba(125, 255, 179, 0.55);
+}
+.rail .lh-nb-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 .85rem;
+  box-sizing: border-box;
+}
+.mobile-bar .lh-nb-toggle {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.rail-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 45; }
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.45);
+  background: #101713; color: var(--ink); padding: 1rem .9rem 2rem; overflow: auto;
+  border-right: 1px solid var(--line);
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink); background: var(--accent); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.15rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #fff; font-weight: 700;
+}
+.rail .meta { color: var(--mute); font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b7c7bc; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--accent);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--accent); }
+
+.stage { padding: .9rem .75rem 2.4rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--panel-2));
+  padding: 1.15rem 1rem; margin-bottom: 1rem; border-radius: 18px;
+}
+.banner .kicker {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--warm);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  font-family: var(--display); font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  margin: 0 0 .55rem; line-height: 1.15; color: #fff;
+}
+.banner .lead { color: #c9d8cd; margin: 0 0 .85rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  border-radius: 999px; padding: .28rem .65rem; font-size: .78rem; color: var(--mute);
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.goals { margin: 0; padding-left: 1.15rem; color: #d5e3d8; }
+.goals li { margin: .25rem 0; }
+
+.block {
+  border: 1px solid var(--line); background: rgba(24,33,28,.88);
+  border-radius: 18px; margin: 0 0 1rem; overflow: hidden;
+}
+.block-head {
+  display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  align-items: flex-start; padding: .9rem 1rem .55rem;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.block-head h3 {
+  margin: 0; font-family: var(--display); font-size: 1.15rem; color: #fff; line-height: 1.25;
+}
+.kind {
+  font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  border-radius: 999px; padding: .22rem .5rem; border: 1px solid var(--line);
+}
+.kind.main { color: var(--blue); border-color: rgba(126,200,255,.35); }
+.kind.task { color: var(--warm); border-color: rgba(255,184,107,.4); }
+.kind.deep { color: var(--rose); border-color: rgba(255,143,171,.4); }
+.clock { font-family: var(--mono); font-size: .75rem; color: var(--mute); }
+
+.block-timer {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .18rem .55rem .18rem .35rem;
+  background: rgba(15,20,18,.55); user-select: none; cursor: pointer;
+}
+.block-timer input.timer-check {
+  width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0;
+}
+.block-timer .clock { border: 0; padding: 0; background: transparent; }
+.block-timer .timer-live {
+  color: var(--accent); font-weight: 700; min-width: 3.2rem; text-align: right;
+}
+.block-timer.is-running {
+  border-color: rgba(125,255,179,.55);
+  box-shadow: 0 0 0 1px rgba(125,255,179,.18);
+}
+.block-timer.is-done {
+  border-color: rgba(255,184,107,.55);
+}
+.block-timer.is-done .timer-live { color: var(--warm); }
+
+.block-body { padding: .85rem 1rem 1.1rem; }
+.block-body p, .block-body li { color: #d3e0d6; }
+.block-body ul, .block-body ol { padding-left: 1.15rem; }
+.block-body table {
+  width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0 1rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.block-body th, .block-body td {
+  border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top;
+}
+.block-body th { background: rgba(125,255,179,.08); color: var(--accent); }
+.block-body code, .inline-code {
+  font-family: var(--mono); font-size: .84em; color: var(--accent);
+  background: rgba(125,255,179,.08); padding: .08rem .28rem; border-radius: 5px;
+}
+.pre {
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0b100e; border: 1px solid var(--line); border-radius: 12px;
+  padding: .85rem .9rem; margin: .7rem 0 1rem; color: #d9f5e4;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.45;
+  max-width: 100%; white-space: pre;
+}
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: rgba(125,255,179,.06); padding: .7rem .85rem; border-radius: 10px; margin: .7rem 0;
+}
+.callout.tip { border-left-color: var(--blue); background: rgba(126,200,255,.07); }
+.callout.task {
+  border-left-color: var(--warm); background: rgba(255,184,107,.08);
+}
+.viz {
+  margin: .85rem 0 1.05rem; padding: .85rem; border-radius: 14px;
+  border: 1px solid var(--line); background: rgba(0,0,0,.22);
+}
+.viz h4 {
+  margin: 0 0 .65rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mute); font-weight: 700;
+}
+.viz-grid {
+  display: grid; gap: .85rem;
+  grid-template-columns: 1fr;
+}
+.chart-wrap { position: relative; width: 100%; min-height: 260px; }
+.chart-wrap.tall { min-height: 320px; }
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram svg text { paint-order: stroke fill; pointer-events: none; }
+.flow {
+  display: grid; gap: .45rem; grid-template-columns: 1fr;
+}
+.flow-step {
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .75rem;
+  background: rgba(255,255,255,.03);
+}
+.flow-step b { color: var(--accent); display: block; margin-bottom: .2rem; }
+.flow-arrow {
+  text-align: center; color: var(--mute); font-family: var(--mono); font-size: .85rem;
+}
+.cards {
+  display: grid; gap: .65rem; grid-template-columns: 1fr;
+}
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem;
+  background: rgba(255,255,255,.03);
+}
+.card h5 { margin: 0 0 .35rem; color: #fff; font-size: .95rem; }
+.card p { margin: 0; color: var(--mute); font-size: .88rem; }
+.legend {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .55rem;
+}
+.legend span {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .78rem; color: var(--mute);
+}
+.swatch { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.nav {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.1rem 0 .4rem;
+}
+.nav a {
+  text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+  padding: .55rem .75rem; border-radius: 999px; background: rgba(255,255,255,.03);
+}
+.foot { color: var(--mute); font-size: .82rem; margin-top: .4rem; }
+
+.term {
+  border-bottom: 1px dotted rgba(125,255,179,.7);
+  cursor: help;
+  color: inherit;
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.term-hint {
+  margin: .55rem 0 0;
+  font-size: .82rem;
+  color: var(--mute);
+}
+.term-hint b { color: var(--accent); font-weight: 700; }
+#term-tip {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #101713;
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+
+/* --- mobile-adaptive visuals (pairs 1–6) --- */
+.chart-wrap { min-height: 200px; max-width: 100%; }
+.chart-wrap.tall { min-height: 240px; }
+.viz { max-width: 100%; overflow: hidden; }
+.diagram svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+.diagram svg text {
+  font-size: 12px;
+}
+.viz-grid { grid-template-columns: 1fr; }
+.cards.two, .cards.three { grid-template-columns: 1fr; }
+.flow { grid-template-columns: 1fr; }
+.flow-arrow { display: block; text-align: center; }
+.matrix {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: .35rem;
+  font-size: .78rem;
+  max-width: 100%;
+}
+.matrix .cell {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .55rem .45rem;
+  background: rgba(255,255,255,.03);
+  text-align: center;
+}
+.matrix .head { color: var(--mute); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+.matrix .tp { border-color: rgba(125,255,179,.45); color: var(--accent); }
+.matrix .tn { border-color: rgba(126,200,255,.45); color: var(--blue); }
+.matrix .fp { border-color: rgba(255,184,107,.5); color: var(--warm); }
+.matrix .fn { border-color: rgba(255,143,171,.5); color: var(--rose); }
+@media (max-width: 899px) {
+  .banner .lead { font-size: .95rem; }
+  .block-head h3 { font-size: 1.05rem; }
+  .block-body { padding: .75rem .8rem 1rem; }
+  .pill { font-size: .72rem; }
+  .matrix { font-size: .72rem; }
+  .matrix .cell { padding: .45rem .3rem; }
+  .pre, pre code { font-size: .75rem; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .cards.two { grid-template-columns: 1fr 1fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+}
+
+
+/* --- embed + mobile layout polish --- */
+body.embed .mobile-bar { display: none !important; }
+body.embed .shell { padding-top: 0 !important; }
+@media (max-width: 899px) {
+  .shell { padding-top: 64px; }
+  /* Journal iframe hides the pair chrome; keep TOC burger on phones. */
+  body.embed .mobile-bar { display: flex !important; }
+  body.embed .shell { padding-top: 64px !important; }
+  .stage { padding: .65rem .55rem 1.8rem; }
+  .banner { padding: .9rem .75rem; border-radius: 14px; }
+  .banner h2 { font-size: clamp(1.2rem, 5.5vw, 1.55rem); }
+  .banner .lead { font-size: .92rem; }
+  .block { border-radius: 14px; margin-bottom: .85rem; }
+  .block-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .45rem;
+    padding: .75rem .75rem .5rem;
+  }
+  .block-head h3 {
+    font-size: clamp(1rem, 4.4vw, 1.12rem);
+    line-height: 1.3;
+  }
+  .block-head > div {
+    width: 100%;
+  }
+  .block-timer, .kind, .clock {
+    font-size: .7rem;
+  }
+  .block-timer {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  .block-body { padding: .7rem .75rem .95rem; }
+  .callout { padding: .6rem .7rem; font-size: .9rem; }
+  .timing-strip { gap: .3rem; }
+  .pill { font-size: .7rem; padding: .22rem .5rem; max-width: 100%; white-space: normal; }
+  .toc a, .rail h1 { overflow-wrap: anywhere; word-break: break-word; }
+  .viz-grid.two, .viz-grid.equal, .cards.two, .cards.three, .flow {
+    grid-template-columns: 1fr;
+  }
+  .mobile-bar {
+    min-height: 56px;
+    padding: .55rem .7rem;
+    align-items: center;
+    gap: .55rem;
+  }
+  .mobile-bar .title {
+    font-size: .84rem;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .burger {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Fixed sidebar: sticky breaks under overflow-x:hidden on html/body */
+  .shell {
+    display: block;
+    padding-top: 0;
+    padding-left: var(--rail-w);
+    min-height: 100dvh;
+  }
+  .mobile-bar { display: none; }
+  .rail {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: none !important;
+    width: var(--rail-w);
+    max-width: var(--rail-w);
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: none;
+    z-index: 40;
+  }
+  .rail-backdrop, #toc-close { display: none !important; }
+  .stage {
+    max-width: min(1360px, 100%);
+    width: 100%;
+    padding: 1.4rem 1.8rem 3rem;
+    min-width: 0;
+    margin: 0;
+  }
+  .viz-grid.two { grid-template-columns: 1.1fr .9fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+  .flow { grid-template-columns: repeat(4, 1fr); align-items: stretch; }
+  .flow-arrow { display: none; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+
+/* --- auto-hide mobile bar on scroll --- */
+@media (max-width: 900px) {
+  .mobile-bar {
+    transition: transform 0.22s ease, opacity 0.18s ease;
+  }
+  body.nav-hidden .mobile-bar {
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.nav-hidden.embed .shell,
+  body.nav-hidden .shell {
+    padding-top: 0 !important;
+  }
+}
+
+
+/* --- wide desktop stage --- */
+.toc a {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+.rail h1 {
+  overflow-wrap: anywhere;
+}
+.pill {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
+}
+@media (max-width: 899px) {
+  .viz-grid.two,
+  .viz-grid.equal,
+  .cards.two,
+  .cards.three,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+  .rail h1 { font-size: 1.05rem; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+  .cards.three { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1400px) {
+  :root { --rail-w: 320px; }
+  .stage {
+    max-width: min(1520px, 100%);
+    padding: 1.55rem 2.25rem 3.4rem;
+  }
+}
+
+<!-- teacher-block-css:start -->
+[hidden] { display: none !important; }
+.teacher-deep-dive {
+  border: 1px solid #60a5fa;
+  border-left: 5px solid #3b82f6;
+  background: linear-gradient(145deg, rgba(30, 64, 175, .22), rgba(15, 23, 42, .94));
+  box-shadow: 0 14px 34px rgba(37, 99, 235, .13);
+}
+.teacher-deep-dive .block-head {
+  border-bottom-color: rgba(96, 165, 250, .4);
+  background: rgba(37, 99, 235, .14);
+}
+.teacher-deep-dive .block-head h3 { color: #dbeafe; }
+.teacher-deep-dive .teacher-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #60a5fa;
+  border-radius: 999px;
+  padding: .22rem .55rem;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, .2);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.teacher-deep-dive a { color: #93c5fd; }
+.teacher-deep-dive code {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, .15);
+}
+.teacher-deep-dive:focus-within {
+  outline: 3px solid rgba(96, 165, 250, .35);
+  outline-offset: 3px;
+}
+<!-- teacher-block-css:end -->
+</style>
+</head>
+<body>
+
+<script>
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    var embedded = q.get('embed') === '1' || window.self !== window.top;
+    if (embedded) document.body.classList.add('embed');
+  } catch (e) {
+    try { if (window.self !== window.top) document.body.classList.add('embed'); } catch (_) {}
+  }
+})();
+</script>
+
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити зміст" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Розподіли, коваріація та кореляція: рівномірний, нормальний і Пуассона</p>
+  <button type="button" class="lh-nb-toggle" aria-pressed="false" title="Показати код у комірках">Ноутбук</button>
+  </div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.55rem">
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <h1>Розподіли, коваріація та кореляція: рівномірний, нормальний і Пуассона</h1>
+    <div class="meta">Пара 6/50 · 80 хв · старт 20:00 · Python AI Cursor Modify Materials · матеріали для студентів</div>
+    <button type="button" class="lh-nb-toggle" aria-pressed="false" title="Показати код у комірках">Ноутбук</button>
+    <div class="label">Зміст</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#distribution-intro">Розподіл випадкової величини: не тільки “центр”, а й форма</a></li><!-- deep-dive-toc:start:6:1 --><li><a href="#extra-6-1">Додатково: гістограма — емпірична, не PDF; bins змінюють «форму»</a></li><li data-teacher-toc hidden><a href="#teacher-6-1">Для викладача: np.histogram vs KernelDensity</a></li><!-- deep-dive-toc:end:6:1 --><li><a href="#itstep-task-3">Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode</a></li><li><a href="#checkpoint">Checkpoint</a></li><li><a href="#distribution-shapes">Uniform, normal, Poisson: коли який розподіл “схожий на життя”</a></li><!-- deep-dive-toc:start:6:2 --><li><a href="#extra-6-2">Додатково: Poisson дає цілі лічильники, normal може дати відʼємне «amount»</a></li><li data-teacher-toc hidden><a href="#teacher-6-2">Для викладача: Generator API і підтримка припущень scaler</a></li><!-- deep-dive-toc:end:6:2 --><li><a href="#itstep-task-4">Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди</a></li><li><a href="#covariance">Коваріація: чи змінні рухаються в один бік</a></li><!-- deep-dive-toc:start:6:3 --><li><a href="#extra-6-3">Додатково: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне</a></li><li data-teacher-toc hidden><a href="#teacher-6-3">Для викладача: np.cov rowvar і EmpiricalCovariance</a></li><!-- deep-dive-toc:end:6:3 --><li><a href="#practice-6-covariance">Мінізадача: cov до і після зміни одиниць</a></li><li><a href="#correlation">Кореляція: нормований звʼязок у діапазоні -1..1</a></li><!-- deep-dive-toc:start:6:4 --><li><a href="#extra-6-4">Додатково: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум</a></li><li data-teacher-toc hidden><a href="#teacher-6-4">Для викладача: Pearson як cosine z-оцінок і r_regression</a></li><!-- deep-dive-toc:end:6:4 --><li><a href="#practice-6-correlation">Мінізадача: r на лінії і на параболі</a></li><li><a href="#corr-pitfalls">Пастки кореляції та масштабу</a></li><!-- deep-dive-toc:start:6:5 --><li><a href="#extra-6-5">Додатково: кореляція не доводить причинність — третя змінна перевертає знак</a></li><li data-teacher-toc hidden><a href="#teacher-6-5">Для викладача: Simpson, confounding і заборона target leakage через corr</a></li><!-- deep-dive-toc:end:6:5 --><li><a href="#practice-6-corr-pitfalls">Мінізадача: знак r у групах і на обʼєднаних даних</a></li><li><a href="#itstep-practical">Обовʼязкові практичні · ITSTEP Практичне завдання 2.4 (статистика)</a></li><li><a href="#extra-kb-corr">Додатково: кореляція, z-оцінка і не причинність</a></li><li><a href="#si-thread">Support Intelligence і відповідальний AI</a></li><li><a href="#practice-levels">Рівні практики</a></li><li><a href="#repro-bar">Відтворюваність</a></li><li><a href="#practice-bar">Очікуваний результат і зверніть увагу</a></li><li><a href="#homework-stretch">Домашнє / stretch</a></li><li><a href="#deep-study">Додатково: глибоке вивчення · z-оцінки і causation</a></li><!-- data-ingest-toc:start:6 --><li><a href="#data-ingest-6">Повний корпус data/ · пара 6</a></li><li><a href="#data-gap-6">Gap-pack data/ · пара 6</a></li><li><a href="#data-web-6">Web-джерела · пара 6</a></li><li data-teacher-toc hidden><a href="#data-ingest-teacher-6">Викладач · повний data/ пакет пари 6</a></li><!-- data-ingest-toc:end:6 --><li><a href="#exit-ticket">Exit ticket</a></li></ol>
+  </aside>
+  <main class="stage">
+    <header class="banner" id="agenda">
+  <p class="kicker">Python AI Cursor Modify Materials · презентація</p>
+  <h2>Розподіли, коваріація та кореляція: рівномірний, нормальний і Пуассона</h2>
+  <p class="lead">На цій парі ми дивимось на <b>форму вибірки</b> і звʼязок між змінними: як виглядають базові розподіли, що означає <b>covariance</b> та чим зручна <b>correlation</b> як нормована міра спільної зміни.</p>
+  <div class="timing-strip"><span class="pill"><b>8 хв</b> Розподіл випадкової величини: не тільки “центр”, а й форма</span><span class="pill"><b>7 хв</b> Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode</span><span class="pill"><b>3 хв</b> Checkpoint</span><span class="pill"><b>8 хв</b> Uniform, normal, Poisson: коли який розподіл “схожий на життя”</span><span class="pill"><b>7 хв</b> Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди</span><span class="pill"><b>8 хв</b> Коваріація: чи змінні рухаються в один бік</span><span class="pill"><b>7 хв</b> Мінізадача: cov до і після зміни одиниць</span><span class="pill"><b>8 хв</b> Кореляція: нормований звʼязок у діапазоні -1..1</span><span class="pill"><b>7 хв</b> Мінізадача: r на лінії і на параболі</span><span class="pill"><b>6 хв</b> Пастки кореляції та масштабу</span><span class="pill"><b>7 хв</b> Мінізадача: знак r у групах і на обʼєднаних даних</span><span class="pill"><b>4 хв</b> Exit ticket</span></div>
+  <ul class="goals"><li>Розпізнавати на інтуїтивному рівні <b>рівномірний</b>, <b>нормальний</b> і <b>Пуассона</b> розподіли</li><li>Пояснити, чому <b>covariance</b> залежить від масштабу, а <b>correlation</b> нормується до діапазону <code>-1..1</code></li><li>Читати розподіл на гістограмі та звʼязок змінних на scatter plot</li><li>Виконати офіційні практичні 3–4 та аналоги 3.1–4.1</li></ul><div class="callout tip" id="before-start"><b>Перед початком</b><ul><li>Різниця list і таблиці рядків</li><li>Що таке ознака і ціль</li><li>Jupyter: порядок комірок і kernel</li></ul></div><div class="callout tip" id="after-pair"><b>Після пари ви можете</b><ul><li>Відрізнити кореляцію від причинності</li><li>Побудувати гістограму розподілу</li><li>Пояснити, що r=0.8 не означає «модель готова»</li></ul></div>
+  <p class="term-hint"><b>Підказка:</b> терміни з пунктирним підкресленням — наведіть курсор (або тапніть на телефоні), щоб побачити коротке пояснення. Повний словник курсу: <a href="SLOVNYK_TERMINOLOGII.html">словник (HTML)</a>.</p>
+</header>
+<article class="block" id="distribution-intro"><div class="block-head"><h3>Розподіл випадкової величини: не тільки “центр”, а й форма</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">20:00–20:08 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p>Однакове середнє ще не означає однакові дані. <b>Розподіл</b> показує, як часто трапляються значення: де основна маса, чи є хвости, чи є перекіс, чи є дискретні “сходинки”.</p>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · три форми розподілу</h4><div class="chart-wrap"><canvas id="chart-distribution-shapes"></canvas></div></div>
+  <div class="viz"><h4>Що помічати</h4><div class="cards"><div class="card"><h5>Симетрія</h5><p>Чи схожі лівий і правий боки.</p></div><div class="card"><h5>Пік</h5><p>Один центр чи кілька локальних піків.</p></div><div class="card"><h5>Хвости</h5><p>Чи часто трапляються далекі значення.</p></div></div></div>
+</div>
+<div class="callout tip"><b>Практична рамка</b><p>На парі не вчимося доводити формули. Наша мета — навчитись <b>бачити</b> розподіл у таблиці й робити з цього корисні для EDA висновки.</p></div>
+<!-- theory-deeper:start:6:distribution-intro --><p>Емпірична функція розподілу F<sub>n</sub>(x) = (кількість X<sub>i</sub> ≤ x) / n. Дві вибірки з mean = 50 можуть мати різну F<sub>n</sub>: рівномірна на {0, 50, 100} і купка {49, 50, 51}. У точці 40 перша дає F=1/3, друга F=0 — форма розійшлася, центр ні.</p><p>Для хвилин відповіді F<sub>n</sub>(60) — це частка тікетів всередині SLA, не «середня хвилина». Mean може бути 45 хв при F(60)=0.70, якщо хвіст 200 хв тягне центр. Розподіл відповідає на поріг; одне середнє — ні.</p><div class="callout tip"><b>Коротко</b><p>Коли питають «скільки вклались у 60 хв?», рахуйте F_n(60), не порівнюйте mean з 60 «на око».</p></div><!-- theory-deeper:end:6:distribution-intro --><!-- CURSOR-ENRICHMENT:distribution-intro:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Розподіл випадкової величини: не тільки “центр”, а й форма» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Розподіл описує можливі значення та їх частоти/ймовірності, а не лише середнє.</p><p>Гістограма є емпіричним підсумком вибірки; кількість bins змінює вигляд, але не самі дані.</p><p>Фокус «емпіричний розподіл і bins» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Розподіл випадкової величини: не тільки “центр”, а й форма&#x27;
+assert concept_contract
+import numpy as np
+ratings = np.array([1, 3, 3, 4, 5, 5, 5])
+counts = np.bincount(ratings, minlength=6)[1:]
+print(counts.tolist(), (counts.cumsum() / counts.sum()).round(2).tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Розподіл випадкової величини: не тільки “центр”, а й форма» очікується таке: Частоти 1…5 — `[1, 0, 2, 1, 3]`, накопичені частки завершуються на `1.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте нормовану гістограму теоретичною PDF без перевірки моделі розподілу.</li><li>Для «Розподіл випадкової величини: не тільки “центр”, а й форма» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «емпіричний розподіл і bins».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який рейтинг є модою та як це видно з частот? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Розподіл випадкової величини: не тільки “центр”, а й форма».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:distribution-intro:END -->
+</div></article><!-- deep-dive:start:6:1 --><article class="block extra-deep-dive" id="extra-6-1" data-topic-id="pair-6-distribution-intro"><div class="block-head"><h3>Додатково: гістограма — емпірична, не PDF; bins змінюють «форму»</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Однакове mean ще не означає однаковий розподіл: два ряди можуть мати спільний центр і різну масу в хвостах. Гістограма оцінює форму <b>цієї вибірки</b>. Кількість бінів — гіперпараметр: занадто мало — все «нормальне», занадто багато — пила з порожніх стовпчиків.</p><pre><code class="language-python">import numpy as np
+rng = np.random.default_rng(0)
+x = rng.normal(0, 1, 400)
+c5, _ = np.histogram(x, bins=5)
+c40, _ = np.histogram(x, bins=40)
+print(c5.sum(), c40.sum())  # обидва 400 — маса та сама, форма різна</code></pre><ul><li><code>density=True</code> нормує площу до 1 (схоже на PDF), але це все одно оцінка з бінів, не формула щільності.</li><li>Дискретний рейтинг 1..5 краще малювати bar частот, не hist з довільними бінами.</li><li>Дивіться симетрію, кількість піків, хвости — не «назву розподілу» з підручника.</li></ul><div class="callout tip"><b>Часта пастка</b><p>Дві гістограми «різні», бо bins=8 і bins=30. Спочатку зафіксуйте bins або <code>bins="auto"</code>, потім порівнюйте форми.</p></div><p>Гістограма оцінює щільність кусками сталої висоти; PDF — неперервна модель. Зміна bins змінює висоти так, що «дві моди» можуть зʼявитись і зникнути. Це артефакт бінування, не обовʼязково властивість генератора.</p><p>Зверніть увагу: density=True нормує площу до 1, не висоти стовпчиків. Порівнювати «висоту біна» між двома hist з різною шириною біна без density — безсенсово.</p><!-- CURSOR-ENRICHMENT:extra-6-1:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: гістограма — емпірична, не PDF; bins змінюють «форму»» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Розподіл описує можливі значення та їх частоти/ймовірності, а не лише середнє.</p><p>Гістограма є емпіричним підсумком вибірки; кількість bins змінює вигляд, але не самі дані.</p><p>Фокус «емпіричний розподіл і bins» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: гістограма — емпірична, не PDF; bins змінюють «форму»&#x27;
+assert edge_case_contract
+import numpy as np
+ratings = np.array([1, 3, 3, 4, 5, 5, 5])
+counts = np.bincount(ratings, minlength=6)[1:]
+print(counts.tolist(), (counts.cumsum() / counts.sum()).round(2).tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: гістограма — емпірична, не PDF; bins змінюють «форму»» очікується таке: Частоти 1…5 — `[1, 0, 2, 1, 3]`, накопичені частки завершуються на `1.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте нормовану гістограму теоретичною PDF без перевірки моделі розподілу.</li><li>Для «Поглиблення: гістограма — емпірична, не PDF; bins змінюють «форму»» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «емпіричний розподіл і bins».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який рейтинг є модою та як це видно з частот? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: гістограма — емпірична, не PDF; bins змінюють «форму»».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-6-1:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-6-1" data-topic-id="pair-6-distribution-intro" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: np.histogram vs KernelDensity</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: сума counts = n (для скінченних країв, якщо немає out-of-range). <code>density=True</code> нормує <code>sum(count * bin_width) = 1</code>, не <code>sum(count)=1</code>. Плутанина цих двох дає «ймовірності» по 40% на бін.</p><p>sklearn <code>KernelDensity</code> / SciPy <code>gaussian_kde</code> — згладжена оцінка, теж не справжня PDF процесу. На цій парі достатньо histogram; KDE не є «точнішою правдою», лише інший bias-variance.</p><p>Не підганяйте bins, щоб вибірка «стала нормальною». Для моделі важливіше рішення log/robust, ніж підпис «≈ N(μ,σ²)».</p><p>np.histogram повертає counts і edges; plt.hist малює bar по цих edges. KernelDensity (sklearn) — інша оцінка: bandwidth замість bins. Немає єдиної «правильної» кількості бінів; Freedman–Diaconis / Sturges — евристики.</p><p>Для дискретних лічильників hist із занадто вузькими bins малює гребінку. Тоді доречніший bar по value_counts, не hist неперервної осі.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html" target="_blank" rel="noreferrer">numpy.histogram</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html" target="_blank" rel="noreferrer">sklearn KernelDensity</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-6-1:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: np.histogram vs KernelDensity» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Розподіл описує можливі значення та їх частоти/ймовірності, а не лише середнє.</p><p>Гістограма є емпіричним підсумком вибірки; кількість bins змінює вигляд, але не самі дані.</p><p>Фокус «емпіричний розподіл і bins» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: np.histogram vs KernelDensity&#x27;
+assert invariant_contract
+import numpy as np
+ratings = np.array([1, 3, 3, 4, 5, 5, 5])
+counts = np.bincount(ratings, minlength=6)[1:]
+print(counts.tolist(), (counts.cumsum() / counts.sum()).round(2).tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: np.histogram vs KernelDensity» очікується таке: Частоти 1…5 — `[1, 0, 2, 1, 3]`, накопичені частки завершуються на `1.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте нормовану гістограму теоретичною PDF без перевірки моделі розподілу.</li><li>Для «Технічна межа: np.histogram vs KernelDensity» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «емпіричний розподіл і bins».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який рейтинг є модою та як це видно з частот? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: np.histogram vs KernelDensity».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-6-1:END -->
+</div></article><!-- deep-dive:end:6:1 -->
+
+
+<article class="block" id="itstep-task-3"><div class="block-head"><h3>Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP · база</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:08–20:15 · 7 хв</span><span class="timer-live" hidden>07:00</span></label><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="база"><b>База · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>3 · офіційне завдання.</b> Проаналізуйте результати опитування з оцінками сервісу від 1 до 5.</p>
+<ul>
+  <li>Завантажте або сформуйте таблицю щонайменше на 200 спостережень.</li>
+  <li>Побудуйте частотну таблицю для <code>rating</code>.</li>
+  <li>Додайте відносні частоти й накопичені частки.</li>
+  <li>Побудуйте bar chart частот і лінію накопичених часток.</li>
+  <li>Порахуйте <code>mode</code>, <code>median</code> та <code>mean</code>.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 3.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("ratings_survey.csv")
+freq = df["rating"].value_counts().sort_index()
+rel = (freq / freq.sum()).round(3)
+cum = rel.cumsum().round(3)
+print(pd.DataFrame({"freq": freq, "rel": rel, "cum": cum}))
+print("mode:", df["rating"].mode().tolist(), "median:", df["rating"].median(), "mean:", round(df["rating"].mean(), 2))</code></pre></div>
+<p><b>3.1 · зробіть за аналогією.</b> Підготуйте вже <b>300+</b> оцінок і повторіть той самий аналіз; додатково коротко поясніть, чи розподіл ближчий до симетричного, чи має перекіс у бік високих або низьких оцінок.</p>
+<!-- CURSOR-ENRICHMENT:itstep-task-3:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Перевірте діапазон 1…5, порахуйте частоти й накопичені частки, потім mean/median/mode.</p><p>Мода визначається найбільшою частотою, а не найбільшим рейтингом.</p><p>Фокус «частоти й центри рейтингу 1…5» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode&#x27;
+assert practice_contract
+import numpy as np
+ratings = np.array([1, 3, 3, 4, 5, 5, 5])
+assert np.isin(ratings, np.arange(1, 6)).all()
+counts = np.bincount(ratings, minlength=6)[1:]
+mode = counts.argmax() + 1
+print(counts.tolist(), np.round(counts.cumsum()/counts.sum(), 2).tolist(), ratings.mean(), np.median(ratings), mode)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode» очікується таке: Частоти `[1,0,2,1,3]`, накопичена частка завершується 1.0, mode дорівнює 5. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не використовуйте середнє до валідації шкали й не плутайте mode з max.</li><li>Для «Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «частоти й центри рейтингу 1…5».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яка позиція в counts відповідає рейтингу 5? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Завдання 3 + 3.1 · Рейтинг сервісу 1..5: частоти, накопичені частки, mean / median / mode».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:itstep-task-3:END -->
+</div></article>
+<article class="block" id="checkpoint"><div class="block-head"><h3>Checkpoint</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="3" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 3 хв" /><span class="clock">20:15–20:18 · 3 хв</span><span class="timer-live" hidden>03:00</span></label></div></div><div class="block-body"><p>Три короткі питання. Відповідайте вголос або в нотатках — без ноутбука з розвʼязком.</p><ol><li>Чи можна з кореляції subject_len і priority робити політику SLA?</li><li>Що таке нормальний розподіл на інтуїції?</li><li>Навіщо scatter перед моделлю?</li></ol><div class="callout tip"><b>Коротко</b><p>Якщо два з трьох «пливуть» — поверніться до попереднього блоку, не починайте практику «на удачу».</p></div><!-- CURSOR-ENRICHMENT:checkpoint:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Checkpoint» має точний навчальний контракт: Спрогнозуйте форму, dtype або числовий результат до запуску.</p><p>Розподіл описує можливі значення та їх частоти/ймовірності, а не лише середнє.</p><p>Гістограма є емпіричним підсумком вибірки; кількість bins змінює вигляд, але не самі дані.</p><p>Фокус «емпіричний розподіл і bins» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">checkpoint_contract = &#x27;Checkpoint&#x27;
+assert checkpoint_contract
+import numpy as np
+ratings = np.array([1, 3, 3, 4, 5, 5, 5])
+counts = np.bincount(ratings, minlength=6)[1:]
+print(counts.tolist(), (counts.cumsum() / counts.sum()).round(2).tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Checkpoint» очікується таке: Частоти 1…5 — `[1, 0, 2, 1, 3]`, накопичені частки завершуються на `1.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте нормовану гістограму теоретичною PDF без перевірки моделі розподілу.</li><li>Для «Checkpoint» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «емпіричний розподіл і bins».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який рейтинг є модою та як це видно з частот? Який результат можна обчислити вручну для самоперевірки? Відповідь має прямо стосуватися «Checkpoint».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:checkpoint:END -->
+</div></article>
+<article class="block" id="distribution-shapes"><div class="block-head"><h3>Uniform, normal, Poisson: коли який розподіл “схожий на життя”</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">20:18–20:26 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<table>
+  <thead><tr><th>Розподіл</th><th>Інтуїція</th><th>Приклад</th></tr></thead>
+  <tbody>
+    <tr><td>Рівномірний</td><td>усі значення/ділянки приблизно однаково ймовірні</td><td>випадковий тайм-слот у межах дня</td></tr>
+    <tr><td>Нормальний</td><td>більшість біля центру, менше на краях</td><td>зріст, похибки вимірювання</td></tr>
+    <tr><td>Пуассона</td><td>рахує кількість рідкісних подій за інтервал</td><td>кількість звернень за хвилину, помилки за годину</td></tr>
+  </tbody>
+</table>
+<pre><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(42)
+uniform = rng.uniform(0, 10, size=1000)
+normal = rng.normal(loc=170, scale=7, size=1000)
+poisson = rng.poisson(lam=4, size=1000)
+print(uniform[:5], normal[:5], poisson[:5])</code></pre>
+<div class="callout tip"><b>Не натягуйте під теорію</b><p>У реальних даних ми частіше кажемо “схоже на нормальний” або “має правий хвіст”, ніж оголошуємо ідеальний підручниковий розподіл.</p></div>
+
+
+<!-- viz:dist-shapes -->
+<div class="viz-grid equal">
+  <div class="viz diagram">
+    <h4>Uniform (схема)</h4>
+    <svg viewBox="0 0 300 140" role="img" aria-label="Uniform distribution">
+      <rect x="70" y="40" width="160" height="70" fill="rgba(126,200,255,.25)" stroke="#7ec8ff"/>
+      <line x1="30" y1="110" x2="270" y2="110" stroke="#2f4137"/>
+      <text x="150" y="130" text-anchor="middle" fill="#9aafa0" font-size="11">a —— b</text>
+    </svg>
+  </div>
+  <div class="viz diagram">
+    <h4>Normal (схема)</h4>
+    <svg viewBox="0 0 300 140" role="img" aria-label="Normal distribution">
+      <path d="M30 110 C 80 110, 100 30, 150 30 S 220 110, 270 110" fill="rgba(125,255,179,.2)" stroke="#7dffb3" stroke-width="2"/>
+      <line x1="30" y1="110" x2="270" y2="110" stroke="#2f4137"/>
+      <line x1="150" y1="30" x2="150" y2="110" stroke="#ffb86b" stroke-dasharray="3 3"/>
+      <text x="150" y="130" text-anchor="middle" fill="#9aafa0" font-size="11">μ у центрі</text>
+    </svg>
+  </div>
+</div>
+
+<!-- theory-deeper:start:6:distribution-shapes --><p>У Пуассона mean = variance = λ. Якщо тікетів за годину в середньому 4, модель обіцяє і розкид 4 (std = 2). P(X=0) = e<sup>−λ</sup> ≈ 0.018: порожня година рідкісна, але не неможлива. Якщо у даних variance ≫ mean, це уже overdispersion — не той шаблон.</p><p>Нормальне N(μ, σ²) симетричне: інтервал μ±σ тримає ≈68% маси. Для зросту це правдоподібно; для <code>amount</code> μ=400, σ=200 дає P(X&lt;0) > 0 — модель генерує відʼємні гривні. Тоді або логнормаль, або обрізаний носій, не «normal бо так учили».</p><pre><code class="language-python">from math import exp
+lam = 4
+print(round(exp(-lam), 3), lam)  # P(0), mean=var</code></pre><div class="callout tip"><b>Зверніть увагу</b><p>Спочатку перевірте, чи величина ціла невідʼємна (лічильник) чи неперервна з носієм на всій прямій. Форма йде після носія.</p></div><!-- theory-deeper:end:6:distribution-shapes --><!-- CURSOR-ENRICHMENT:distribution-shapes:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Uniform, normal, Poisson: коли який розподіл “схожий на життя”» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Uniform моделює рівноймовірні значення в інтервалі, normal — симетричну неперервну величину, Poisson — невідʼємну кількість подій за інтервал.</p><p>Вибір розподілу перевіряють за підтримкою та механізмом даних, а не лише схожою гістограмою.</p><p>Фокус «uniform, normal і Poisson» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Uniform, normal, Poisson: коли який розподіл “схожий на життя”&#x27;
+assert concept_contract
+import numpy as np
+rng = np.random.default_rng(42)
+counts = rng.poisson(lam=2.0, size=6)
+print(counts.dtype.kind, bool((counts &gt;= 0).all()))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Uniform, normal, Poisson: коли який розподіл “схожий на життя”» очікується таке: Poisson-вибірка має цілочисловий dtype і лише невідʼємні значення: `i True`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не використовуйте normal для лічильника, якщо відʼємні та дробові значення неможливі.</li><li>Для «Uniform, normal, Poisson: коли який розподіл “схожий на життя”» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «uniform, normal і Poisson».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який розподіл природніше моделює кількість тікетів за хвилину? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Uniform, normal, Poisson: коли який розподіл “схожий на життя”».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:distribution-shapes:END -->
+</div></article><!-- deep-dive:start:6:2 --><article class="block extra-deep-dive" id="extra-6-2" data-topic-id="pair-6-distribution-shapes"><div class="block-head"><h3>Додатково: Poisson дає цілі лічильники, normal може дати відʼємне «amount»</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Рівномірний — маса розмазана по інтервалу (слот у черзі). Нормальний — купа біля центру, хвости симетричні (похибка вимірювання, зріст). Пуассона — <b>ціла</b> кількість подій за інтервал (тікети за годину). Симуляція <code>normal</code> для сум замовлень може видати відʼємні грн — це вже не модель чека.</p><pre><code class="language-python">import numpy as np
+rng = np.random.default_rng(42)
+print(rng.uniform(0, 10, 5))
+print(rng.normal(170, 7, 5))
+print(rng.poisson(4, 5))          # int
+print((rng.normal(20, 15, 8) &lt; 0).any())  # можливі відʼємні</code></pre><ul><li>Не оголошуйте реальні дані «нормальними» лише бо гістограма дзвоноподібна.</li><li>Пуассон для неперервного зросту — категоріальна помилка типу RV.</li><li>Генератор один: <code>default_rng</code>, три різні закони.</li></ul><div class="callout tip"><b>Зверніть увагу</b><p>Якщо змінна за визначенням ≥ 0 (amount, minutes), а симуляція дає мінус — змініть закон (lognormal, truncated), не «відріжте мінуси мовчки» без коментаря.</p></div><p>Підтримка розподілу важливіша за «дзвоник на слайді». normal може згенерувати відʼємний amount; Poisson — ні, бо носій {0,1,2,…}. Lognormal дає додатні суми з правим хвостом ближче до чеків, ніж N(μ,σ) на сирих гривнях.</p><p>Зверніть увагу: np.random.default_rng().normal не «помиляється», коли малює −3. Помиляється постановка задачі, яка просить нормаль для величини з носієм ≥ 0.</p><!-- CURSOR-ENRICHMENT:extra-6-2:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: Poisson дає цілі лічильники, normal може дати відʼємне «amount»» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Uniform моделює рівноймовірні значення в інтервалі, normal — симетричну неперервну величину, Poisson — невідʼємну кількість подій за інтервал.</p><p>Вибір розподілу перевіряють за підтримкою та механізмом даних, а не лише схожою гістограмою.</p><p>Фокус «uniform, normal і Poisson» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: Poisson дає цілі лічильники, normal може дати відʼємне «amount»&#x27;
+assert edge_case_contract
+import numpy as np
+rng = np.random.default_rng(42)
+counts = rng.poisson(lam=2.0, size=6)
+print(counts.dtype.kind, bool((counts &gt;= 0).all()))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: Poisson дає цілі лічильники, normal може дати відʼємне «amount»» очікується таке: Poisson-вибірка має цілочисловий dtype і лише невідʼємні значення: `i True`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не використовуйте normal для лічильника, якщо відʼємні та дробові значення неможливі.</li><li>Для «Поглиблення: Poisson дає цілі лічильники, normal може дати відʼємне «amount»» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «uniform, normal і Poisson».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який розподіл природніше моделює кількість тікетів за хвилину? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: Poisson дає цілі лічильники, normal може дати відʼємне «amount»».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-6-2:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-6-2" data-topic-id="pair-6-distribution-shapes" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Generator API і підтримка припущень scaler</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант сімʼї: support закону має містити support змінної. N(μ,σ²) на ℝ конфліктує з amount∈[0,∞). Poisson(λ) на ℕ₀ конфліктує з неперервним height. Це перевірка до будь-якого fit.</p><p>NumPy 2.x: лише <code>Generator</code> у нових матеріалах (<code>rng.normal</code>, <code>rng.poisson</code>). Legacy <code>np.random.normal</code> ділить глобальний стан.</p><p>sklearn <code>StandardScaler</code> не вимагає нормальності, попри міф. Він вимагає скінченні mean/std. Нормальність важлива для z&gt;3 як правила викидів і для деяких CI, не для самого scaler. GaussianNB — так, припускає нормальні фічі.</p><p>Generator у NumPy 1.17+ — API, яке треба вчити замість np.random.randn. Кожен розподіл має support; scaler це не перевіряє. StandardScaler на логнормалі не робить її нормальною — лише центрує й ділить.</p><p>Припущення лінійної регресії про гаусові залишки — про ε, не про сирий y. Генерувати y ~ Normal для amount у демо ок, якщо ви явно кажете «іграшковий носій».</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://numpy.org/doc/stable/reference/random/generator.html" target="_blank" rel="noreferrer">NumPy random Generator</a></li><li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noreferrer">scipy.stats distributions</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-6-2:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: Generator API і підтримка припущень scaler» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Uniform моделює рівноймовірні значення в інтервалі, normal — симетричну неперервну величину, Poisson — невідʼємну кількість подій за інтервал.</p><p>Вибір розподілу перевіряють за підтримкою та механізмом даних, а не лише схожою гістограмою.</p><p>Фокус «uniform, normal і Poisson» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: Generator API і підтримка припущень scaler&#x27;
+assert invariant_contract
+import numpy as np
+rng = np.random.default_rng(42)
+counts = rng.poisson(lam=2.0, size=6)
+print(counts.dtype.kind, bool((counts &gt;= 0).all()))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: Generator API і підтримка припущень scaler» очікується таке: Poisson-вибірка має цілочисловий dtype і лише невідʼємні значення: `i True`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не використовуйте normal для лічильника, якщо відʼємні та дробові значення неможливі.</li><li>Для «Технічна межа: Generator API і підтримка припущень scaler» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «uniform, normal і Poisson».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який розподіл природніше моделює кількість тікетів за хвилину? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: Generator API і підтримка припущень scaler».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-6-2:END -->
+</div></article><!-- deep-dive:end:6:2 -->
+
+
+<article class="block" id="itstep-task-4"><div class="block-head"><h3>Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:26–20:33 · 7 хв</span><span class="timer-live" hidden>07:00</span></label><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>4 · офіційне завдання.</b> Проаналізуйте розподіл зросту людей і знайдіть аномальні значення через <code>|z| &gt; 3</code>.</p>
+<ul>
+  <li>Сформуйте таблицю <code>height</code> щонайменше на 300 спостережень.</li>
+  <li>Порахуйте перцентилі <code>5, 25, 50, 75, 95</code>.</li>
+  <li>Додайте стовпець <code>height_z</code> із z-оцінками.</li>
+  <li>Порахуйте кількість спостережень з <code>|z| &gt; 3</code>.</li>
+  <li>Побудуйте гістограми <code>height</code> і <code>height_z</code>.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 4.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("heights_distribution.csv")
+mean = df["height"].mean()
+std = df["height"].std(ddof=1)
+df["height_z"] = (df["height"] - mean) / std
+print(df["height"].quantile([0.05, 0.25, 0.5, 0.75, 0.95]))
+print("outliers:", int((df["height_z"].abs() > 3).sum()))</code></pre></div>
+<p><b>4.1 · зробіть за аналогією.</b> Побудуйте вже <b>420+</b> спостережень і повторіть той самий аналіз; порівняйте, як змінюються перцентилі після додавання кількох штучних крайніх значень.</p>
+<!-- CURSOR-ENRICHMENT:itstep-task-4:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Перцентилі описують позицію в емпіричному розподілі; z-оцінка вимірює відстань від mean у стандартних відхиленнях.</p><p>Mean і std для z-score обчислюйте на визначеній reference-вибірці.</p><p>Фокус «перцентилі, z-оцінки та викиди зросту» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди&#x27;
+assert practice_contract
+import numpy as np
+heights = np.array([160., 165., 170., 175., 210.])
+p10, p90 = np.percentile(heights, [10, 90])
+z_scores = (heights - heights.mean()) / heights.std(ddof=0)
+outliers = heights[np.abs(z_scores) &gt; 1.5]
+print(round(p10, 1), round(p90, 1), np.round(z_scores, 2).tolist(), outliers.tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди» очікується таке: P10=`162.0`, P90=`196.0`; z-score позначає 210 як найдальше значення й поріг 1.5 відбирає його. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не інтерпретуйте z-score як ймовірність і не змішуйте reference mean/std з test-рядками.</li><li>Для «Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «перцентилі, z-оцінки та викиди зросту».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які дві статистики стоять у знаменнику та чисельнику z-score? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Завдання 4 + 4.1 · Розподіл зросту: перцентилі, z-оцінки та викиди».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:itstep-task-4:END -->
+</div></article>
+<article class="block" id="covariance"><div class="block-head"><h3>Коваріація: чи змінні рухаються в один бік</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">20:33–20:41 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p><b>Коваріація</b> показує, чи відхилення двох змінних від своїх середніх узгоджені за знаком. Якщо одна зазвичай зростає разом з іншою — коваріація додатна; якщо навпаки — відʼємна.</p>
+<pre><code class="language-python">import numpy as np
+
+study_hours = np.array([2, 3, 4, 5, 6, 7], dtype=float)
+scores = np.array([58, 63, 67, 74, 79, 85], dtype=float)
+cov = np.cov(study_hours, scores, ddof=1)[0, 1]
+print("covariance:", round(cov, 2))</code></pre>
+<div class="viz"><h4>Scatter · спільна зміна</h4><div class="chart-wrap"><canvas id="chart-covariance-scatter"></canvas></div></div>
+<div class="callout tip"><b>Обережно</b><p>Саме число коваріації важко порівнювати між задачами, бо воно залежить від масштабу вимірювання: години × бали, сантиметри × кілограми, гривні × штуки.</p></div>
+<!-- theory-deeper:start:6:covariance --><p>Формула: cov = Σ(x − x̄)(y − ȳ) / (n − 1). Нехай години [2, 4, 6], бали [60, 70, 80]. x̄=4, ȳ=70. Добутки відхилень: (−2)·(−10)+0+2·10 = 40. cov = 40/2 = 20 (години·бали). Знак «+»: більші години з більшими балами.</p><p>На черзі той самий механізм: x = хвилини до відповіді, y = 1 якщо P1. Додатна cov означає, що P1 частіше живе з довшими хвилинами. Величина 20 vs 0.02 нічого не каже без одиниць: порівнювати cov між парами колонок можна лише після однакової шкали.</p><pre><code class="language-python">xs, ys = [2, 4, 6], [60, 70, 80]
+mx, my = 4, 70
+print(sum((x-mx)*(y-my) for x, y in zip(xs, ys)) / 2)</code></pre><div class="callout tip"><b>Коротко</b><p>Знак cov читається одразу. Модуль — лише разом з одиницями x і y.</p></div><!-- theory-deeper:end:6:covariance --><!-- CURSOR-ENRICHMENT:covariance:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Коваріація: чи змінні рухаються в один бік» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Знак коваріації показує спільний напрям змін, а величина залежить від одиниць обох змінних.</p><p>Задавайте `rowvar=False`, якщо рядки — спостереження, а колонки — змінні.</p><p>Фокус «коваріація та одиниці» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Коваріація: чи змінні рухаються в один бік&#x27;
+assert concept_contract
+import numpy as np
+x = np.array([1.0, 2.0, 3.0]); y = np.array([2.0, 4.0, 5.0])
+cov = np.cov(x, y, ddof=1)[0, 1]
+print(cov, np.cov(x * 1000, y, ddof=1)[0, 1])</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Коваріація: чи змінні рухаються в один бік» очікується таке: Після множення x на 1000 коваріація теж збільшується в 1000 разів. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не порівнюйте абсолютні коваріації пар з різними одиницями як силу звʼязку.</li><li>Для «Коваріація: чи змінні рухаються в один бік» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «коваріація та одиниці».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Чому зміна метрів на міліметри змінює cov, але не напрям звʼязку? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Коваріація: чи змінні рухаються в один бік».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:covariance:END -->
+</div></article><!-- deep-dive:start:6:3 --><article class="block extra-deep-dive" id="extra-6-3" data-topic-id="pair-6-covariance"><div class="block-head"><h3>Додатково: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Коваріація ловить, чи змінні відхиляються від своїх середніх в один бік. Знак (+ разом / − назустріч) корисний. Величина залежить від <b>одиниць</b>: зріст у мм замість см помножить cov на 10. Тому «cov = 1200» без одиниць непорівнянна між задачами.</p><pre><code class="language-python">import numpy as np
+x = np.array([160.0, 165, 170, 175, 180])
+y = np.array([55.0, 60, 70, 72, 80])
+print(np.cov(x, y, ddof=1)[0, 1])
+print(np.cov(x * 10, y, ddof=1)[0, 1])  # ×10, той самий звʼязок</code></pre><ul><li><code>np.cov</code> за замовчуванням вважає рядки змінними (<code>rowvar=True</code>): для двох векторів-колонок це пастка.</li><li>Діагональ матриці коваріацій — дисперсії, не «сила звʼязку».</li><li>Нуль коваріації не доводить незалежність (нелінійний звʼязок).</li></ul><div class="callout tip"><b>Зверніть увагу</b><p>Якщо хочете порівняти «наскільки сильно повʼязані» зріст-вага і години-бал, беріть кореляцію, не cov: різні одиниці зроблять cov неспівставною.</p></div><p>Коваріація несе одиниці добутку (грн·см). Масштаб x у 1000 разів множить cov на 1000, кореляцію лишає тією самою. Тому таблиця cov без словника одиниць нечитабельна в звіті.</p><p>Зверніть увагу: np.cov за замовчуванням вважає рядки змінними (rowvar=True). Матриця (n_samples, 2) без rowvar=False порахує «коваріацію людей», не ознак.</p><!-- CURSOR-ENRICHMENT:extra-6-3:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Знак коваріації показує спільний напрям змін, а величина залежить від одиниць обох змінних.</p><p>Задавайте `rowvar=False`, якщо рядки — спостереження, а колонки — змінні.</p><p>Фокус «коваріація та одиниці» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне&#x27;
+assert edge_case_contract
+import numpy as np
+x = np.array([1.0, 2.0, 3.0]); y = np.array([2.0, 4.0, 5.0])
+cov = np.cov(x, y, ddof=1)[0, 1]
+print(cov, np.cov(x * 1000, y, ddof=1)[0, 1])</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне» очікується таке: Після множення x на 1000 коваріація теж збільшується в 1000 разів. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не порівнюйте абсолютні коваріації пар з різними одиницями як силу звʼязку.</li><li>Для «Поглиблення: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «коваріація та одиниці».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Чому зміна метрів на міліметри змінює cov, але не напрям звʼязку? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: коваріація в грн·см не читається; помножте x на 1000 — cov стрибне».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-6-3:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-6-3" data-topic-id="pair-6-covariance" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: np.cov rowvar і EmpiricalCovariance</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: <code>cov(aX, Y) = a·cov(X,Y)</code>, <code>cov(X,X)=var(X)</code>. Масштаб фічі в sklearn лінійно змінює cov і не змінює Pearson r. Саме тому кореляція, не cov, іде в <code>feature_selection</code> як порівнянна метрика.</p><p><code>numpy.cov</code> default <code>rowvar=True</code>: shape (2, n) очікує змінні в рядках. Передати два вектори (n,) працює, але матриця спостережень (n, 2) потребує <code>rowvar=False</code>. Тихий транспонований cov — баг на роки.</p><p>sklearn <code>EmpiricalCovariance</code> / Ledoit-Wolf — оцінка Σ для GaussianNB-подібних моделей і outlier detection, не заміна scatter plot.</p><p>np.cov(m, rowvar=False, ddof=1) узгоджується з pandas.DataFrame.cov. sklearn EmpiricalCovariance оцінює іншу регуляризовану/MLE-версію — не звіряйте 1-1 без читання estimator.</p><p>Коваріаційна матриця має бути SPSD; після feature engineering з лінійно залежними колонками вона вироджена, і np.linalg.inv падає. Це сигнал колінеарності, не баг cov.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://numpy.org/doc/stable/reference/generated/numpy.cov.html" target="_blank" rel="noreferrer">numpy.cov</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EmpiricalCovariance.html" target="_blank" rel="noreferrer">sklearn EmpiricalCovariance</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-6-3:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: np.cov rowvar і EmpiricalCovariance» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Знак коваріації показує спільний напрям змін, а величина залежить від одиниць обох змінних.</p><p>Задавайте `rowvar=False`, якщо рядки — спостереження, а колонки — змінні.</p><p>Фокус «коваріація та одиниці» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: np.cov rowvar і EmpiricalCovariance&#x27;
+assert invariant_contract
+import numpy as np
+x = np.array([1.0, 2.0, 3.0]); y = np.array([2.0, 4.0, 5.0])
+cov = np.cov(x, y, ddof=1)[0, 1]
+print(cov, np.cov(x * 1000, y, ddof=1)[0, 1])</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: np.cov rowvar і EmpiricalCovariance» очікується таке: Після множення x на 1000 коваріація теж збільшується в 1000 разів. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не порівнюйте абсолютні коваріації пар з різними одиницями як силу звʼязку.</li><li>Для «Технічна межа: np.cov rowvar і EmpiricalCovariance» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «коваріація та одиниці».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Чому зміна метрів на міліметри змінює cov, але не напрям звʼязку? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: np.cov rowvar і EmpiricalCovariance».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-6-3:END -->
+</div></article><!-- deep-dive:end:6:3 -->
+
+
+<article class="block" id="practice-6-covariance"><div class="block-head"><h3>Мінізадача: cov до і після зміни одиниць</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:41–20:48 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Для зросту (см) і ваги порахуйте <code>np.cov(..., ddof=1)[0,1]</code>. Повторіть зі зростом у мм (×10). Надрукуйте обидва числа.</p><p>Аналог (необовʼязково). Порахуйте <code>np.corrcoef</code> на обох варіантах — має збігтися.</p><div class="callout tip"><b>Орієнтир</b><p>Друга cov ≈ у 10 разів більша. Кореляція та сама (до чисельної похибки).</p></div><div class="callout task"><b>Ваше рішення</b><p>Два числа cov і, в аналогу, два r. Коментар про одиниці.</p></div><p>Ще один аналог (необовʼязково). Порахуйте cov з rowvar=True і False на матриці shape (100, 2). Який виклик дає матрицю 2×2 для двох ознак?</p><!-- CURSOR-ENRICHMENT:practice-6-covariance:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: cov до і після зміни одиниць» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Знак коваріації показує спільний напрям змін, а величина залежить від одиниць обох змінних.</p><p>Задавайте `rowvar=False`, якщо рядки — спостереження, а колонки — змінні.</p><p>Фокус «коваріація та одиниці» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: cov до і після зміни одиниць&#x27;
+assert practice_contract
+import numpy as np
+x = np.array([1.0, 2.0, 3.0]); y = np.array([2.0, 4.0, 5.0])
+cov = np.cov(x, y, ddof=1)[0, 1]
+print(cov, np.cov(x * 1000, y, ddof=1)[0, 1])</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: cov до і після зміни одиниць» очікується таке: Після множення x на 1000 коваріація теж збільшується в 1000 разів. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не порівнюйте абсолютні коваріації пар з різними одиницями як силу звʼязку.</li><li>Для «Мінізадача: cov до і після зміни одиниць» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «коваріація та одиниці».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Чому зміна метрів на міліметри змінює cov, але не напрям звʼязку? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: cov до і після зміни одиниць».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-6-covariance:END -->
+</div></article>
+<article class="block" id="correlation"><div class="block-head"><h3>Кореляція: нормований звʼязок у діапазоні -1..1</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">20:48–20:56 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p><b>Кореляція</b> — це коваріація, нормована на стандартні відхилення двох змінних. Тому значення легше читати: <code>1</code> — сильний прямий лінійний звʼязок, <code>-1</code> — сильний обернений, <code>0</code> — лінійного звʼязку майже немає.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "hours": [2, 3, 4, 5, 6, 7],
+        "score": [58, 63, 67, 74, 79, 85],
+    }
+)
+print(df.corr(numeric_only=True))
+print("pearson r =", round(df["hours"].corr(df["score"]), 3))</code></pre>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · сила кореляції</h4><div class="chart-wrap"><canvas id="chart-correlation-strength"></canvas></div></div>
+  <div class="viz"><h4>Памʼятка</h4><div class="cards"><div class="card"><h5><code>r ≈ 0.8</code></h5><p>Сильний додатний лінійний звʼязок.</p></div><div class="card"><h5><code>r ≈ -0.7</code></h5><p>Сильний відʼємний лінійний звʼязок.</p></div><div class="card"><h5><code>r ≈ 0</code></h5><p>Або звʼязку мало, або він нелінійний.</p></div></div></div>
+</div>
+<div class="callout tip"><b>Головне попередження</b><p><b>Correlation does not imply causation.</b> Висока кореляція ще не доводить, що одна змінна є причиною іншої.</p></div>
+<!-- theory-deeper:start:6:correlation --><p>Pearson: r = cov(x, y) / (s<sub>x</sub> s<sub>y</sub>). Якщо s<sub>x</sub>=0 (усі хвилини однакові), знаменник нуль — r не визначений, не «дорівнює 0». На трійці годин/балів вище s<sub>x</sub>=2, s<sub>y</sub>=10, cov=20 → r = 20/20 = 1: ідеальна пряма.</p><p>Квадрат r² — частка дисперсії y, яку лінійно «пояснює» x. При r=0.6 маємо r²=0.36: 36% розкиду балів узгоджені з годинами лінійно, 64% — ні. Це не доказ причини і не якість моделі з нелінійним звʼязком.</p><div class="callout tip"><b>Часта пастка</b><p>r=0 не означає «звʼязку немає». Парабола y=x² на симетричному x дає r≈0 при жорсткій залежності. Дивіться scatter.</p></div><!-- theory-deeper:end:6:correlation --><!-- CURSOR-ENRICHMENT:correlation:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Кореляція: нормований звʼязок у діапазоні -1..1» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Pearson r нормує лінійний звʼязок у межі −1…1; Spearman оцінює монотонність через ранги.</p><p>Мале n, викиди й нелінійність можуть зробити одне число оманливим — завжди дивіться scatter.</p><p>Фокус «кореляція та форма звʼязку» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Кореляція: нормований звʼязок у діапазоні -1..1&#x27;
+assert concept_contract
+import numpy as np
+x_linear = np.arange(1., 6.); y_linear = 2*x_linear + 1
+x_parabolic = np.arange(-2., 3.); y_parabolic = x_parabolic**2
+correlations = {&#x27;linear&#x27;: np.corrcoef(x_linear, y_linear)[0, 1], &#x27;parabolic&#x27;: np.corrcoef(x_parabolic, y_parabolic)[0, 1]}
+print({name: round(value, 3) for name, value in correlations.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Кореляція: нормований звʼязок у діапазоні -1..1» очікується таке: Pearson r дорівнює `1.0` для прямої та `0.0` для симетричної параболи: нуль не заперечує точну нелінійну залежність. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не трактуйте r≈0 як доказ відсутності будь-якого звʼязку.</li><li>Для «Кореляція: нормований звʼязок у діапазоні -1..1» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція та форма звʼязку».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який графік одразу покаже пропущену параболічну структуру? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Кореляція: нормований звʼязок у діапазоні -1..1».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:correlation:END -->
+</div></article><!-- deep-dive:start:6:4 --><article class="block extra-deep-dive" id="extra-6-4" data-topic-id="pair-6-correlation"><div class="block-head"><h3>Додатково: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Кореляція Пірсона — нормована коваріація, завжди в <code>[-1, 1]</code>, не залежить від одиниць. Вона міряє <b>лінійний</b> звʼязок. Якщо y = x² на симетричному x, Pearson може бути ≈ 0, хоча звʼязок жорсткий. Spearman дивиться на ранги — ловить монотонність.</p><pre><code class="language-python">import numpy as np
+from scipy.stats import spearmanr
+x = np.array([-2.0, -1, 0, 1, 2])
+y = x ** 2
+print(np.corrcoef(x, y)[0, 1])     # ≈ 0
+print(spearmanr(x, y).correlation) # теж слабо: парабола не монотонна</code></pre><ul><li>|r| = 0.9 на пʼяти точках — ще не «сильний закон природи».</li><li><code>df.corr()</code> за замовчуванням Pearson і пропускає NA pairwise.</li><li>r = 1 можливе при y = 3x + 2 (лінія), не лише при y = x.</li></ul><div class="callout tip"><b>Часта пастка</b><p>Побачили r = 0 і сказали «звʼязку немає». Спочатку scatter: могла бути підкова, кластери або один викид, що зламав Pearson.</p></div><p>Pearson r — cosine двох центрованих векторів. Тому афінне перетворення x' = a x + b (a&gt;0) не змінює r, а нелінійне y = x² на симетричному x дає r≈0 при сильній залежності.</p><p>Зверніть увагу: при n=5 навіть шум дає |r| велике. p-value з scipy.stats.pearsonr на крихітній вибірці не рятує продуктову історію «ознаки повʼязані».</p><!-- CURSOR-ENRICHMENT:extra-6-4:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Pearson r нормує лінійний звʼязок у межі −1…1; Spearman оцінює монотонність через ранги.</p><p>Мале n, викиди й нелінійність можуть зробити одне число оманливим — завжди дивіться scatter.</p><p>Фокус «кореляція та форма звʼязку» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум&#x27;
+assert edge_case_contract
+import numpy as np
+x_linear = np.arange(1., 6.); y_linear = 2*x_linear + 1
+x_parabolic = np.arange(-2., 3.); y_parabolic = x_parabolic**2
+correlations = {&#x27;linear&#x27;: np.corrcoef(x_linear, y_linear)[0, 1], &#x27;parabolic&#x27;: np.corrcoef(x_parabolic, y_parabolic)[0, 1]}
+print({name: round(value, 3) for name, value in correlations.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум» очікується таке: Pearson r дорівнює `1.0` для прямої та `0.0` для симетричної параболи: нуль не заперечує точну нелінійну залежність. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не трактуйте r≈0 як доказ відсутності будь-якого звʼязку.</li><li>Для «Поглиблення: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція та форма звʼязку».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який графік одразу покаже пропущену параболічну структуру? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: Pearson ловить пряму, Spearman — монотонність; |r| при n=5 майже шум».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-6-4:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-6-4" data-topic-id="pair-6-correlation" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Pearson як cosine z-оцінок і r_regression</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: Pearson r — cosine між центрованими векторами. Афінне перетворення будь-якої змінної (scaler!) не змінює r. Викид змінює: одна точка з важелем може підняти r з 0.1 до 0.8.</p><p>sklearn <code>feature_selection.r_regression</code> / <code>f_regression</code> — той самий Pearson із ціллю. Корисно як фільтр лінійних фіч, сліпий до нелінійності. Для нелінійного — <code>mutual_info_regression</code>.</p><p>pandas 3: <code>DataFrame.corr(numeric_only=True)</code> обовʼязковий, коли в кадрі є string-dtype; інакше зайві колонки або exception. pairwise NA зменшує n по-різному для кожної пари — пишіть це в звіті.</p><p>sklearn.feature_selection.r_regression рахує Pearson кожної ознаки з y. Це ranking, не причинність. Spearman — ранговий; для монотонної дуги він вищий за Pearson.</p><p>Інваріант: |r| не має порогу «0.7 = істина». На великих n мікроскопічний r стає «значущим» і лишається практично нульовим.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html" target="_blank" rel="noreferrer">scipy.stats.pearsonr</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.r_regression.html" target="_blank" rel="noreferrer">sklearn r_regression</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-6-4:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: Pearson як cosine z-оцінок і r_regression» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Pearson r нормує лінійний звʼязок у межі −1…1; Spearman оцінює монотонність через ранги.</p><p>Мале n, викиди й нелінійність можуть зробити одне число оманливим — завжди дивіться scatter.</p><p>Фокус «кореляція та форма звʼязку» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: Pearson як cosine z-оцінок і r_regression&#x27;
+assert invariant_contract
+import numpy as np
+x_linear = np.arange(1., 6.); y_linear = 2*x_linear + 1
+x_parabolic = np.arange(-2., 3.); y_parabolic = x_parabolic**2
+correlations = {&#x27;linear&#x27;: np.corrcoef(x_linear, y_linear)[0, 1], &#x27;parabolic&#x27;: np.corrcoef(x_parabolic, y_parabolic)[0, 1]}
+print({name: round(value, 3) for name, value in correlations.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: Pearson як cosine z-оцінок і r_regression» очікується таке: Pearson r дорівнює `1.0` для прямої та `0.0` для симетричної параболи: нуль не заперечує точну нелінійну залежність. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не трактуйте r≈0 як доказ відсутності будь-якого звʼязку.</li><li>Для «Технічна межа: Pearson як cosine z-оцінок і r_regression» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція та форма звʼязку».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який графік одразу покаже пропущену параболічну структуру? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: Pearson як cosine z-оцінок і r_regression».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-6-4:END -->
+</div></article><!-- deep-dive:end:6:4 -->
+
+
+<article class="block" id="practice-6-correlation"><div class="block-head"><h3>Мінізадача: r на лінії і на параболі</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:56–21:03 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Для x=1..5 і y=2x+1 порахуйте Pearson. Для y=x² — знову Pearson. Надрукуйте обидва r.</p><p>Аналог (необовʼязково). Додайте одну шалену точку (100, 0) до лінії і покажіть, як упав r.</p><div class="callout tip"><b>Орієнтир</b><p>Лінія дає r ≈ 1. Парабола на симетричному x — близько 0. Викид псує лінійний r.</p></div><div class="callout task"><b>Ваше рішення</b><p>Два (або три) числа r без графіка. Коментар, що саме міряє Pearson.</p></div><p>Ще один аналог (необовʼязково). Порахуйте Pearson і Spearman для x і y=x**3 на x від −2 до 2. Чому Spearman ближчий до 1?</p><!-- CURSOR-ENRICHMENT:practice-6-correlation:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: r на лінії і на параболі» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Pearson r нормує лінійний звʼязок у межі −1…1; Spearman оцінює монотонність через ранги.</p><p>Мале n, викиди й нелінійність можуть зробити одне число оманливим — завжди дивіться scatter.</p><p>Фокус «кореляція та форма звʼязку» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: r на лінії і на параболі&#x27;
+assert practice_contract
+import numpy as np
+x_linear = np.arange(1., 6.); y_linear = 2*x_linear + 1
+x_parabolic = np.arange(-2., 3.); y_parabolic = x_parabolic**2
+correlations = {&#x27;linear&#x27;: np.corrcoef(x_linear, y_linear)[0, 1], &#x27;parabolic&#x27;: np.corrcoef(x_parabolic, y_parabolic)[0, 1]}
+print({name: round(value, 3) for name, value in correlations.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: r на лінії і на параболі» очікується таке: Pearson r дорівнює `1.0` для прямої та `0.0` для симетричної параболи: нуль не заперечує точну нелінійну залежність. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не трактуйте r≈0 як доказ відсутності будь-якого звʼязку.</li><li>Для «Мінізадача: r на лінії і на параболі» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція та форма звʼязку».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який графік одразу покаже пропущену параболічну структуру? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: r на лінії і на параболі».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-6-correlation:END -->
+</div></article>
+<article class="block" id="corr-pitfalls"><div class="block-head"><h3>Пастки кореляції та масштабу</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="6" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 6 хв" /><span class="clock">21:03–21:09 · 6 хв</span><span class="timer-live" hidden>06:00</span></label></div></div><div class="block-body"><p><b>Кореляція ≠ причинність.</b> Сильний звʼязок може бути через confounder, зворотну причинність або випадковість.</p>
+<ul>
+  <li>Pearson чутливий до лінійності й викидів; завжди дивіться scatter.</li>
+  <li>Різний масштаб змінних впливає на covariance, але не на correlation.</li>
+</ul>
+<pre class="pre">import numpy as np
+rng = np.random.default_rng(1)
+x = rng.normal(0, 1, 200)
+y = 2 * x + rng.normal(0, 0.5, 200)
+print("corr", np.corrcoef(x, y)[0, 1].round(3))</pre>
+
+<!-- viz:confounder -->
+<div class="viz diagram">
+  <h4>Схема · confounder (хибна кореляція)</h4>
+  <svg viewBox="0 0 640 200" role="img" aria-label="Confounder diagram">
+    <circle cx="320" y="45" r="36" fill="#1e2a24" stroke="#ffb86b" stroke-width="2"/>
+    <text x="320" y="50" text-anchor="middle" fill="#ffb86b" font-size="13">Z</text>
+    <text x="320" y="95" text-anchor="middle" fill="#9aafa0" font-size="11">спільна причина</text>
+    <path d="M300 75 L180 130" stroke="#7ec8ff" stroke-width="2" marker-end="url(#a)"/>
+    <path d="M340 75 L460 130" stroke="#7dffb3" stroke-width="2"/>
+    <circle cx="160" y="150" r="36" fill="#1e2a24" stroke="#7ec8ff" stroke-width="2"/>
+    <text x="160" y="155" text-anchor="middle" fill="#7ec8ff" font-size="13">X</text>
+    <circle cx="480" y="150" r="36" fill="#1e2a24" stroke="#7dffb3" stroke-width="2"/>
+    <text x="480" y="155" text-anchor="middle" fill="#7dffb3" font-size="13">Y</text>
+    <path d="M200 150 H440" stroke="#ff8fab" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="320" y="175" text-anchor="middle" fill="#ff8fab" font-size="12">видима кореляція X↔Y</text>
+  </svg>
+</div>
+<div class="viz"><h4>Графік · сильний звʼязок на scatter (ілюстрація)</h4>
+  <div class="chart-wrap"><canvas id="chart-corr-demo"></canvas></div>
+</div>
+
+<div class="callout tip" data-kb="kb-pair-callout"><b>Коротко</b><p>Проговоріть вголос: кореляція ≠ причинність. Далі дивіться scatter і викиди.</p></div><!-- theory-deeper:start:6:corr-pitfalls --><p>Обмеження діапазону стискає r. Якщо взяти лише тікети enterprise, варіація <code>customer_tier</code> зникає, і кореляція tier із хвилинами відповіді падає навіть коли на повній черзі звʼязок був. Вузький зріз — не «чистіші дані», а інша дисперсія x.</p><p>Чотири набори Анскомба мають майже однакове r ≈ 0.82 і різні scatter: пряма, крива, викид, вертикаль. Одне число з <code>df.corr()</code> на Support Intelligence не відрізняє «лінійний тренд хвилин vs volume» від «один T-1004 тягне хмару». Без точок формула сліпа.</p><div class="callout tip"><b>Зверніть увагу</b><p>Перед висновком «є звʼязок» намалюйте scatter і колір групи (tier / channel). Інакше r змішує кілька історій в одну цифру.</p></div><!-- theory-deeper:end:6:corr-pitfalls --><!-- CURSOR-ENRICHMENT:corr-pitfalls:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Пастки кореляції та масштабу» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Кореляція не доводить причинність: третя змінна, змішані групи або відбір можуть змінити знак звʼязку.</p><p>Кореляція ознаки з target не дозволяє використовувати післяподієву колонку: це все одно leakage.</p><p>Фокус «кореляція, причинність і leakage» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Пастки кореляції та масштабу&#x27;
+assert concept_contract
+import pandas as pd
+frame = pd.DataFrame({&#x27;group&#x27;: [&#x27;A&#x27;,&#x27;A&#x27;,&#x27;B&#x27;,&#x27;B&#x27;], &#x27;x&#x27;: [1,2,8,9], &#x27;y&#x27;: [2,3,1,2]})
+print(frame.groupby(&#x27;group&#x27;)[[&#x27;x&#x27;, &#x27;y&#x27;]].apply(lambda g: g[&#x27;x&#x27;].corr(g[&#x27;y&#x27;])).round(1).to_dict())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Пастки кореляції та масштабу» очікується таке: У кожній групі кореляція додатна; обʼєднана структура може дати інший висновок. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не робіть причинний висновок з heatmap і не відбирайте ознаки до train/test split за повним target.</li><li>Для «Пастки кореляції та масштабу» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція, причинність і leakage».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яку групувальну змінну треба перевірити перед загальним висновком? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Пастки кореляції та масштабу».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:corr-pitfalls:END -->
+</div></article><!-- deep-dive:start:6:5 --><article class="block extra-deep-dive" id="extra-6-5" data-topic-id="pair-6-corr-pitfalls"><div class="block-head"><h3>Додатково: кореляція не доводить причинність — третя змінна перевертає знак</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Високий r між морозивом і утопленнями влітку не означає, що морозиво топить людей: обидва ростуть від спеки. Це <b>спільна причина</b>. Парадокс Сімпсона: у кожній групі r відʼємний, а на обʼєднаних даних — додатний (або навпаки). Scatter без кольору групи цей розкол ховає.</p><pre><code class="language-python">import pandas as pd
+g1 = pd.DataFrame({"hours": [1, 2, 3], "score": [8, 7, 6], "grp": "A"})
+g2 = pd.DataFrame({"hours": [4, 5, 6], "score": [10, 9, 8], "grp": "B"})
+df = pd.concat([g1, g2], ignore_index=True)
+print("all", df.hours.corr(df.score))
+print("A", g1.hours.corr(g1.score), "B", g2.hours.corr(g2.score))</code></pre><ul><li>r ≠ 0 — гіпотеза для перевірки, не дозвіл крутити важіль у проді.</li><li>Немає r між категорією «місто» і числом без кодування — спочатку тип змінної.</li><li>Викид однієї точки може намалювати «причинність» на пʼяти спостереженнях.</li></ul><div class="callout tip"><b>Часта пастка</b><p>Фраза «корелює, отже впливає» — логічна дірка. Пишіть: «рухаються разом у цій вибірці; причина невідома без дизайну експерименту / домену».</p></div><p>Парадокс Сімпсона: знак r у групах один, на обʼєднаних даних — протилежний. Третя змінна (група тарифу, регіон) не «шум», а структура. Кореляція без групування може рекомендувати дію, шкідливу в кожній групі.</p><p>Зверніть увагу: кореляція y з ознаками на повному CSV до split — шлях до відбору ознак з test. Спочатку відкладіть test, потім дивіться corr лише на train.</p><!-- CURSOR-ENRICHMENT:extra-6-5:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: кореляція не доводить причинність — третя змінна перевертає знак» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Кореляція не доводить причинність: третя змінна, змішані групи або відбір можуть змінити знак звʼязку.</p><p>Кореляція ознаки з target не дозволяє використовувати післяподієву колонку: це все одно leakage.</p><p>Фокус «кореляція, причинність і leakage» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: кореляція не доводить причинність — третя змінна перевертає знак&#x27;
+assert edge_case_contract
+import pandas as pd
+frame = pd.DataFrame({&#x27;group&#x27;: [&#x27;A&#x27;,&#x27;A&#x27;,&#x27;B&#x27;,&#x27;B&#x27;], &#x27;x&#x27;: [1,2,8,9], &#x27;y&#x27;: [2,3,1,2]})
+print(frame.groupby(&#x27;group&#x27;)[[&#x27;x&#x27;, &#x27;y&#x27;]].apply(lambda g: g[&#x27;x&#x27;].corr(g[&#x27;y&#x27;])).round(1).to_dict())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: кореляція не доводить причинність — третя змінна перевертає знак» очікується таке: У кожній групі кореляція додатна; обʼєднана структура може дати інший висновок. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не робіть причинний висновок з heatmap і не відбирайте ознаки до train/test split за повним target.</li><li>Для «Поглиблення: кореляція не доводить причинність — третя змінна перевертає знак» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція, причинність і leakage».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яку групувальну змінну треба перевірити перед загальним висновком? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: кореляція не доводить причинність — третя змінна перевертає знак».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-6-5:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-6-5" data-topic-id="pair-6-corr-pitfalls" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Simpson, confounding і заборона target leakage через corr</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: corr(X,Y) симетрична і неорієнтована — з неї не слідує X→Y. Ідентифікація причини потребує графа / експерименту / інструмента, не <code>df.corr()</code>. На курсі достатньо контрприкладу зі спільною причиною і Simpson на 6 рядках.</p><p>Leakage: кореляція фічі з ціллю, порахована на full data, не є критерієм відбору до split. <code>SelectKBest(f_regression)</code> має сидіти <i>всередині</i> Pipeline на train-fold, інакше test уже вибрав фічі.</p><p>pandas 3 / sklearn 1.5+: <code>numeric_only=True</code> і явні імена колонок у ColumnTransformer зменшують «r між id і таргетом», коли id випадково чисельний.</p><p>Confounding ≠ collinearity: перше — причинна структура, друге — лінійна залежність у X. corr(y, leak_column) високий, якщо leak_column побудований з y — це target leakage, не «гарна ознака».</p><p>Політика: заборона брати в X пост-цільові поля сильніша за будь-який поріг |r|. NIST MAP фіксує, які змінні існують на момент рішення, перш ніж MEASURE рахує corr.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://scikit-learn.org/stable/modules/feature_selection.html" target="_blank" rel="noreferrer">sklearn feature selection gotchas</a></li><li><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html" target="_blank" rel="noreferrer">pandas corr</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-6-5:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: Simpson, confounding і заборона target leakage через corr» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Кореляція не доводить причинність: третя змінна, змішані групи або відбір можуть змінити знак звʼязку.</p><p>Кореляція ознаки з target не дозволяє використовувати післяподієву колонку: це все одно leakage.</p><p>Фокус «кореляція, причинність і leakage» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: Simpson, confounding і заборона target leakage через corr&#x27;
+assert invariant_contract
+import pandas as pd
+frame = pd.DataFrame({&#x27;group&#x27;: [&#x27;A&#x27;,&#x27;A&#x27;,&#x27;B&#x27;,&#x27;B&#x27;], &#x27;x&#x27;: [1,2,8,9], &#x27;y&#x27;: [2,3,1,2]})
+print(frame.groupby(&#x27;group&#x27;)[[&#x27;x&#x27;, &#x27;y&#x27;]].apply(lambda g: g[&#x27;x&#x27;].corr(g[&#x27;y&#x27;])).round(1).to_dict())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: Simpson, confounding і заборона target leakage через corr» очікується таке: У кожній групі кореляція додатна; обʼєднана структура може дати інший висновок. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не робіть причинний висновок з heatmap і не відбирайте ознаки до train/test split за повним target.</li><li>Для «Технічна межа: Simpson, confounding і заборона target leakage через corr» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція, причинність і leakage».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яку групувальну змінну треба перевірити перед загальним висновком? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: Simpson, confounding і заборона target leakage через corr».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-6-5:END -->
+</div></article><!-- deep-dive:end:6:5 -->
+
+
+<article class="block" id="practice-6-corr-pitfalls"><div class="block-head"><h3>Мінізадача: знак r у групах і на обʼєднаних даних</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">21:09–21:16 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Відтворіть два класи по 3 точки (як у фрагменті вище) і надрукуйте r у групі A, у B і на всьому кадрі.</p><p>Аналог (необовʼязково). Намалюйте scatter з кольором групи і без кольору — два Axes.</p><div class="callout tip"><b>Орієнтир</b><p>У групах r відʼємний, на всіх даних може стати додатним. Це і є розкол Сімпсона.</p></div><div class="callout task"><b>Ваше рішення</b><p>Три числа r і речення, чому «загальний» r не можна читати без групи.</p></div><p>Ще один аналог (необовʼязково). Виберіть ознаку з |r| високим на train і перевірте, чи вона доступна на intake. Якщо ні — це leakage, навіть коли scatter «гарний».</p><!-- CURSOR-ENRICHMENT:practice-6-corr-pitfalls:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: знак r у групах і на обʼєднаних даних» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Кореляція не доводить причинність: третя змінна, змішані групи або відбір можуть змінити знак звʼязку.</p><p>Кореляція ознаки з target не дозволяє використовувати післяподієву колонку: це все одно leakage.</p><p>Фокус «кореляція, причинність і leakage» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: знак r у групах і на обʼєднаних даних&#x27;
+assert practice_contract
+import pandas as pd
+frame = pd.DataFrame({&#x27;group&#x27;: [&#x27;A&#x27;,&#x27;A&#x27;,&#x27;B&#x27;,&#x27;B&#x27;], &#x27;x&#x27;: [1,2,8,9], &#x27;y&#x27;: [2,3,1,2]})
+print(frame.groupby(&#x27;group&#x27;)[[&#x27;x&#x27;, &#x27;y&#x27;]].apply(lambda g: g[&#x27;x&#x27;].corr(g[&#x27;y&#x27;])).round(1).to_dict())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: знак r у групах і на обʼєднаних даних» очікується таке: У кожній групі кореляція додатна; обʼєднана структура може дати інший висновок. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не робіть причинний висновок з heatmap і не відбирайте ознаки до train/test split за повним target.</li><li>Для «Мінізадача: знак r у групах і на обʼєднаних даних» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція, причинність і leakage».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яку групувальну змінну треба перевірити перед загальним висновком? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: знак r у групах і на обʼєднаних даних».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-6-corr-pitfalls:END -->
+</div></article>
+<article class="block" id="itstep-practical"><div class="block-head"><h3>Обовʼязкові практичні · ITSTEP Практичне завдання 2.4 (статистика)</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">обовʼязково</span></div></div><div class="block-body">
+<p><b>Creating AI Applications Using Python — Practical Assignments</b></p>
+<p>У кожному блоці: <b>X</b> — офіційне завдання ITSTEP, <b>X.1</b> — ваш аналог на ту саму навичку з більшим обсягом даних. На цій парі беремо <b>stats tasks 3–4</b> як timed practice.</p>
+<div class="callout task"><b>Критерій здачі.</b> Частотні таблиці, перцентилі, z-оцінки та графіки узгоджені між собою; висновки не суперечать даним.</div>
+</div></article>
+<article class="block" id="extra-kb-corr"><div class="block-head"><h3>Додатково: кореляція, z-оцінка і не причинність</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Кореляція Пірсона — нормована коваріація в [-1, 1]. Сильний звʼязок <b>не</b> означає, що X спричиняє y.</p>
+<pre><code class="language-python">import numpy as np
+rng = np.random.default_rng(0)
+x = rng.normal(size=200)
+z = (x - x.mean()) / x.std(ddof=1)
+print("mean z ~ 0:", round(z.mean(), 3), "std z ~ 1:", round(z.std(ddof=1), 3))</code></pre>
+<p>Викиди ламають Пірсона; тоді дивляться scatter, Spearman або робастні оцінки. Один callout на парі: <b>кореляція ≠ причинність</b>.</p>
+<div class="callout tip"><b>Зверніть увагу</b><ul><li>оголосити «доведено вплив» після corr ≈ 0.8;</li><li>не стандартизувати й порівнювати коваріації в різних одиницях;</li><li>ігнорувати викиди на scatter.</li></ul></div><div class="callout"><b>Джерела</b><ul><li>SciPy / NumPy docs — pearsonr, zscore.</li><li>Глибше: блок «z-оцінки і causation» в кінці пари.</li></ul></div><div class="extra-more" data-kb="extra-more">
+<p>Коваріація залежить від одиниць виміру; кореляція Пірсона нормує її в [-1, 1]. Викиди ламають Пірсона сильніше, ніж Spearman (ранги). Перед <code>corr</code> намалюйте scatter: одна «галочка» на графіку важить більше, ніж число 0.87 у звіті.</p>
+<pre><code class="language-python">import numpy as np
+rng = np.random.default_rng(0)
+x = rng.normal(size=80)
+y = 0.6 * x + rng.normal(scale=0.5, size=80)
+print("Pearson", np.corrcoef(x, y)[0, 1].round(3))
+# викид
+x2 = np.append(x, 8); y2 = np.append(y, -8)
+print("Pearson з викидом", np.corrcoef(x2, y2)[0, 1].round(3))</code></pre>
+<div class="callout"><b>Джерела</b><ul><li>Кореляція ≠ причинність; викиди ламають Пірсона.</li><li>SciPy <code>pearsonr</code> / NumPy <code>corrcoef</code>.</li><li>Глибше — блок «z-оцінки і causation» в кінці цієї пари.</li></ul></div>
+</div></div></article>
+<article class="block" id="si-thread"><div class="block-head"><h3>Support Intelligence і відповідальний AI</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div><p>Рівні практики на цій парі: <b>База</b> — мінімальний прохідний артефакт; <b>Практика</b> — основне ITSTEP / куроване завдання; <b>Stretch</b> — Bootstrap середнього на 200 ітераціях (ідея невизначеності).. Кроки — у блоці «Домашнє / stretch».</p></div></article>
+<article class="block" id="practice-levels"><div class="block-head"><h3>Рівні практики</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p><b>База.</b> Одне речення: кореляція, яку ви НЕ інтерпретуєте як причину в SI. Доказ: Коефіцієнт + графік; підпис «не причинність».</p><p><b>Практика.</b> Обовʼязкові блоки ITSTEP / куровані завдання — нижче в презентації. Зафіксуйте seed=42, якщо є модель. Support Intelligence: Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII. Файл: <code>project/support_intelligence/m02_eda.py</code>.</p><p><b>Stretch.</b> Bootstrap середнього на 200 ітераціях (ідея невизначеності).. Кроки (що зробити / що здати / коли готово) — у блоці «Домашнє / stretch». Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div></div></article>
+<article class="block" id="repro-bar"><div class="block-head"><h3>Відтворюваність</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><ul><li>Python 3.10+</li><li>seed / random_state = 42, якщо є модель</li><li>CPU, без обовʼязкового GPU</li><li>Немає API-ключів у файлах</li><li>Дані: локальний <code>tickets.csv</code></li><li>Команда модуля: <code>python3 m02_eda.py</code> з <code>project/support_intelligence/</code></li><li>Fallback: мок / numpy, якщо немає sklearn чи torch — дивіться README проєкту</li></ul></div></article>
+<article class="block" id="practice-bar"><div class="block-head"><h3>Очікуваний результат і зверніть увагу</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><div class="callout tip"><b>Очікуваний результат</b><p>Коефіцієнт + графік; підпис «не причинність».</p></div><div class="callout tip"><b>Зверніть увагу</b><ul><li>Плутати Pearson і «схожість текстів».</li><li>Видаляти викиди до split «щоб гарніше».</li></ul></div></div></article>
+<article class="block" id="homework-stretch"><div class="block-head"><h3>Домашнє / stretch</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><p><b>Тема.</b> Bootstrap середнього на 200 ітераціях (ідея невизначеності).</p><p><b>Що зробити</b></p><ol><li>Візьміть числову колонку (довжина subject або hours_to_close).</li><li>Зробіть bootstrap середнього: 200 вибірок з поверненням, для кожної — mean.</li><li>Надрукуйте mean по вибірках і 2.5 / 97.5 перцентилі.</li><li>Одним реченням напишіть, що показує цей інтервал (невизначеність оцінки, не «істина»).</li></ol><p><b>Що здати.</b> Скрипт <code>stretch_pair06.py</code> (seed=42) і три числа в print.</p><p><b>Готово, коли.</b> 200 ітерацій, фіксований seed, є інтервал, а не одне середнє.</p><p><b>Завдання ITSTEP з міткою Stretch.</b> Відкрийте блок у презентації з міткою Stretch / take-home. Спочатку повторіть офіційне завдання за зразком коду на слайді. Потім зробіть аналог X.1 самостійно (у роздатку немає готового файлу). Збережіть свій скрипт і один рядок: який print ви очікуєте і що побачили.</p></div></article>
+<article class="block" id="deep-study"><div class="block-head"><h3>Додатково: глибоке вивчення · z-оцінки і causation</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал · ~30 хв</span></div></div><div class="block-body"><p>Блок <b>поза вікном</b> (~30 хв): стандартизація, хвости розподілів і обережна інтерпретація звʼязків.</p>
+
+<h4 style="color:#fff;font-family:var(--display)">1. z-оцінки</h4>
+<pre class="pre">import numpy as np
+h = np.array([160, 165, 170, 175, 180, 210], dtype=float)
+z = (h - h.mean()) / h.std(ddof=0)
+print(np.round(z, 2))
+print("potential outliers |z|&gt;3:", np.sum(np.abs(z) &gt; 3))</pre>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">2. Uniform / normal / Poisson — інтуїція</h4>
+<ul>
+  <li>Uniform — «все між a і b однаково ймовірно» (ідеалізація).</li>
+  <li>Normal — сума багатьох малих незалежних ефектів (CLT як орієнтир, не догма).</li>
+  <li>Poisson — лічильні події за інтервал при рідкісних незалежних подіях.</li>
+</ul>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">3. Causation checklist</h4>
+<ol>
+  <li>Чи є механізм / domain knowledge?</li>
+  <li>Чи контролюємо спільні причини?</li>
+  <li>Чи є часовий порядок?</li>
+  <li>Чи результат стабільний на holdout / інших сегментах?</li>
+</ol>
+
+<div class="callout"><b>Джерела</b>
+<ul>
+  <li>SciPy / NumPy docs — correlation, z-score helpers.</li>
+  <li>OpenIntro Statistics — correlation and regression caveats.</li>
+  <li>Класична засторога: correlation does not imply causation (вступні курси статистики / епідеміології).</li>
+</ul>
+</div><div class="extra-more" data-kb="extra-more">
+<p>z-оцінка переводить значення в «скільки стандартних відхилень від середнього». Порівнювати коваріації в гривнях і в метрах без стандартизації — порівнювати різні одиниці. Причинність з кореляції не випливає: може бути спільна причина (confounder).</p>
+<div class="callout"><b>Джерела</b><ul><li>SciPy <code>pearsonr</code> / NumPy кореляція.</li><li>Кореляція ≠ причинність — один жорсткий висновок, не «доведено вплив».</li></ul></div>
+</div></div></article>
+<!-- data-ingest:start:6 --><article class="block extra-deep-dive" id="data-ingest-6" data-topic-id="data-ingest-6">
+<div class="block-head"><h3>Повний корпус data/ · пара 6</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+<p>Повний розбір локального <code>data/</code> для цієї пари: <b>135</b> джерел
+(<code>article=21, book=3, lms=2, related=3, video=106</code>), portable-файлів у пакеті: <b>0</b>.</p>
+<p>Пакет пари в курсі: <code>materials_from_data/by_pair/pair_06/</code></p>
+<ul>
+<li><code>SOURCES.md</code> — повний ранжований список</li>
+<li><code>excerpts/</code> — уривки топ-джерел</li>
+<li><code>portable/</code> — скопійовані .py / .ipynb / .csv</li>
+<li>Глобальний аудит: <code>materials_from_data/FULL_AUDIT.md</code></li>
+<li>Відео-індекс: <code>materials_from_data/VIDEO_BY_PAIR.md</code></li>
+</ul>
+<div class="callout tip"><b>article · w03_basics_of_regression.html</b><pre>le, Scatterplot, Pearson’s r
+Basics of Regression
+Elementary Probability
+Random Variables and Probability Distributions
+Normal Distribution, Binomial Distribution &amp; Poisson Distribution
+Basics of Regression
+Regression Basics
+Regression analysis allows you to infer that there is a relationship between two or more variables. These relationships are seldom exact because there is variation caused by many variables, not just the variables being studied.
+Regression – A statistical Technique
+Regression is a statistical technique used to analyze the relationship between two or more variables. The basi</pre><p><code>data/kb_extracts/articles/w03_basics_of_regression.html</code></p></div>
+<div class="callout tip"><b>article · w03_basics_of_regression.txt</b><pre>le, Scatterplot, Pearson’s r
+Basics of Regression
+Elementary Probability
+Random Variables and Probability Distributions
+Normal Distribution, Binomial Distribution &amp; Poisson Distribution
+Basics of Regression
+Regression Basics
+Regression analysis allows you to infer that there is a relationship between two or more variables. These relationships are seldom exact because there is variation caused by many variables, not just the variables being studied.
+Regression – A statistical Technique
+Regression is a statistical technique used to analyze the relationship between two or more variables. The basi</pre><p><code>data/kb_extracts/articles/w03_basics_of_regression.txt</code></p></div>
+<div class="callout tip"><b>video · [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 8. Da</b><pre># 8. Data Processing / 8. Introduction to Skewness and Normal Distribution
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/8. Data Processing/8. Introduction to Skewness and Normal Distribution.srt
+A very big hello and welcome back. So in the previous section, we learned about different ways of dealing with categorical variables, and in this section we are going to learn about data transformation. So let us start the lecture </pre><p><code>data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/8_data_processing_8_introduction_to_skewness_and_normal_distribution.txt</code></p></div>
+<div class="callout tip"><b>video · [Udemy] Python for Data Science &amp; Machine Learning from A-Z [01.2021, ENG] · 13. Linear an</b><pre>same concept we have seen so many times in statistics and inferential statistics that we take samples and we apply the normal distribution and it is equal to the normal distribution of the oblation, given that we take enough sample sets greater than 30. So over here, we&#x27;re going to see the advantages of taking samples, a random sample from the population since it is impossible to collect all the population data so that we take a sample from the population and a random sample and then we apply a regression on it and the relationship it gives us is equal to the relationship of the population. If</pre><p><code>data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/13_linear_and_logistic_regression_3_linear_regression_correlation_meth.txt</code></p></div>
+<div class="callout tip"><b>related · rel_scipy_stats.txt</b><pre>thesis tests
+Analysing one sample Descriptive statistics
+T-test and KS-test
+Tails of the distribution
+Special tests for normal distributions
+Comparing two samples Comparing means
+Kolmogorov-Smirnov test for two samples: ks_2samp
+Resampling and Monte Carlo Methods Introduction
+Resampling and Monte Carlo methods tutorials
+Hypothesis tests Bartlett’s test for equal variances
+Chi-square test
+Chi-square test of independence of variables in a contingency table
+Dunnett’s test
+Fisher’s exact test
+Fligner-Killeen test for equality of variance
+Friedman test for repeated samples
+Jarque-Bera goodness of f</pre><p><code>data/kb_extracts/related/rel_scipy_stats.txt</code></p></div>
+<div class="callout warn"><b>Зверніть увагу</b>
+<ul>
+<li>Офіційні ITSTEP-завдання пари — обовʼязок; корпус data/ — поглиблення поза 80 хв.</li>
+<li>Відео mp4 дивіться з оригінального шляху в <code>data/</code>; у курсі — транскрипт/уривок.</li>
+</ul></div>
+</div></article><article class="block teacher-deep-dive" id="data-ingest-teacher-6" data-topic-id="data-ingest-6" data-project-feature="python-ai-modify-teacher-blocks" hidden>
+<div class="block-head"><h3>Викладач · повний data/ пакет пари 6</h3>
+<span class="teacher-badge">Для викладача</span></div>
+<div class="block-body">
+<p>Каталог: <code>materials_from_data/by_pair/pair_06/</code> · matches=135 · portable=0.</p>
+<ul>
+<li>Оберіть 1 portable або 1 excerpt як optional lab.</li>
+<li>Не розгортайте весь список у вікні 80 хв.</li>
+<li>Повний аудит корпусу: <code>DATA_CORPUS_FULL.md</code>.</li>
+</ul>
+</div></article><!-- data-ingest:end:6 --><!-- data-gap:start:6 --><article class="block extra-deep-dive" id="data-gap-6">
+<div class="block-head"><h3>Gap-pack data/ · пара 6</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+
+<p>Додаткові матеріали з LMS/drive, яких ще не вистачало в базовому ingest:</p>
+<p>Папка: <code>materials_from_data/by_pair/pair_06/gap/</code></p>
+<div class="cards two">
+<div class="card"><h5>LMS zip</h5><ul><li><code>w02_Домашнє завдання 2.2.zip</code></li><li><code>w02_Домашнє завдання 2.3.zip</code></li><li><code>w02_Домашнє завдання 2.4.zip</code></li><li><code>w02_Практичне завдання 2.2.zip</code></li><li><code>w02_Практичне завдання 2.3.zip</code></li><li><code>w02_Практичне завдання 2.4.zip</code></li></ul></div>
+<div class="card"><h5>Reading URL</h5><ul><li><a href="https://drive.google.com/file/d/1NwEOSIKHesWsr52bdL1xuOcC4PwsWa05/view?usp=sharing" target="_blank" rel="noreferrer">Essentials of Python for Artificial Intelligence and Machine Learning</a></li><li><a href="https://drive.google.com/file/d/1VxQ4DPpcsCIhK-I2iE0CBH03U9w2Hu1e/view?usp=sharing" target="_blank" rel="noreferrer">Generative AI with LangChain_ Build large language model (LLM) apps with Python, ChatGPT a</a></li><li><a href="https://drive.google.com/file/d/1JjFY1_RtyZpF9qONz12U8BtxI7DdF71b/view?usp=sharing" target="_blank" rel="noreferrer">Learning OpenCV 5 Computer Vision with Python - Fourth Edition</a></li><li><a href="https://drive.google.com/file/d/1yybX-CggVoIzidd5NhRBfLJgpdC9DjB1/view?usp=sharing" target="_blank" rel="noreferrer">Neural Network Computer Vision with OpenCV 5_ Build computer vision solutions using Python</a></li><li><a href="https://www.w3schools.com/python/pandas/default.asp" target="_blank" rel="noreferrer">Pandas Tutorial</a></li><li><a href="https://drive.google.com/file/d/1onoQBH7-WQFwFqjonhkh19J4MvPfqjS3/view?usp=sharing" target="_blank" rel="noreferrer">Python for Scientific Computing and Artificial Intelligence</a></li><li><a href="https://www.datacamp.com/tutorial/pandas" target="_blank" rel="noreferrer">Python pandas tutorial_ The ultimate guide for beginners</a></li><li><a href="https://drive.google.com/drive/folders/1t5TY27oCYM39JImzbJLu7eQgPY6O8Fno?usp=sharing" target="_blank" rel="noreferrer">[Packtpub.com _ Matthew Rever] Computer Vision Projects with Python 3 [2018, ENG]</a></li></ul></div>
+</div>
+
+<p>Глобально: <code>materials_from_data/gap_pack/</code> · PDF: <code>PDF_INDEX.md</code> · links: <code>PROGRAMY_LINKS.md</code></p>
+</div></article><!-- data-gap:end:6 --><!-- data-web:start:6 --><article class="block extra-deep-dive" id="data-web-6">
+<div class="block-head"><h3>Web-джерела · пара 6</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+<p>Свіжі витяги з офіційної документації / primary sources (curl; Playwright MCP у сесії недоступний).</p>
+<p>Локально: <code>materials_from_data/by_pair/pair_06/web/</code> · каталог: <code>materials_from_data/web_fetch/</code></p>
+<ul><li><a href="https://numpy.org/doc/stable/user/" target="_blank" rel="noreferrer">NumPy User Guide</a> · <code>materials_from_data/web_fetch/numpy-user-guide.txt</code> · 128 слів</li><li><a href="https://pandas.pydata.org/docs/user_guide/" target="_blank" rel="noreferrer">pandas User Guide</a> · <code>materials_from_data/web_fetch/pandas-user-guide.txt</code> · 974 слів</li><li><a href="https://matplotlib.org/stable/users/explain/axes/index.html" target="_blank" rel="noreferrer">Axes and subplots</a> · <code>materials_from_data/web_fetch/matplotlib-axes-guide.txt</code> · 243 слів</li><li><a href="https://seaborn.pydata.org/tutorial/distributions.html" target="_blank" rel="noreferrer">Visualizing distributions of data</a> · <code>materials_from_data/web_fetch/seaborn-distributions-tutorial.txt</code> · 3102 слів</li><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a> · <code>materials_from_data/web_fetch/numpy-statistics-reference.txt</code> · 399 слів</li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a> · <code>materials_from_data/web_fetch/scipy-statistics-tutorial.txt</code> · 311 слів</li></ul>
+<div class="callout tip"><b>Зверніть увагу</b><p>Це поглиблення поза 80 хв. Офіційні ITSTEP-завдання лишаються пріоритетом.</p></div>
+</div></article><!-- data-web:end:6 --><article class="block" id="exit-ticket"><div class="block-head"><h3>Exit ticket</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="4" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 4 хв" /><span class="clock">21:16–21:20 · 4 хв</span><span class="timer-live" hidden>04:00</span></label></div></div><div class="block-body"><p>Одне речення: кореляція, яку ви НЕ інтерпретуєте як причину в SI.</p><div class="callout task"><b>Ваше рішення</b><p>Один артефакт: текст, мінікод або схема файлів. Не «зрозумів тему» без доказу.</p></div><!-- CURSOR-ENRICHMENT:exit-ticket:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Exit ticket» має точний навчальний контракт: Зафіксуйте один вхід, одну операцію та один перевірений результат.</p><p>Кореляція не доводить причинність: третя змінна, змішані групи або відбір можуть змінити знак звʼязку.</p><p>Кореляція ознаки з target не дозволяє використовувати післяподієву колонку: це все одно leakage.</p><p>Фокус «кореляція, причинність і leakage» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">exit_contract = &#x27;Exit ticket&#x27;
+assert exit_contract
+import pandas as pd
+frame = pd.DataFrame({&#x27;group&#x27;: [&#x27;A&#x27;,&#x27;A&#x27;,&#x27;B&#x27;,&#x27;B&#x27;], &#x27;x&#x27;: [1,2,8,9], &#x27;y&#x27;: [2,3,1,2]})
+print(frame.groupby(&#x27;group&#x27;)[[&#x27;x&#x27;, &#x27;y&#x27;]].apply(lambda g: g[&#x27;x&#x27;].corr(g[&#x27;y&#x27;])).round(1).to_dict())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Exit ticket» очікується таке: У кожній групі кореляція додатна; обʼєднана структура може дати інший висновок. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не робіть причинний висновок з heatmap і не відбирайте ознаки до train/test split за повним target.</li><li>Для «Exit ticket» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «кореляція, причинність і leakage».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яку групувальну змінну треба перевірити перед загальним висновком? Який доказ відтворює головний результат після чистого запуску? Відповідь має прямо стосуватися «Exit ticket».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:exit-ticket:END -->
+</div></article>
+  </main>
+</div>
+<script>
+(function () {
+  const body = document.body;
+  const openBtn = document.getElementById('toc-open');
+  const closeBtn = document.getElementById('toc-close');
+  const backdrop = document.getElementById('toc-backdrop');
+  function setOpen(v) {
+    body.classList.toggle('toc-open', v);
+    if (openBtn) openBtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  openBtn && openBtn.addEventListener('click', () => setOpen(true));
+  closeBtn && closeBtn.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('.toc a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+
+<script>
+(function () {
+  const pads = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    return pads(Math.floor(s / 60)) + ":" + pads(s % 60);
+  };
+
+  let active = null; // { el, left, tick }
+
+  function stopActive(reset) {
+    if (!active) return;
+    clearInterval(active.tick);
+    const el = active.el;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    el.classList.remove("is-running");
+    if (reset) {
+      el.classList.remove("is-done");
+      if (check) check.checked = false;
+      if (live) {
+        live.hidden = true;
+        live.textContent = fmt(Number(el.dataset.minutes || 0) * 60);
+      }
+    }
+    active = null;
+  }
+
+  function start(el) {
+    stopActive(true);
+    const minutes = Number(el.dataset.minutes || 0);
+    if (!minutes || minutes <= 0) return;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    let left = minutes * 60;
+    el.classList.add("is-running");
+    el.classList.remove("is-done");
+    if (check) check.checked = true;
+    if (live) {
+      live.hidden = false;
+      live.textContent = fmt(left);
+    }
+    const tick = setInterval(() => {
+      left -= 1;
+      if (live) live.textContent = fmt(left);
+      if (left <= 0) {
+        clearInterval(tick);
+        el.classList.remove("is-running");
+        el.classList.add("is-done");
+        if (live) live.textContent = "00:00";
+        active = null;
+        try { if (navigator.vibrate) navigator.vibrate(80); } catch (_) {}
+      }
+    }, 1000);
+    active = { el, left, tick };
+  }
+
+  document.querySelectorAll(".block-timer").forEach((el) => {
+    const check = el.querySelector(".timer-check");
+    const minutes = Number(el.dataset.minutes || 0);
+    const live = el.querySelector(".timer-live");
+    if (live) live.textContent = fmt(minutes * 60);
+
+    const onToggle = () => {
+      if (!check) return;
+      if (check.checked) start(el);
+      else {
+        if (active && active.el === el) stopActive(true);
+        else {
+          el.classList.remove("is-running", "is-done");
+          if (live) {
+            live.hidden = true;
+            live.textContent = fmt(minutes * 60);
+          }
+        }
+      }
+    };
+    check && check.addEventListener("change", onToggle);
+    // click on label text also works via checkbox; prevent double-handling on live span
+  });
+})();
+</script>
+
+<script src="term-glossary.js" defer></script>
+<script src="pair-notebook.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+  Chart.defaults.color = mute;
+  Chart.defaults.borderColor = grid;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const shapes = document.getElementById('chart-distribution-shapes');
+  if (shapes) {
+    new Chart(shapes, {
+      type: 'line',
+      data: {
+        labels: ['1', '2', '3', '4', '5', '6', '7', '8'],
+        datasets: [
+          { label: 'Uniform', data: [6, 6, 5, 6, 5, 6, 5, 6], borderColor: '#7ec8ff', tension: 0.25 },
+          { label: 'Normal', data: [1, 3, 6, 9, 9, 6, 3, 1], borderColor: '#7dffb3', tension: 0.25 },
+          { label: 'Poisson', data: [2, 6, 9, 8, 5, 3, 1, 0], borderColor: '#ffb86b', tension: 0.25 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: ink } } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { ticks: { color: mute }, grid: { color: grid }, title: { display: true, text: 'умовна частота', color: mute } }
+        }
+      }
+    });
+  }
+
+  const cov = document.getElementById('chart-covariance-scatter');
+  if (cov) {
+    new Chart(cov, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'hours vs score',
+          data: [
+            {x: 2, y: 58}, {x: 3, y: 63}, {x: 4, y: 67},
+            {x: 5, y: 74}, {x: 6, y: 79}, {x: 7, y: 85}
+          ],
+          backgroundColor: '#7dffb3',
+          borderColor: '#7dffb3',
+          pointRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ink } } },
+        scales: {
+          x: { title: { display: true, text: 'hours', color: mute }, ticks: { color: mute }, grid: { color: grid } },
+          y: { title: { display: true, text: 'score', color: mute }, ticks: { color: mute }, grid: { color: grid } }
+        }
+      }
+    });
+  }
+
+  const corr = document.getElementById('chart-correlation-strength');
+  if (corr) {
+    new Chart(corr, {
+      type: 'bar',
+      data: {
+        labels: ['Сильний +', 'Слабкий +', 'Немає', 'Сильний -'],
+        datasets: [{
+          label: 'r',
+          data: [0.92, 0.31, 0.03, -0.87],
+          backgroundColor: ['#7dffb3', '#7ec8ff', '#9aafa0', '#ff8fab']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { min: -1, max: 1, ticks: { color: mute }, grid: { color: grid }, title: { display: true, text: 'коефіцієнт кореляції', color: mute } }
+        }
+      }
+    });
+  }
+});
+</script>
+
+<script>
+/* viz-chart-corr */
+document.addEventListener('DOMContentLoaded', function () {
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+
+  const cd = document.getElementById('chart-corr-demo');
+  if (cd && window.Chart) {
+    const pts = [];
+    for (let i = 0; i < 40; i++) {
+      const x = i / 4;
+      pts.push({ x, y: 0.8 * x + (Math.sin(i) * 0.4) });
+    }
+    new Chart(cd, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'x vs y',
+          data: pts,
+          backgroundColor: '#7dffb3',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: 'X', color: mute }, ticks: { color: mute }, grid: { color: grid } },
+          y: { title: { display: true, text: 'Y', color: mute }, ticks: { color: mute }, grid: { color: grid } }
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+<script>
+/* hide mobile chrome on scroll down / show on scroll up */
+(function () {
+  if (window.matchMedia && !window.matchMedia("(max-width: 900px)").matches) return;
+  var bar = document.querySelector(".mobile-bar");
+  if (!bar) return;
+  var lastY = window.scrollY || 0;
+  var hidden = false;
+  function setHidden(next) {
+    if (hidden === next) return;
+    hidden = next;
+    document.body.classList.toggle("nav-hidden", next);
+  }
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY || 0;
+    var d = y - lastY;
+    if (y < 24) setHidden(false);
+    else if (d > 10) setHidden(true);
+    else if (d < -10) setHidden(false);
+    lastY = y;
+  }, { passive: true });
+})();
+</script>
+
+<!-- teacher-block-runtime:start -->
+<script>
+(function () {
+  "use strict";
+
+  const blocks = Array.from(
+    document.querySelectorAll(
+      '[data-project-feature="python-ai-modify-teacher-blocks"]'
+    )
+  );
+  const tocEntries = Array.from(document.querySelectorAll("[data-teacher-toc]"));
+
+  blocks.forEach((block) => {
+    block.hidden = true;
+  });
+  tocEntries.forEach((entry) => {
+    entry.hidden = true;
+  });
+
+  function applyFlag(enabled) {
+    blocks.forEach((block) => {
+      block.hidden = !enabled;
+    });
+    tocEntries.forEach((entry) => {
+      entry.hidden = !enabled;
+    });
+  }
+
+  function isJournalOrigin() {
+    const loc = window.location || {};
+    const protocol = loc.protocol || "";
+    const hostname = loc.hostname || "";
+    const port = String(loc.port || "");
+    const pathname = loc.pathname || "";
+    if (protocol === "file:") return false;
+    if (port === "63342" || port === "63343") return false;
+    if (hostname === "127.0.0.1" || hostname === "localhost") {
+      return port === "3004" || pathname.indexOf("/api/courses/") !== -1;
+    }
+    if (hostname && /\.pythonanywhere\.com$/i.test(hostname)) return true;
+    return pathname.indexOf("/api/courses/") !== -1;
+  }
+
+  if (!isJournalOrigin()) return;
+
+  const candidates = ["/project-flags.js"];
+
+  function loadCandidate(index) {
+    if (index >= candidates.length) return;
+
+    const script = document.createElement("script");
+    script.src = `${candidates[index]}?v=${Date.now()}`;
+    script.async = true;
+    script.onload = function () {
+      const enabled =
+        window.LESSON_HELPER_FLAGS?.pythonAiAdditionalTeacherBlocks;
+      if (typeof enabled === "boolean") {
+        applyFlag(enabled);
+        return;
+      }
+      loadCandidate(index + 1);
+    };
+    script.onerror = function () {
+      loadCandidate(index + 1);
+    };
+    document.head.appendChild(script);
+  }
+
+  loadCandidate(0);
+})();
+</script>
+<!-- teacher-block-runtime:end -->
+</body>
+</html>

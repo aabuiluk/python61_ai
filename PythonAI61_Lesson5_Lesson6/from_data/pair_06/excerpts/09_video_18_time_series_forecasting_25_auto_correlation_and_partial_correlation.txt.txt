@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/18_time_series_forecasting_25_auto_correlation_and_partial_correlation.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 18. Time Series Forecasting / 25. Auto Correlation and Partial Correlation
+SCORE: 3.0
+
+# 18. Time Series Forecasting / 25. Auto Correlation and Partial Correlation
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/18. Time Series Forecasting/25. Auto Correlation and Partial Correlation.srt
+Hello and welcome back. I'm ready the in the previous lectures, we learned about the importance of minority tests for checking stationery and converting non stationary copies into stationary CDs in this lecture. We are going to learn about autocorrelation and boschert correlation. So, first of all, let's understand what is autocorrelation? Autocorrelation is the representation of the degree of similarity between a given time cities and the lagged version of itself over successive time intervals. In simple words, it helps us to know how a variable is influenced by its own blagged values in autocorrelation. We find out the direct and indirect correlation between the present time CCDs with elect cities. But one big question arises how do we do that? Look at the table in the first column, we have the original timecards…

@@ -1,0 +1,131 @@
+SOURCE: data/kb_extracts/articles/w03_statistics_tutorial.html
+TITLE: w03_statistics_tutorial.html
+SCORE: 3.3
+
+﻿
+Statistics Tutorial
+Tutorials
+References
+Exercises
+Certificates
+Search field
+×
+See More
+Sign In
+Sign Up
+-->
+user-anonymous -->
+-->
+-->
+★
++1
+-->
+My W3Schools
+-->
+user-authenticated -->
+Get Certified
+Upgrade
+Academy
+Spaces
+Practice
+user-anonymous - action-btn -->
+Get Certified
+Upgrade
+Academy
+Spaces
+Practice
+user-authenticated - action-btn -->
+
+My W3Schools
+Tutorials
+References
+Exercises
+Certificates
+Spaces
+Get Certified
+Plus
+Practice
+Academy
+All our Services
+Logout
+
+
+
+
+×
+×
+Tutorials
+Tutorials
+Learn web development, programming, data science, and more.
+W3SCHOOLS TUTORIALS:
+×
+← All Topics
+×
+References
+W3SCHOOLS REFERENCES:
+×
+HTML
+Tag reference
+CSS
+Reference
+JavaScript
+Reference
+SQL
+Keyword reference
+Python
+Reference
+Java
+Reference
+C
+Reference
+C++
+Reference
+Colors
+Color names
+PHP
+Reference
+HTML DOM
+Reference
+MySQL
+Reference
+W3.CSS
+Reference
+Bootstrap 3
+Reference
+Bootstrap 4
+Reference
+Node.js
+Reference
+Django
+Reference
+jQuery
+Reference
+Vue
+Attributes
+Angular
+Reference
+Sass
+Reference
+XML
+Reference
+JSON
+Reference
+ASP
+Reference
+Icons
+Reference
+SVG
+Reference
+Canvas
+Reference
+Charsets
+Reference
+Emojis
+Reference
+AppML
+Reference
+W3.JS
+Reference
+×
+Exercises
+Practice and test your skills…

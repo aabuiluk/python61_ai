@@ -1,0 +1,10 @@
+SOURCE: data/kb_extracts/articles/w04_an_ultimate_tutorial_to_neural_networks.txt
+TITLE: w04_an_ultimate_tutorial_to_neural_networks.txt
+SCORE: 1.8
+
+are different types of activation functions.
+Sigmoid Function The sigmoid function is used when the model is predicting probability.
+Threshold Function The threshold function is used when you don’t want to worry about the uncertainty in the middle.
+ReLU (rectified linear unit) Function The ReLU (rectified linear unit) function gives the value but says if it’s over 1, then it will just be 1, and if it’s less than 0, it will just be 0. The ReLU function is most commonly used these days. Become the Highest Paid AI Engineer! With Our Trending Microsoft AI Engineer Program Know More
+Hyperbolic Tangent Function The hyperbolic tangent function is similar to the sigmoid function but has a range of -1 to 1.
+Now that you know what an activation function is, let’s get back to the neural network. Finally, the model will predict the outcome, applying a suitable application function to the output layer. In our example with the car image, optical character recognition (OCR) is used to convert it into text to identify what’s written on the license plate. In our neural network example, we show only three dots coming in, eight hidden layer nodes, and one output, but there’s really a huge amount of…

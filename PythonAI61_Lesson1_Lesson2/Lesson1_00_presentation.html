@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вступ до ШІ, Data Science і Machine Learning · Python AI Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+:root {
+  --bg: #0f1412;
+  --panel: #18211c;
+  --panel-2: #1e2a24;
+  --ink: #e8f0e7;
+  --mute: #9aafa0;
+  --line: #2f4137;
+  --accent: #7dffb3;
+  --accent-ink: #062416;
+  --warm: #ffb86b;
+  --blue: #7ec8ff;
+  --rose: #ff8fab;
+  --font: "Manrope", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rail-w: 280px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(125,255,179,.12), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(126,200,255,.10), transparent 55%),
+    var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+.shell { display: block; min-height: 100dvh; width: 100%; padding-top: 58px; }
+.mobile-bar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(15,20,18,.92); backdrop-filter: blur(10px);
+  color: var(--ink); padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 1px solid var(--line);
+}
+.burger {
+  width: 44px; height: 44px; border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link, .rail .menu-link {
+  border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent);
+  text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: .45rem .55rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.rail .menu-link { margin: 0 0 .75rem; }
+.rail-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 45; }
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.45);
+  background: #101713; color: var(--ink); padding: 1rem .9rem 2rem; overflow: auto;
+  border-right: 1px solid var(--line);
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink); background: var(--accent); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.15rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #fff; font-weight: 700;
+}
+.rail .meta { color: var(--mute); font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b7c7bc; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--accent);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--accent); }
+
+.stage { padding: .9rem .75rem 2.4rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--panel-2));
+  padding: 1.15rem 1rem; margin-bottom: 1rem; border-radius: 18px;
+}
+.banner .kicker {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--warm);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  font-family: var(--display); font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  margin: 0 0 .55rem; line-height: 1.15; color: #fff;
+}
+.banner .lead { color: #c9d8cd; margin: 0 0 .85rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  border-radius: 999px; padding: .28rem .65rem; font-size: .78rem; color: var(--mute);
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.goals { margin: 0; padding-left: 1.15rem; color: #d5e3d8; }
+.goals li { margin: .25rem 0; }
+
+.block {
+  border: 1px solid var(--line); background: rgba(24,33,28,.88);
+  border-radius: 18px; margin: 0 0 1rem; overflow: hidden;
+}
+.block-head {
+  display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  align-items: flex-start; padding: .9rem 1rem .55rem;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.block-head h3 {
+  margin: 0; font-family: var(--display); font-size: 1.15rem; color: #fff; line-height: 1.25;
+}
+.kind {
+  font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  border-radius: 999px; padding: .22rem .5rem; border: 1px solid var(--line);
+}
+.kind.main { color: var(--blue); border-color: rgba(126,200,255,.35); }
+.kind.task { color: var(--warm); border-color: rgba(255,184,107,.4); }
+.kind.deep { color: var(--rose); border-color: rgba(255,143,171,.4); }
+.clock { font-family: var(--mono); font-size: .75rem; color: var(--mute); }
+
+.block-timer {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .18rem .55rem .18rem .35rem;
+  background: rgba(15,20,18,.55); user-select: none; cursor: pointer;
+}
+.block-timer input.timer-check {
+  width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0;
+}
+.block-timer .clock { border: 0; padding: 0; background: transparent; }
+.block-timer .timer-live {
+  color: var(--accent); font-weight: 700; min-width: 3.2rem; text-align: right;
+}
+.block-timer.is-running {
+  border-color: rgba(125,255,179,.55);
+  box-shadow: 0 0 0 1px rgba(125,255,179,.18);
+}
+.block-timer.is-done {
+  border-color: rgba(255,184,107,.55);
+}
+.block-timer.is-done .timer-live { color: var(--warm); }
+
+.block-body { padding: .85rem 1rem 1.1rem; }
+.block-body p, .block-body li { color: #d3e0d6; }
+.block-body ul, .block-body ol { padding-left: 1.15rem; }
+.block-body table {
+  width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0 1rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.block-body th, .block-body td {
+  border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top;
+}
+.block-body th { background: rgba(125,255,179,.08); color: var(--accent); }
+.block-body code, .inline-code {
+  font-family: var(--mono); font-size: .84em; color: var(--accent);
+  background: rgba(125,255,179,.08); padding: .08rem .28rem; border-radius: 5px;
+}
+.pre {
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0b100e; border: 1px solid var(--line); border-radius: 12px;
+  padding: .85rem .9rem; margin: .7rem 0 1rem; color: #d9f5e4;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.45;
+  max-width: 100%; white-space: pre;
+}
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: rgba(125,255,179,.06); padding: .7rem .85rem; border-radius: 10px; margin: .7rem 0;
+}
+.callout.tip { border-left-color: var(--blue); background: rgba(126,200,255,.07); }
+.callout.task {
+  border-left-color: var(--warm); background: rgba(255,184,107,.08);
+}
+.viz {
+  margin: .85rem 0 1.05rem; padding: .85rem; border-radius: 14px;
+  border: 1px solid var(--line); background: rgba(0,0,0,.22);
+}
+.viz h4 {
+  margin: 0 0 .65rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mute); font-weight: 700;
+}
+.viz-grid {
+  display: grid; gap: .85rem;
+  grid-template-columns: 1fr;
+}
+.chart-wrap { position: relative; width: 100%; min-height: 260px; }
+.chart-wrap.tall { min-height: 320px; }
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram svg text { paint-order: stroke fill; pointer-events: none; }
+.flow {
+  display: grid; gap: .45rem; grid-template-columns: 1fr;
+}
+.flow-step {
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .75rem;
+  background: rgba(255,255,255,.03);
+}
+.flow-step b { color: var(--accent); display: block; margin-bottom: .2rem; }
+.flow-arrow {
+  text-align: center; color: var(--mute); font-family: var(--mono); font-size: .85rem;
+}
+.cards {
+  display: grid; gap: .65rem; grid-template-columns: 1fr;
+}
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem;
+  background: rgba(255,255,255,.03);
+}
+.card h5 { margin: 0 0 .35rem; color: #fff; font-size: .95rem; }
+.card p { margin: 0; color: var(--mute); font-size: .88rem; }
+.legend {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .55rem;
+}
+.legend span {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .78rem; color: var(--mute);
+}
+.swatch { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.nav {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.1rem 0 .4rem;
+}
+.nav a {
+  text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+  padding: .55rem .75rem; border-radius: 999px; background: rgba(255,255,255,.03);
+}
+.foot { color: var(--mute); font-size: .82rem; margin-top: .4rem; }
+
+.term {
+  border-bottom: 1px dotted rgba(125,255,179,.7);
+  cursor: help;
+  color: inherit;
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.term-hint {
+  margin: .55rem 0 0;
+  font-size: .82rem;
+  color: var(--mute);
+}
+.term-hint b { color: var(--accent); font-weight: 700; }
+#term-tip {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #101713;
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  /* Fixed sidebar: sticky breaks under overflow-x:hidden on html/body */
+  .shell {
+    display: block;
+    padding-top: 0;
+    padding-left: var(--rail-w);
+    min-height: 100dvh;
+  }
+  .mobile-bar { display: none; }
+  .rail {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: none !important;
+    width: var(--rail-w);
+    max-width: var(--rail-w);
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: none;
+    z-index: 40;
+  }
+  .rail-backdrop, #toc-close { display: none !important; }
+  .stage {
+    max-width: 980px;
+    padding: 1.4rem 1.4rem 3rem;
+    min-width: 0;
+    margin: 0;
+  }
+  .viz-grid.two { grid-template-columns: 1.1fr .9fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+  .flow { grid-template-columns: repeat(4, 1fr); align-items: stretch; }
+  .flow-arrow { display: none; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+</style>
+</head>
+<body>
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити зміст" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Вступ до ШІ, Data Science і Machine Learning</p>
+  </div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.55rem">
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <h1>Вступ до ШІ, Data Science і Machine Learning</h1>
+    <div class="meta">Пара 1/2 · студентська папка Lesson1 · 90 хв · Python AI Materials · відкривається локально з папки</div>
+    <div class="label">Зміст</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#history">Історія ШІ</a></li><li><a href="#concepts">AI / DS / ML / DL</a></li><li><a href="#learning-types">Типи навчання</a></li><li><a href="#applications">Сфери застосування</a></li><li><a href="#task-map">Завдання: карта задачі</a></li><li><a href="#task-classify">Завдання: класифікація</a></li><li><a href="#deep-ml-loop">Додатково: цикл ML-продукту</a></li></ol>
+  </aside>
+  <main class="stage">
+    <header class="banner" id="agenda">
+      <p class="kicker">Python AI Materials · презентація</p>
+      <h2>Вступ до ШІ, Data Science і Machine Learning</h2>
+      <p class="lead">Перша пара курсу задає спільну мову. Ви вже вмієте писати Python; тепер важливо навчитись <b>формулювати задачу навчання</b>, а не лише згадувати buzzwords.</p>
+      <div class="timing-strip"><span class="pill"><b>15 хв</b> Історія розвитку штучного інтелекту</span><span class="pill"><b>18 хв</b> Поняття AI, Data Science, Machine Learning</span><span class="pill"><b>20 хв</b> Види алгоритмів навчання</span><span class="pill"><b>12 хв</b> Сфери застосування алгоритмів</span><span class="pill"><b>13 хв</b> Завдання 1. Карта ML-задачі</span><span class="pill"><b>12 хв</b> Завдання 2. Класифікація сценаріїв</span></div>
+      <ul class="goals"><li>Пояснити різницю між AI, Data Science, ML і DL на індустріальних прикладах</li><li>Коротко пройти віхи історії ШІ та чому «зима ШІ» повторювалась</li><li>Класифікувати задачу як supervised / unsupervised / reinforcement</li><li>Сформулювати ML-задачу: дані → ознаки → ціль → метрика → обмеження</li></ul>
+      <p class="term-hint"><b>Підказка:</b> терміни з пунктирним підкресленням — наведіть курсор (або тапніть на телефоні), щоб побачити коротке пояснення. Повний словник курсу: <a href="Lesson1_ae_slovnyk_terminologii.html">словник (HTML)</a>.</p>
+    </header>
+    <article class="block" id="history"><div class="block-head"><h3>Історія розвитку штучного інтелекту</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="15" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 15 хв" /><span class="clock">18:30–18:45 · 15 хв</span><span class="timer-live" hidden>15:00</span></label></div></div><div class="block-body">
+<p>ШІ — не «нова фішка 2023», а довга інженерна історія з циклами очікувань і розчарувань.</p>
+<ul>
+  <li><b>1950</b> — Алан Тюрінг: тест Тюрінга як операційне питання «чи може машина мислити?».</li>
+  <li><b>1956</b> — Дартмутський семінар: народження терміна <i>Artificial Intelligence</i>.</li>
+  <li><b>1960–70</b> — символьні системи, експертні правила; обмеження ручного знання.</li>
+  <li><b>1980-ті</b> — експертні системи в бізнесі; далі — «зима ШІ» через вартість і крихкість правил.</li>
+  <li><b>1990–2010</b> — статистичний ML, SVM, random forest; перемога data-driven підходу.</li>
+  <li><b>2012+</b> — deep learning (ImageNet), GPU, великі датасети.</li>
+  <li><b>2017+</b> — Transformers; <b>2022+</b> — масовий Generative AI / LLM.</li>
+</ul>
+
+
+<div class="viz-grid two">
+  <div class="viz"><h4>Графік · хвилі очікувань від ШІ</h4>
+    <div class="chart-wrap"><canvas id="chart-ai-hype"></canvas></div>
+  </div>
+  
+<div class="viz diagram">
+  <h4>Діаграма · хвилі історії ШІ</h4>
+  <svg viewBox="0 0 920 220" role="img" aria-label="Хронологія розвитку ШІ">
+    <defs>
+      <linearGradient id="g1" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0%" stop-color="#7dffb3" stop-opacity=".2"/>
+        <stop offset="55%" stop-color="#7ec8ff" stop-opacity=".35"/>
+        <stop offset="100%" stop-color="#ffb86b" stop-opacity=".55"/>
+      </linearGradient>
+    </defs>
+    <rect x="20" y="30" width="880" height="120" rx="16" fill="url(#g1)" stroke="#2f4137"/>
+    <path d="M40 120 C 120 110, 160 70, 220 75 S 320 140, 390 130 S 500 60, 580 70 S 700 130, 780 55 S 860 40, 880 35"
+          fill="none" stroke="#7dffb3" stroke-width="3"/>
+    <g fill="#ffb86b">
+      <circle cx="70" cy="116" r="6"/><circle cx="220" cy="76" r="6"/>
+      <circle cx="390" cy="128" r="6"/><circle cx="580" cy="72" r="6"/>
+      <circle cx="700" cy="110" r="6"/><circle cx="840" cy="42" r="6"/>
+    </g>
+    <g fill="#e8f0e7" font-family="Manrope,sans-serif" font-size="12">
+      <text x="55" y="175">1956</text>
+      <text x="195" y="175">1960–70</text>
+      <text x="360" y="175">зима ШІ</text>
+      <text x="545" y="175">2012 DL</text>
+      <text x="665" y="175">2017</text>
+      <text x="805" y="175">2022+</text>
+    </g>
+    <g fill="#9aafa0" font-family="Manrope,sans-serif" font-size="11">
+      <text x="40" y="198">Дартмут</text>
+      <text x="185" y="198">правила</text>
+      <text x="345" y="198">розчарування</text>
+      <text x="530" y="198">ImageNet</text>
+      <text x="655" y="198">Transformer</text>
+      <text x="800" y="198">GenAI</text>
+    </g>
+  </svg>
+</div>
+
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Чому були «зими ШІ»?</b> Занадто сильні обіцянки + брак даних/обчислень + крихкі rule-based системи.
+Сучасний бум тримається на трьох ніжках: дані, compute, алгоритми представлення (representation learning).</p>
+<p>Корисна рамка для пари: <b>символьний ШІ</b> (правила) vs <b>статистичний ШІ</b> (навчання з даних) vs
+<b>генеративний ШІ</b> (моделі розподілу даних / мови).</p>
+<pre><code class="language-python"># Міні-ілюстрація: &quot;правило&quot; vs &quot;навчання з даних&quot;
+# Rule-based: людина кодує логіку
+def is_spam_rule(text: str) -&gt; bool:
+    keywords = [&quot;виграш&quot;, &quot;безкоштовно&quot;, &quot;клікни&quot;]
+    return any(k in text.lower() for k in keywords)
+
+# ML-підхід (ідея): модель оцінює ймовірність за ознаками
+# P(spam | features) — це вже задача класифікації
+print(is_spam_rule(&quot;Клікни і отримай виграш!&quot;))
+</code></pre>
+</div></div></article><article class="block" id="concepts"><div class="block-head"><h3>Поняття AI, Data Science, Machine Learning</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="18" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 18 хв" /><span class="clock">18:45–19:03 · 18 хв</span><span class="timer-live" hidden>18:00</span></label></div></div><div class="block-body">
+<p>Домовленість курсу (практична, не філософська):</p>
+<table>
+  <thead><tr><th>Термін</th><th>Що це</th><th>Питання, на яке відповідає</th></tr></thead>
+  <tbody>
+    <tr><td><b>Artificial Intelligence</b></td><td>Парасолькове поняття систем, що демонструють «розумну» поведінку</td><td>Як автоматизувати рішення / сприйняття / дію?</td></tr>
+    <tr><td><b>Data Science</b></td><td>Процес: питання бізнесу → дані → аналіз → інсайт / продукт</td><td>Що відбувається і чому? Що робити далі?</td></tr>
+    <tr><td><b>Machine Learning</b></td><td>Алгоритми, що покращують якість за досвідом (даними)</td><td>Як узагальнити закономірність з прикладів?</td></tr>
+    <tr><td><b>Deep Learning</b></td><td>ML на нейронних мережах з багатьма шарами</td><td>Як навчитись складних представлень (зображення, мова)?</td></tr>
+    <tr><td><b>Generative AI</b></td><td>Моделі, що генерують новий контент (текст, зображення, код)</td><td>Як змоделювати розподіл і згенерувати зразок?</td></tr>
+  </tbody>
+</table>
+<div class="callout tip"><b>Для студентів з Python Core:</b> ML — це не «магія», а функція
+<code>f(features) → prediction</code>, параметри якої підбираються оптимізацією на даних.</div>
+
+
+<div class="viz diagram">
+  <h4>Діаграма · вкладеність понять</h4>
+  <svg viewBox="0 0 640 320" role="img" aria-label="AI містить ML, ML містить DL">
+    <rect x="30" y="30" width="580" height="260" rx="24" fill="#1e2a24" stroke="#7dffb3" stroke-width="2"/>
+    <text x="50" y="58" fill="#7dffb3" font-family="Fraunces,serif" font-size="18">Artificial Intelligence</text>
+    <rect x="70" y="80" width="500" height="185" rx="20" fill="#18211c" stroke="#7ec8ff" stroke-width="2"/>
+    <text x="90" y="108" fill="#7ec8ff" font-family="Fraunces,serif" font-size="16">Machine Learning</text>
+    <rect x="110" y="125" width="280" height="115" rx="16" fill="#101713" stroke="#ff8fab" stroke-width="2"/>
+    <text x="128" y="155" fill="#ff8fab" font-family="Fraunces,serif" font-size="15">Deep Learning</text>
+    <text x="128" y="180" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">нейронні мережі,</text>
+    <text x="128" y="198" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">складні представлення</text>
+    <rect x="410" y="125" width="140" height="115" rx="16" fill="#101713" stroke="#ffb86b" stroke-width="2"/>
+    <text x="428" y="160" fill="#ffb86b" font-family="Manrope,sans-serif" font-size="13">Класичний ML</text>
+    <text x="428" y="182" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="11">дерева, SVM,</text>
+    <text x="428" y="198" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="11">лінійні моделі</text>
+    <text x="50" y="275" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">Data Science — процес навколо даних; GenAI часто будується на DL/LLM</text>
+  </svg>
+</div>
+
+
+<div class="viz">
+  <h4>Діаграма · Data Science pipeline курсу</h4>
+  <div class="cards two">
+    <div class="card"><h5>1–2. Питання і дані</h5><p>Бізнес-ціль → збір / доступ → якість даних</p></div>
+    <div class="card"><h5>3–4. EDA і ознаки</h5><p>Очищення → описова статистика → feature engineering</p></div>
+    <div class="card"><h5>5–6. Модель і метрики</h5><p>Baseline → модель → валідація</p></div>
+    <div class="card"><h5>7. Продакшен</h5><p>Впровадження, моніторинг, етика</p></div>
+  </div>
+</div>
+
+<div class="callout tip"><b>Додатково</b>
+<p><b>Data Science pipeline</b>, який повторюватимемо весь курс:</p>
+<ol>
+  <li>Бізнес-питання і критерій успіху</li>
+  <li>Збір / доступ до даних</li>
+  <li>Очищення і EDA</li>
+  <li>Ознаки (feature engineering)</li>
+  <li>Модель / baseline</li>
+  <li>Валідація і метрики</li>
+  <li>Впровадження, моніторинг, етика</li>
+</ol>
+<p>Важливо: <b>модель без метрики і без розуміння даних — демо, не продукт</b>.</p>
+</div></div></article><article class="block" id="learning-types"><div class="block-head"><h3>Види алгоритмів навчання</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="20" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 20 хв" /><span class="clock">19:03–19:23 · 20 хв</span><span class="timer-live" hidden>20:00</span></label></div></div><div class="block-body">
+<p>Ключ до класифікації методів — <b>який сигнал навчання</b> ми маємо.</p>
+<ul>
+  <li><b>Supervised (з учителем)</b> — є цільова змінна <code>y</code>. Приклади: ціна житла, spam/not-spam, діагноз.</li>
+  <li><b>Unsupervised (без учителя)</b> — лише <code>X</code>. Приклади: сегменти клієнтів, аномалії, зменшення розмірності.</li>
+  <li><b>Reinforcement (з підкріпленням)</b> — агент діє в середовищі, отримує нагороду. Приклади: ігри, рекомендації з feedback loop, роботи.</li>
+</ul>
+<p>Усередині supervised майже завжди дві сімʼї:</p>
+<ul>
+  <li><b>Регресія</b> — неперервний <code>y</code> (ціна, температура, LTV).</li>
+  <li><b>Класифікація</b> — дискретний <code>y</code> (клас, ймовірність класу).</li>
+</ul>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class MLTask:
+    name: str
+    has_target: bool
+    target_type: str | None  # &quot;numeric&quot; | &quot;categorical&quot; | None
+    feedback: str            # &quot;labels&quot; | &quot;structure&quot; | &quot;reward&quot;
+
+examples = [
+    MLTask(&quot;Ціна квартири&quot;, True, &quot;numeric&quot;, &quot;labels&quot;),          # supervised regression
+    MLTask(&quot;Spam-фільтр&quot;, True, &quot;categorical&quot;, &quot;labels&quot;),        # supervised classification
+    MLTask(&quot;Сегменти клієнтів&quot;, False, None, &quot;structure&quot;),       # unsupervised clustering
+    MLTask(&quot;Торговий бот&quot;, False, None, &quot;reward&quot;),               # reinforcement
+]
+
+for t in examples:
+    if t.feedback == &quot;labels&quot; and t.target_type == &quot;numeric&quot;:
+        kind = &quot;supervised / regression&quot;
+    elif t.feedback == &quot;labels&quot;:
+        kind = &quot;supervised / classification&quot;
+    elif t.feedback == &quot;structure&quot;:
+        kind = &quot;unsupervised&quot;
+    else:
+        kind = &quot;reinforcement&quot;
+    print(f&quot;{t.name:20} -&gt; {kind}&quot;)
+</code></pre>
+
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · типи навчання у продуктах</h4>
+    <div class="chart-wrap"><canvas id="chart-learning-types"></canvas></div>
+  </div>
+  <div class="viz">
+    <h4>Швидка памʼятка</h4>
+    <div class="cards">
+      <div class="card"><h5>Supervised</h5><p>Є y. Регресія / класифікація.</p></div>
+      <div class="card"><h5>Unsupervised</h5><p>Лише X. Кластери, аномалії, PCA.</p></div>
+      <div class="card"><h5>Reinforcement</h5><p>Дія → нагорода. Policy.</p></div>
+    </div>
+  </div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Сірі зони</b>, які варто згадати (без глибокого занурення):</p>
+<ul>
+  <li><b>Semi-supervised</b> — мало міток, багато сирих даних.</li>
+  <li><b>Self-supervised</b> — мітки створюються з самих даних (маски в LLM, contrastive learning).</li>
+  <li><b>Imitation learning</b> — на межі supervised і RL.</li>
+</ul>
+<div class="callout"><b>Типова помилка студентів:</b> називати кластеризацію «класифікацією».
+Класифікація потребує заздалегідь відомих класів-міток.</div>
+</div></div></article><article class="block" id="applications"><div class="block-head"><h3>Сфери застосування алгоритмів</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="12" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 12 хв" /><span class="clock">19:23–19:35 · 12 хв</span><span class="timer-live" hidden>12:00</span></label></div></div><div class="block-body">
+<table>
+  <thead><tr><th>Тип</th><th>Бізнес-кейси</th><th>Що на виході</th></tr></thead>
+  <tbody>
+    <tr><td>Supervised</td><td>кредитний скоринг, прогнозування попиту, детекція шахрайства, медичний triage</td><td>число / клас / ймовірність</td></tr>
+    <tr><td>Unsupervised</td><td>сегментація аудиторії, пошук аномалій у логах, topic modeling</td><td>групи, score аномалії, ембедінги</td></tr>
+    <tr><td>Reinforcement</td><td>динамічне ціноутворення, рекомендації з online feedback, robotics</td><td>політика дій (policy)</td></tr>
+  </tbody>
+</table>
+<p>Спробуйте в групі за 3 хвилини навести по одному прикладу з їхньої роботи/життя на кожен тип.</p>
+
+<div class="viz"><h4>Графік · де який тип навчання «живе»</h4>
+  <div class="chart-wrap tall"><canvas id="chart-applications"></canvas></div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Рамка постановки ML-задачі</b> (запишіть на слайд/дошку і повертайтесь увесь курс):</p>
+<ol>
+  <li><b>Рішення</b>, яке хочемо покращити</li>
+  <li><b>Дані</b>, які реально доступні</li>
+  <li><b>Ознаки</b> (X) і <b>ціль</b> (y), якщо є</li>
+  <li><b>Метрика</b> успіху (не «accuracy заради accuracy»)</li>
+  <li><b>Обмеження</b>: latency, вартість, interpretability, етика, privacy</li>
+</ol>
+</div></div></article><article class="block" id="task-map"><div class="block-head"><h3>Завдання 1. Карта ML-задачі</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="13" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 13 хв" /><span class="clock">19:35–19:48 · 13 хв</span><span class="timer-live" hidden>13:00</span></label></div></div><div class="block-body">
+<p><b>Умова.</b> Оберіть один кейс (наприклад, «передбачити, чи поверне клієнт кредит»).
+Опишіть у структурі словника Python: бізнес-ціль, X, y, тип задачі, ризики помилок.</p>
+
+<div class="viz diagram">
+  <h4>Схема · карта ML-задачі</h4>
+  <svg viewBox="0 0 860 180" role="img" aria-label="Дані ознаки ціль метрика обмеження">
+    <g font-family="Manrope,sans-serif">
+      <rect x="20" y="50" width="130" height="70" rx="12" fill="#1e2a24" stroke="#7dffb3"/>
+      <text x="45" y="90" fill="#7dffb3" font-size="14">Дані</text>
+      <text x="165" y="88" fill="#9aafa0" font-size="22">→</text>
+      <rect x="195" y="50" width="130" height="70" rx="12" fill="#1e2a24" stroke="#7ec8ff"/>
+      <text x="225" y="90" fill="#7ec8ff" font-size="14">Ознаки X</text>
+      <text x="340" y="88" fill="#9aafa0" font-size="22">→</text>
+      <rect x="370" y="50" width="130" height="70" rx="12" fill="#1e2a24" stroke="#ff8fab"/>
+      <text x="410" y="90" fill="#ff8fab" font-size="14">Ціль y</text>
+      <text x="515" y="88" fill="#9aafa0" font-size="22">→</text>
+      <rect x="545" y="50" width="130" height="70" rx="12" fill="#1e2a24" stroke="#ffb86b"/>
+      <text x="570" y="90" fill="#ffb86b" font-size="14">Метрика</text>
+      <text x="690" y="88" fill="#9aafa0" font-size="22">→</text>
+      <rect x="720" y="50" width="120" height="70" rx="12" fill="#1e2a24" stroke="#b4a0ff"/>
+      <text x="735" y="90" fill="#b4a0ff" font-size="14">Обмеження</text>
+      <text x="20" y="150" fill="#9aafa0" font-size="12">latency · вартість · interpretability · етика · privacy</text>
+    </g>
+  </svg>
+</div>
+
+<div class="callout tip"><b>Орієнтир відповіді (після спроби).</b>
+<pre><code class="language-python">task = {
+    "business_goal": "Зменшити збитки від неплатежів без втрати хороших клієнтів",
+    "X": ["дохід", "вік_кредитної_історії", "кількість_прострочень", "регіон"],
+    "y": "default_90d",  # 1 = не платить, 0 = платить
+    "task_type": "supervised / binary classification",
+    "metric": "recall для класу default + контроль precision",
+    "risks": {
+        "false_negative": "дали кредит — отримали збиток",
+        "false_positive": "відмовили надійному клієнту — втратили прибуток",
+        "ethics": "уникати proxy-дискримінації",
+    },
+}
+print(task["task_type"], "->", task["metric"])
+</code></pre>
+</div>
+<div class="callout task"><b>Зробіть на парі.</b> Запишіть відповідь у ноутбук / файл. Розбір — разом із викладачем.</div></div></article><article class="block" id="task-classify"><div class="block-head"><h3>Завдання 2. Класифікація сценаріїв</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="12" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 12 хв" /><span class="clock">19:48–20:00 · 12 хв</span><span class="timer-live" hidden>12:00</span></label></div></div><div class="block-body">
+<p><b>Умова.</b> Для кожного сценарію визначте тип навчання і коротке обґрунтування.</p>
+<ol>
+  <li>Групування товарів інтернет-магазину за поведінкою покупців без готових міток.</li>
+  <li>Прогноз температури на завтра за історичними вимірами.</li>
+  <li>Робот-пилосос, що отримує +1 за чисту кімнату і -1 за удар об стіну.</li>
+  <li>Визначення мови відгуку: uk / en / ru.</li>
+</ol>
+
+<div class="callout tip"><b>Орієнтир відповіді (після спроби).</b>
+<pre><code class="language-python">scenarios = [
+    ("Сегментація товарів", "unsupervised", "немає y, шукаємо структуру"),
+    ("Температура на завтра", "supervised regression", "є числовий y"),
+    ("Робот-пилосос", "reinforcement", "навчання через reward"),
+    ("Мова відгуку", "supervised classification", "є дискретний y"),
+]
+for name, kind, why in scenarios:
+    print(f"{name}: {kind} ({why})")
+</code></pre>
+</div>
+<div class="callout task"><b>Зробіть на парі.</b> Запишіть відповідь у ноутбук / файл. Розбір — разом із викладачем.</div></div></article><article class="block" id="deep-ml-loop"><div class="block-head"><h3>Додатково: цикл ML-продукту</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body">
+<p>На рівні senior-практики ML рідко починається з вибору моделі. Типовий цикл:</p>
+<ol>
+  <li><b>Decision framing</b> — яке рішення людини/процесу замінюємо або підтримуємо?</li>
+  <li><b>Label design</b> — як визначити y так, щоб мітка була доступною і чесною?</li>
+  <li><b>Baseline</b> — правило/евристика/константа mean перед ML.</li>
+  <li><b>Offline evaluation</b> — метрики на holdout / time split.</li>
+  <li><b>Online / human review</b> — чи реально стало краще в процесі?</li>
+  <li><b>Monitoring</b> — drift даних, деградація якості, вартість помилок.</li>
+</ol>
+
+
+<div class="viz">
+  <h4>Діаграма · цикл ML-продукту</h4>
+  <div class="flow">
+    <div class="flow-step"><b>1. Decision</b>Яке рішення підтримуємо?</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><b>2. Labels</b>Як чесно визначити y?</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><b>3. Baseline</b>Правило / mean до ML</div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step"><b>4. Evaluate</b>Offline → online → monitor</div>
+  </div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Anti-patterns</b>, які варто назвати вже на 1-й парі:</p>
+<ul>
+  <li>оптимізувати accuracy при сильному дисбалансі класів;</li>
+  <li>тестувати на тих самих даних, що й train;</li>
+  <li>ігнорувати вартість false positive vs false negative;</li>
+  <li>плутати демо на ноутбуці з production-системою.</li>
+</ul>
+</div><div class="callout tip"><b>Додатковий матеріал · ідея для самостійної роботи</b><p>Знайдіть <b>1 продукт із ML</b>, яким користуєтесь, і опишіть у 5–7 реченнях: бізнес-рішення, можливі <code>X</code>, можливий <code>y</code>, метрику успіху та головний ризик помилки.</p><p style="margin:.4rem 0 0;color:#9aafa0;font-size:.88rem">Модуль 1 = 2 пари підряд. Обовʼязкові практичні ITSTEP — на парі 2.</p></div></div></article>
+    <div class="nav"><a href="Lesson2_00_presentation.html">Далі → Пара 2</a></div>
+    <p class="foot">Python AI Materials · Lesson1_00_presentation.html · атомарні тултіпи: Lesson1_ad_term_glossary.js</p>
+  </main>
+</div>
+<script>
+(function () {
+  const body = document.body;
+  const openBtn = document.getElementById('toc-open');
+  const closeBtn = document.getElementById('toc-close');
+  const backdrop = document.getElementById('toc-backdrop');
+  function setOpen(v) {
+    body.classList.toggle('toc-open', v);
+    if (openBtn) openBtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  openBtn && openBtn.addEventListener('click', () => setOpen(true));
+  closeBtn && closeBtn.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('.toc a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+
+<script>
+(function () {
+  const pads = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    return pads(Math.floor(s / 60)) + ":" + pads(s % 60);
+  };
+
+  let active = null; // { el, left, tick }
+
+  function stopActive(reset) {
+    if (!active) return;
+    clearInterval(active.tick);
+    const el = active.el;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    el.classList.remove("is-running");
+    if (reset) {
+      el.classList.remove("is-done");
+      if (check) check.checked = false;
+      if (live) {
+        live.hidden = true;
+        live.textContent = fmt(Number(el.dataset.minutes || 0) * 60);
+      }
+    }
+    active = null;
+  }
+
+  function start(el) {
+    stopActive(true);
+    const minutes = Number(el.dataset.minutes || 0);
+    if (!minutes || minutes <= 0) return;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    let left = minutes * 60;
+    el.classList.add("is-running");
+    el.classList.remove("is-done");
+    if (check) check.checked = true;
+    if (live) {
+      live.hidden = false;
+      live.textContent = fmt(left);
+    }
+    const tick = setInterval(() => {
+      left -= 1;
+      if (live) live.textContent = fmt(left);
+      if (left <= 0) {
+        clearInterval(tick);
+        el.classList.remove("is-running");
+        el.classList.add("is-done");
+        if (live) live.textContent = "00:00";
+        active = null;
+        try { if (navigator.vibrate) navigator.vibrate(80); } catch (_) {}
+      }
+    }, 1000);
+    active = { el, left, tick };
+  }
+
+  document.querySelectorAll(".block-timer").forEach((el) => {
+    const check = el.querySelector(".timer-check");
+    const minutes = Number(el.dataset.minutes || 0);
+    const live = el.querySelector(".timer-live");
+    if (live) live.textContent = fmt(minutes * 60);
+
+    const onToggle = () => {
+      if (!check) return;
+      if (check.checked) start(el);
+      else {
+        if (active && active.el === el) stopActive(true);
+        else {
+          el.classList.remove("is-running", "is-done");
+          if (live) {
+            live.hidden = true;
+            live.textContent = fmt(minutes * 60);
+          }
+        }
+      }
+    };
+    check && check.addEventListener("change", onToggle);
+    // click on label text also works via checkbox; prevent double-handling on live span
+  });
+})();
+</script>
+
+<script src="Lesson1_ad_term_glossary.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+  Chart.defaults.color = mute;
+  Chart.defaults.borderColor = grid;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const hype = document.getElementById('chart-ai-hype');
+  if (hype) {
+    new Chart(hype, {
+      type: 'line',
+      data: {
+        labels: ['1956','1970','1985','1995','2012','2017','2022+'],
+        datasets: [{
+          label: 'Рівень очікувань / інвестицій (схематично)',
+          data: [35, 55, 70, 28, 62, 78, 96],
+          borderColor: '#7dffb3',
+          backgroundColor: 'rgba(125,255,179,.18)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4,
+          pointBackgroundColor: '#ffb86b'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, labels: { color: ink } },
+          tooltip: {
+            callbacks: {
+              afterLabel: (ctx) => {
+                const notes = {
+                  0: 'Дартмут: народження терміна AI',
+                  1: 'Символьні системи, обмеження правил',
+                  2: 'Експертні системи → зима ШІ',
+                  3: 'Статистичний ML',
+                  4: 'Deep Learning / ImageNet',
+                  5: 'Transformers',
+                  6: 'Generative AI / LLM'
+                };
+                return notes[ctx.dataIndex] || '';
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: mute }, grid: { color: grid } },
+          y: {
+            min: 0, max: 100,
+            ticks: { color: mute },
+            grid: { color: grid },
+            title: { display: true, text: 'hype / інтерес (індекс)', color: mute }
+          }
+        }
+      }
+    });
+  }
+
+  const types = document.getElementById('chart-learning-types');
+  if (types) {
+    new Chart(types, {
+      type: 'doughnut',
+      data: {
+        labels: ['Supervised', 'Unsupervised', 'Reinforcement', 'Self / Semi-supervised'],
+        datasets: [{
+          data: [48, 22, 12, 18],
+          backgroundColor: ['#7dffb3', '#7ec8ff', '#ffb86b', '#ff8fab'],
+          borderColor: '#0f1412',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: ink, boxWidth: 12 } },
+          title: {
+            display: true,
+            text: 'Орієнтовна частка промислових кейсів (ілюстрація)',
+            color: mute,
+            font: { size: 12 }
+          }
+        }
+      }
+    });
+  }
+
+  const apps = document.getElementById('chart-applications');
+  if (apps) {
+    new Chart(apps, {
+      type: 'bar',
+      data: {
+        labels: ['Фінтех', 'E-commerce', 'Медицина', 'Виробництво', 'Медіа/контент'],
+        datasets: [
+          {
+            label: 'Supervised',
+            data: [9, 8, 7, 6, 5],
+            backgroundColor: '#7dffb3'
+          },
+          {
+            label: 'Unsupervised',
+            data: [5, 7, 4, 6, 3],
+            backgroundColor: '#7ec8ff'
+          },
+          {
+            label: 'RL / online feedback',
+            data: [3, 6, 2, 4, 5],
+            backgroundColor: '#ffb86b'
+          },
+          {
+            label: 'GenAI / LLM',
+            data: [2, 5, 2, 2, 9],
+            backgroundColor: '#ff8fab'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: ink, boxWidth: 12 } }
+        },
+        scales: {
+          x: { stacked: false, ticks: { color: mute }, grid: { display: false } },
+          y: {
+            ticks: { color: mute },
+            grid: { color: grid },
+            title: { display: true, text: 'інтенсивність застосування (1–10)', color: mute }
+          }
+        }
+      }
+    });
+  }
+
+  const err = document.getElementById('chart-error-cost');
+  if (err) {
+    new Chart(err, {
+      type: 'bar',
+      data: {
+        labels: ['False Negative (дали кредит — збиток)', 'False Positive (відмова надійному)'],
+        datasets: [{
+          label: 'Відносна вартість помилки (ілюстрація)',
+          data: [9, 4],
+          backgroundColor: ['#ff8fab', '#ffb86b']
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { min: 0, max: 10, ticks: { color: mute }, grid: { color: grid }, title: { display: true, text: 'вартість (1–10)', color: mute } },
+          y: { ticks: { color: mute }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+});
+</script>
+</body>
+</html>

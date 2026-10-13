@@ -1,0 +1,15 @@
+id,topic,question,answer
+1,menu,What is on the menu today?,"Today we have pasta, soup and three salads."
+2,menu,Do you have vegan dishes?,Yes. Every vegan dish has a green leaf icon.
+3,order,Where is my food?,Your courier is on the way. Track it in the app.
+4,order,My food is cold.,We are sorry. We will send a new meal for free.
+5,order,Can I change my order?,"Yes, within five minutes after you place it."
+6,order,Something is missing from my bag.,Please send a photo and we will refund the item.
+7,payment,Can I pay with cash?,Yes. Choose cash when you place the order.
+8,payment,I was charged twice.,We will check the payment and refund the extra charge.
+9,delivery,How long does delivery take?,Delivery takes thirty to forty minutes.
+10,delivery,Is delivery free?,Delivery is free for orders over twenty dollars.
+11,account,How do I change my phone number?,Open the profile and update the phone number.
+12,hours,When do you open?,We open every day at nine in the morning.
+13,hours,Do you work at night?,Yes. We deliver until two in the morning.
+14,support,I want to talk to a manager.,A manager will call you in ten minutes.

@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/18_time_series_forecasting_26_auto_correlation_and_partial_correlation.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 18. Time Series Forecasting / 26. Auto Correlation and Partial Correlation Implementation
+SCORE: 3.0
+
+# 18. Time Series Forecasting / 26. Auto Correlation and Partial Correlation Implementation
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/18. Time Series Forecasting/26. Auto Correlation and Partial Correlation Implementation.srt
+Hello and welcome back. I would be in the previous lecture Reload, about autocorrelation and Bosher correlation functions in this lecture. We are going to implement autocorrelation function and boschert correlation function using the Jupiter notebook. So as we begin, first of all, we will explore the auto correlation function for the auto correlation function. We will have to import the BLT, underscore HCF function from stat's models graphics package. After that we will call the BLT underscore Azia function with that time CCDs. Then we will specify the BLT GC a function so that we can plot our correlation plot directly. And finally we specify the number of flags as Denn. After executing this function, we can clearly see the correlation between the observations and observations. But…

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Датасети, ознаки та середовище Jupyter · Python AI Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+:root {
+  --bg: #0f1412;
+  --panel: #18211c;
+  --panel-2: #1e2a24;
+  --ink: #e8f0e7;
+  --mute: #9aafa0;
+  --line: #2f4137;
+  --accent: #7dffb3;
+  --accent-ink: #062416;
+  --warm: #ffb86b;
+  --blue: #7ec8ff;
+  --rose: #ff8fab;
+  --font: "Manrope", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rail-w: 280px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(125,255,179,.12), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(126,200,255,.10), transparent 55%),
+    var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+.shell { display: block; min-height: 100dvh; width: 100%; padding-top: 58px; }
+.mobile-bar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(15,20,18,.92); backdrop-filter: blur(10px);
+  color: var(--ink); padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 1px solid var(--line);
+}
+.burger {
+  width: 44px; height: 44px; border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link, .rail .menu-link {
+  border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent);
+  text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: .45rem .55rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.rail .menu-link { margin: 0 0 .75rem; }
+.rail-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 45; }
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.45);
+  background: #101713; color: var(--ink); padding: 1rem .9rem 2rem; overflow: auto;
+  border-right: 1px solid var(--line);
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink); background: var(--accent); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.15rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #fff; font-weight: 700;
+}
+.rail .meta { color: var(--mute); font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b7c7bc; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--accent);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--accent); }
+
+.stage { padding: .9rem .75rem 2.4rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--panel-2));
+  padding: 1.15rem 1rem; margin-bottom: 1rem; border-radius: 18px;
+}
+.banner .kicker {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--warm);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  font-family: var(--display); font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  margin: 0 0 .55rem; line-height: 1.15; color: #fff;
+}
+.banner .lead { color: #c9d8cd; margin: 0 0 .85rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  border-radius: 999px; padding: .28rem .65rem; font-size: .78rem; color: var(--mute);
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.goals { margin: 0; padding-left: 1.15rem; color: #d5e3d8; }
+.goals li { margin: .25rem 0; }
+
+.block {
+  border: 1px solid var(--line); background: rgba(24,33,28,.88);
+  border-radius: 18px; margin: 0 0 1rem; overflow: hidden;
+}
+.block-head {
+  display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  align-items: flex-start; padding: .9rem 1rem .55rem;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.block-head h3 {
+  margin: 0; font-family: var(--display); font-size: 1.15rem; color: #fff; line-height: 1.25;
+}
+.kind {
+  font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  border-radius: 999px; padding: .22rem .5rem; border: 1px solid var(--line);
+}
+.kind.main { color: var(--blue); border-color: rgba(126,200,255,.35); }
+.kind.task { color: var(--warm); border-color: rgba(255,184,107,.4); }
+.kind.deep { color: var(--rose); border-color: rgba(255,143,171,.4); }
+.clock { font-family: var(--mono); font-size: .75rem; color: var(--mute); }
+
+.block-timer {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .18rem .55rem .18rem .35rem;
+  background: rgba(15,20,18,.55); user-select: none; cursor: pointer;
+}
+.block-timer input.timer-check {
+  width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0;
+}
+.block-timer .clock { border: 0; padding: 0; background: transparent; }
+.block-timer .timer-live {
+  color: var(--accent); font-weight: 700; min-width: 3.2rem; text-align: right;
+}
+.block-timer.is-running {
+  border-color: rgba(125,255,179,.55);
+  box-shadow: 0 0 0 1px rgba(125,255,179,.18);
+}
+.block-timer.is-done {
+  border-color: rgba(255,184,107,.55);
+}
+.block-timer.is-done .timer-live { color: var(--warm); }
+
+.block-body { padding: .85rem 1rem 1.1rem; }
+.block-body p, .block-body li { color: #d3e0d6; }
+.block-body ul, .block-body ol { padding-left: 1.15rem; }
+.block-body table {
+  width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0 1rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.block-body th, .block-body td {
+  border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top;
+}
+.block-body th { background: rgba(125,255,179,.08); color: var(--accent); }
+.block-body code, .inline-code {
+  font-family: var(--mono); font-size: .84em; color: var(--accent);
+  background: rgba(125,255,179,.08); padding: .08rem .28rem; border-radius: 5px;
+}
+.pre {
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0b100e; border: 1px solid var(--line); border-radius: 12px;
+  padding: .85rem .9rem; margin: .7rem 0 1rem; color: #d9f5e4;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.45;
+  max-width: 100%; white-space: pre;
+}
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: rgba(125,255,179,.06); padding: .7rem .85rem; border-radius: 10px; margin: .7rem 0;
+}
+.callout.tip { border-left-color: var(--blue); background: rgba(126,200,255,.07); }
+.callout.task {
+  border-left-color: var(--warm); background: rgba(255,184,107,.08);
+}
+.viz {
+  margin: .85rem 0 1.05rem; padding: .85rem; border-radius: 14px;
+  border: 1px solid var(--line); background: rgba(0,0,0,.22);
+}
+.viz h4 {
+  margin: 0 0 .65rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mute); font-weight: 700;
+}
+.viz-grid {
+  display: grid; gap: .85rem;
+  grid-template-columns: 1fr;
+}
+.chart-wrap { position: relative; width: 100%; min-height: 260px; }
+.chart-wrap.tall { min-height: 320px; }
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram svg text { paint-order: stroke fill; pointer-events: none; }
+.flow {
+  display: grid; gap: .45rem; grid-template-columns: 1fr;
+}
+.flow-step {
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .75rem;
+  background: rgba(255,255,255,.03);
+}
+.flow-step b { color: var(--accent); display: block; margin-bottom: .2rem; }
+.flow-arrow {
+  text-align: center; color: var(--mute); font-family: var(--mono); font-size: .85rem;
+}
+.cards {
+  display: grid; gap: .65rem; grid-template-columns: 1fr;
+}
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem;
+  background: rgba(255,255,255,.03);
+}
+.card h5 { margin: 0 0 .35rem; color: #fff; font-size: .95rem; }
+.card p { margin: 0; color: var(--mute); font-size: .88rem; }
+.legend {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .55rem;
+}
+.legend span {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .78rem; color: var(--mute);
+}
+.swatch { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.nav {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.1rem 0 .4rem;
+}
+.nav a {
+  text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+  padding: .55rem .75rem; border-radius: 999px; background: rgba(255,255,255,.03);
+}
+.foot { color: var(--mute); font-size: .82rem; margin-top: .4rem; }
+
+.term {
+  border-bottom: 1px dotted rgba(125,255,179,.7);
+  cursor: help;
+  color: inherit;
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.term-hint {
+  margin: .55rem 0 0;
+  font-size: .82rem;
+  color: var(--mute);
+}
+.term-hint b { color: var(--accent); font-weight: 700; }
+#term-tip {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #101713;
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  /* Fixed sidebar: sticky breaks under overflow-x:hidden on html/body */
+  .shell {
+    display: block;
+    padding-top: 0;
+    padding-left: var(--rail-w);
+    min-height: 100dvh;
+  }
+  .mobile-bar { display: none; }
+  .rail {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: none !important;
+    width: var(--rail-w);
+    max-width: var(--rail-w);
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: none;
+    z-index: 40;
+  }
+  .rail-backdrop, #toc-close { display: none !important; }
+  .stage {
+    max-width: 980px;
+    padding: 1.4rem 1.4rem 3rem;
+    min-width: 0;
+    margin: 0;
+  }
+  .viz-grid.two { grid-template-columns: 1.1fr .9fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+  .flow { grid-template-columns: repeat(4, 1fr); align-items: stretch; }
+  .flow-arrow { display: none; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+</style>
+</head>
+<body>
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити зміст" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Датасети, ознаки та середовище Jupyter</p>
+  </div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.55rem">
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <h1>Датасети, ознаки та середовище Jupyter</h1>
+    <div class="meta">Пара 2/2 · студентська папка Lesson2 · 90 хв · Python AI Materials · відкривається локально з папки</div>
+    <div class="label">Зміст</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#dataset">Датасет і приклад</a></li><li><a href="#features">Ознаки і target</a></li><li><a href="#jupyter">Jupyter Notebook / Lab</a></li><li><a href="#cells">Комірки і команди</a></li><li><a href="#itstep-practical">ITSTEP: Практичне 1</a></li><li><a href="#itstep-task-1">Завдання 1 + 1.1</a></li><li><a href="#itstep-task-2">Завдання 2 + 2.1</a></li><li><a href="#itstep-task-3">Завдання 3 + 3.1</a></li><li><a href="#itstep-task-4">Завдання 4 + 4.1</a></li><li><a href="#deep-schema">Додатково: data dictionary</a></li><li><a href="#checklist">Додатково: чекліст якості</a></li></ol>
+  </aside>
+  <main class="stage">
+    <header class="banner" id="agenda">
+      <p class="kicker">Python AI Materials · презентація</p>
+      <h2>Датасети, ознаки та середовище Jupyter</h2>
+      <p class="lead">Без розуміння даних модель безсенсовна. Ця пара переводить вас від «алгоритмів у голові» до <b>конкретної таблиці</b> і робочого середовища експериментів.</p>
+      <div class="timing-strip"><span class="pill"><b>14 хв</b> Поняття датасету</span><span class="pill"><b>16 хв</b> Ознаки в датасеті та цільова ознака</span><span class="pill"><b>12 хв</b> Знайомство з Jupyter Notebook та JupyterLab</span><span class="pill"><b>10 хв</b> Ноутбуки, комірки та основні команди</span><span class="pill"><b>38 хв</b> ITSTEP Практичне 1 (1–4 + 1.1–4.1)</span></div>
+      <ul class="goals"><li>Описати табличний датасет: спостереження, ознаки, ціль</li><li>Розрізняти числові, категоріальні, текстові, datetime та image-ознаки</li><li>Працювати з комірками Jupyter: code/markdown, порядок виконання, kernel</li><li>Виконати <b>Практичне завдання 1</b> ITSTEP: задачі 1–4 і аналогічні 1.1–4.1</li></ul>
+      <p class="term-hint"><b>Підказка:</b> терміни з пунктирним підкресленням — наведіть курсор (або тапніть на телефоні), щоб побачити коротке пояснення. Повний словник курсу: <a href="Lesson2_af_slovnyk_terminologii.html">словник (HTML)</a>.</p>
+    </header>
+    <article class="block" id="dataset"><div class="block-head"><h3>Поняття датасету</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="14" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 14 хв" /><span class="clock">20:00–20:14 · 14 хв</span><span class="timer-live" hidden>14:00</span></label></div></div><div class="block-body">
+<p><b>Датасет</b> — структурований набір спостережень, зібраний під конкретне питання.
+У табличному вигляді:</p>
+<ul>
+  <li><b>рядок (row / sample / observation)</b> — один обʼєкт (клієнт, будинок, транзакція);</li>
+  <li><b>стовпець (column / feature)</b> — характеристика обʼєкта;</li>
+  <li><b>цільова ознака (target / label)</b> — те, що передбачаємо (якщо задача supervised).</li>
+</ul>
+<p>Приклад навчального датасету «оренда квартир»:</p>
+<table>
+  <thead><tr><th>area_m2</th><th>rooms</th><th>district</th><th>has_elevator</th><th>rent_uah</th></tr></thead>
+  <tbody>
+    <tr><td>42</td><td>1</td><td>Центр</td><td>1</td><td>18500</td></tr>
+    <tr><td>61</td><td>2</td><td>Сихів</td><td>0</td><td>15200</td></tr>
+    <tr><td>78</td><td>3</td><td>Личаків</td><td>1</td><td>24100</td></tr>
+  </tbody>
+</table>
+<p>Тут <code>rent_uah</code> — target; решта — features.</p>
+
+
+<div class="viz diagram">
+  <h4>Діаграма · будова табличного датасету</h4>
+  <svg viewBox="0 0 760 240" role="img" aria-label="Рядки ознаки і target">
+    <rect x="40" y="40" width="680" height="160" rx="14" fill="#1e2a24" stroke="#2f4137"/>
+    <rect x="40" y="40" width="680" height="36" fill="#24332b"/>
+    <g font-family="IBM Plex Mono,monospace" font-size="13" fill="#7dffb3">
+      <text x="60" y="63">area_m2</text>
+      <text x="180" y="63">rooms</text>
+      <text x="290" y="63">district</text>
+      <text x="430" y="63">elevator</text>
+      <text x="560" y="63">rent_uah ★</text>
+    </g>
+    <g font-family="Manrope,sans-serif" font-size="13" fill="#d3e0d6">
+      <text x="70" y="105">42</text><text x="190" y="105">1</text><text x="290" y="105">Центр</text><text x="450" y="105">1</text><text x="580" y="105">18500</text>
+      <text x="70" y="140">61</text><text x="190" y="140">2</text><text x="290" y="140">Сихів</text><text x="450" y="140">0</text><text x="580" y="140">15200</text>
+      <text x="70" y="175">78</text><text x="190" y="175">3</text><text x="290" y="175">Личаків</text><text x="450" y="175">1</text><text x="580" y="175">24100</text>
+    </g>
+    <text x="40" y="225" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">рядок = спостереження · стовпці зліва = features · ★ rent_uah = target</text>
+  </svg>
+</div>
+
+<div class="viz"><h4>Графік · звʼязок feature → target (оренда)</h4>
+  <div class="chart-wrap"><canvas id="chart-rent-scatter"></canvas></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:#7dffb3"></i>кожна точка — квартира (рядок датасету)</span>
+  </div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Якість датасету</b> важливіша за «крутість» моделі на старті:</p>
+<ul>
+  <li>репрезентативність (чи покриває реальний прод?);</li>
+  <li>витоки цільової змінної (leakage);</li>
+  <li>пропуски, дублікати, помилки вимірювання;</li>
+  <li>часова коректність (train у минулому, test у майбутньому).</li>
+</ul>
+</div></div></article><article class="block" id="features"><div class="block-head"><h3>Ознаки в датасеті та цільова ознака</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="16" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 16 хв" /><span class="clock">20:14–20:30 · 16 хв</span><span class="timer-live" hidden>16:00</span></label></div></div><div class="block-body">
+<p>Класифікація ознак (практична):</p>
+<ul>
+  <li><b>числові неперервні</b>: площа, температура, сума чека;</li>
+  <li><b>числові дискретні</b>: кількість кімнат, кількість покупок;</li>
+  <li><b>категоріальні nominal</b>: район, бренд (немає порядку);</li>
+  <li><b>категоріальні ordinal</b>: рівень освіти, rating 1–5;</li>
+  <li><b>datetime / час</b>: дата реєстрації, година кліку;</li>
+  <li><b>текст / image / audio</b>: потребують окремих пайплайнів.</li>
+</ul>
+<p><b>Цільова ознака</b> визначає тип задачі: число → регресія, клас → класифікація.</p>
+<pre><code class="language-python">import csv
+from pathlib import Path
+
+rows = [
+    {&quot;area_m2&quot;: 42, &quot;rooms&quot;: 1, &quot;district&quot;: &quot;Центр&quot;, &quot;has_elevator&quot;: 1, &quot;rent_uah&quot;: 18500},
+    {&quot;area_m2&quot;: 61, &quot;rooms&quot;: 2, &quot;district&quot;: &quot;Сихів&quot;, &quot;has_elevator&quot;: 0, &quot;rent_uah&quot;: 15200},
+    {&quot;area_m2&quot;: 78, &quot;rooms&quot;: 3, &quot;district&quot;: &quot;Личаків&quot;, &quot;has_elevator&quot;: 1, &quot;rent_uah&quot;: 24100},
+]
+
+path = Path(&quot;rent_sample.csv&quot;)
+with path.open(&quot;w&quot;, newline=&quot;&quot;, encoding=&quot;utf-8&quot;) as f:
+    writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+    writer.writeheader()
+    writer.writerows(rows)
+
+feature_cols = [&quot;area_m2&quot;, &quot;rooms&quot;, &quot;district&quot;, &quot;has_elevator&quot;]
+target_col = &quot;rent_uah&quot;
+print(&quot;X:&quot;, feature_cols)
+print(&quot;y:&quot;, target_col)
+print(&quot;saved:&quot;, path.resolve())
+</code></pre>
+
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · типи ознак</h4>
+    <div class="chart-wrap"><canvas id="chart-feature-types"></canvas></div>
+  </div>
+  <div class="viz">
+    <h4>Ролі колонок</h4>
+    <div class="cards">
+      <div class="card"><h5>Feature (X)</h5><p>Те, що подаємо в модель: area, rooms, district…</p></div>
+      <div class="card"><h5>Target (y)</h5><p>Те, що передбачаємо: rent_uah, passed, spam…</p></div>
+      <div class="card"><h5>ID / leak</h5><p>Ідентифікатори й «майбутні» поля — не в X.</p></div>
+    </div>
+  </div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Feature store мислення:</b> одна й та сама сира колонка може перетворитись на кілька ознак
+(день тижня, is_weekend, days_since_registration). Це вже feature engineering — тема наступних модулів,
+але рамку варто закласти зараз.</p>
+<div class="callout"><b>Питання групі:</b> чи можна брати <code>price_per_m2 = rent/area</code> як ознаку,
+якщо target = <code>rent</code>? Обговоріть leakage / circularity.</div>
+</div></div></article><article class="block" id="jupyter"><div class="block-head"><h3>Знайомство з Jupyter Notebook та JupyterLab</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="12" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 12 хв" /><span class="clock">20:30–20:42 · 12 хв</span><span class="timer-live" hidden>12:00</span></label></div></div><div class="block-body">
+<p><b>Jupyter</b> — середовище інтерактивних обчислень: код, текст, графіки в одному документі.</p>
+<ul>
+  <li><b>Notebook (.ipynb)</b> — класичний інтерфейс «лінійка комірок».</li>
+  <li><b>JupyterLab</b> — IDE-подібна оболонка: файли, кілька ноутбуків, термінал, вкладення.</li>
+  <li>Альтернативи в індустрії: VS Code notebooks, Google Colab, managed cloud notebooks.</li>
+</ul>
+<p>Встановлення (локально):</p>
+<pre><code class="language-bash">python -m pip install jupyterlab ipykernel
+python -m ipykernel install --user --name python61-ai --display-name &quot;Python61 AI&quot;
+jupyter lab
+</code></pre>
+<div class="callout tip"><b>Для AI/DS:</b> ноутбук ідеальний для EDA і пояснення. Для продакшену код
+виносять у модулі <code>.py</code>, тести і пайплайни. Навчіть студентів не тримати «все життя» лише в .ipynb.</div>
+
+<div class="viz">
+  <h4>Діаграма · робочий цикл у Jupyter</h4>
+  <div class="cards three">
+    <div class="card"><h5>1. Markdown</h5><p>Питання, гіпотеза, data dictionary</p></div>
+    <div class="card"><h5>2. Code</h5><p>imports → load → check → plot</p></div>
+    <div class="card"><h5>3. Restart & Run All</h5><p>Перевірка порядку виконання перед здачею</p></div>
+  </div>
+  <div class="callout tip" style="margin-top:.8rem"><b>Памʼятайте:</b> kernel зберігає стан. Порядок кліків ≠ порядок комірок у файлі.</div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Kernel</b> — процес Python, який виконує код. Restart kernel очищає стан змінних.
+Це критично: порядок виконання комірок ≠ порядок у файлі, якщо запускали вибірково.</p>
+</div></div></article><article class="block" id="cells"><div class="block-head"><h3>Ноутбуки, комірки та основні команди</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="10" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 10 хв" /><span class="clock">20:42–20:52 · 10 хв</span><span class="timer-live" hidden>10:00</span></label></div></div><div class="block-body">
+<ul>
+  <li><b>Code cell</b> — виконуваний Python.</li>
+  <li><b>Markdown cell</b> — пояснення, формули, заголовки.</li>
+  <li><b>Shift+Enter</b> — виконати й перейти далі; <b>Ctrl/Cmd+Enter</b> — виконати на місці.</li>
+  <li><b>Esc</b> — command mode; <b>Enter</b> — edit mode.</li>
+  <li>Корисні magic: <code>%timeit</code>, <code>%matplotlib inline</code>, <code>!ls</code> (обережно).</li>
+</ul>
+<p>Мінімальний каркас навчального ноутбука:</p>
+<pre><code class="language-python"># 1) imports
+from pathlib import Path
+import csv
+
+# 2) parameters
+DATA = Path(&quot;rent_sample.csv&quot;)
+
+# 3) load
+with DATA.open(encoding=&quot;utf-8&quot;) as f:
+    data = list(csv.DictReader(f))
+
+# 4) quick check
+print(len(data), &quot;rows&quot;)
+print(data[0])
+</code></pre>
+<div class="viz diagram">
+  <h4>Діаграма · режими Jupyter</h4>
+  <svg viewBox="0 0 760 200" role="img" aria-label="Edit mode і Command mode">
+    <rect x="30" y="40" width="320" height="120" rx="16" fill="#1e2a24" stroke="#7ec8ff"/>
+    <text x="55" y="75" fill="#7ec8ff" font-family="Fraunces,serif" font-size="18">Edit mode</text>
+    <text x="55" y="105" fill="#d3e0d6" font-family="Manrope,sans-serif" font-size="13">Enter · друкуємо код/текст</text>
+    <text x="55" y="128" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">Shift+Enter — виконати</text>
+    <rect x="410" y="40" width="320" height="120" rx="16" fill="#1e2a24" stroke="#ffb86b"/>
+    <text x="435" y="75" fill="#ffb86b" font-family="Fraunces,serif" font-size="18">Command mode</text>
+    <text x="435" y="105" fill="#d3e0d6" font-family="Manrope,sans-serif" font-size="13">Esc · керуємо комірками</text>
+    <text x="435" y="128" fill="#9aafa0" font-family="Manrope,sans-serif" font-size="12">A/B додати · M/Y тип · DD видалити</text>
+  </svg>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p><b>Гігієна ноутбука на парі:</b></p>
+<ol>
+  <li>Restart Kernel &amp; Run All перед здачею/демо.</li>
+  <li>Верхня комірка — imports + константи.</li>
+  <li>Не тримати секрети (API keys) у .ipynb.</li>
+  <li>Великі виводи / сирі логи — згортати або прибирати.</li>
+</ol>
+</div></div></article>
+
+<article class="block" id="itstep-practical"><div class="block-head"><h3>Обовʼязкові практичні · ITSTEP Практичне завдання 1</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">обовʼязково</span><label class="block-timer" data-minutes="38" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 38 хв" /><span class="clock">20:52–21:30 · 38 хв</span><span class="timer-live" hidden>38:00</span></label></div></div><div class="block-body">
+<p><b>Creating AI Applications Using Python — Practical Assignments</b></p>
+<p><b>Джерело:</b>
+<a href="https://materials.itstep.org/content/cb10a5c3-bfa1-448a-9f6b-b042171856b0/uk" target="_blank" rel="noreferrer">Практичне завдання 1</a></p>
+<p>У кожному блоці нижче: <b>X</b> — базове завдання з курсу (приклад / розбір), <b>X.1</b> — ваше самостійне рішення за тією ж схемою (трохи більший обсяг, не складніше).</p>
+<div class="callout task"><b>Критерій здачі.</b> Ноутбуки запускаються цілком (Restart &amp; Run All); є Markdown, код і таблиці з числами (не «…»).</div>
+</div></article>
+
+<article class="block" id="itstep-task-1"><div class="block-head"><h3>Завдання 1 + 1.1 · Hello, Jupyter!</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">~9 хв</span></div></div><div class="block-body">
+<p><b>1 · приклад з курсу.</b> Створіть робочий Jupyter Notebook з текстовим описом і простим кодом.</p>
+<ul>
+  <li>Новий Notebook: <code>intro_jupyter.ipynb</code>.</li>
+  <li>Markdown: заголовок <em>«First notebook»</em> і кілька речень про зміст.</li>
+  <li>Code: <code>print("Hello, Jupyter!")</code></li>
+  <li>Запустіть обидві комірки — вивід має зʼявитись.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 1.</b>
+<pre><code class="language-python"># Markdown: # First notebook + короткий вступ
+print("Hello, Jupyter!")
+</code></pre>
+</div>
+
+<p style="margin-top:1.1rem"><b>1.1 · зробіть за аналогією.</b> Той самий принцип, трохи більше комірок.</p>
+<ul>
+  <li>Новий Notebook: <code>my_second_notebook.ipynb</code>.</li>
+  <li>Markdown: <em>«Second notebook»</em> + 3–4 речення, що вже вмієте в Jupyter.</li>
+  <li>Markdown: підзаголовок <em>«Що перевіримо сьогодні»</em> + список з 3 пунктів.</li>
+  <li>Code: <code>print("Hello again, Jupyter!")</code></li>
+  <li>Code: імʼя і група — двома окремими <code>print</code>.</li>
+  <li>Run All — текст і вивід на місці.</li>
+</ul>
+<div class="callout task"><b>Ваше рішення.</b> Після розбору 1 — одразу зробіть 1.1 у новому файлі.</div>
+</div></article>
+
+<article class="block" id="itstep-task-2"><div class="block-head"><h3>Завдання 2 + 2.1 · Розрахунки у звіті</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">~9 хв</span></div></div><div class="block-body">
+<p><b>2 · приклад з курсу.</b> Оформіть розрахунки як частину звіту.</p>
+<ul>
+  <li>Code: <code>a = 15</code>, <code>b = 7</code> → сума і різниця.</li>
+  <li>Markdown: <em>«Результат розрахунків суми та різниці»</em>.</li>
+  <li>Скопіюйте Code → добуток і частка.</li>
+  <li>Markdown поставте <b>вище</b> коду; виконайте Notebook цілком.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 2.</b>
+<pre><code class="language-python">a, b = 15, 7
+print(f"Сума: {a + b}, різниця: {a - b}")
+print(f"Добуток: {a * b}, частка: {a / b:.2f}")
+</code></pre>
+</div>
+
+<p style="margin-top:1.1rem"><b>2.1 · зробіть за аналогією.</b></p>
+<ul>
+  <li>Code: <code>a = 12</code>, <code>b = 4</code>, <code>c = 3</code> → сума трьох і <code>a - b</code>.</li>
+  <li>Markdown: <em>«Результат розрахунків суми та різниці»</em>.</li>
+  <li>Code: добуток <code>a * b * c</code> і частка <code>a / c</code>.</li>
+  <li>Markdown: <em>«Результат розрахунків добутку та частки»</em>.</li>
+  <li>Кожен Markdown — безпосередньо вище свого коду; Run All.</li>
+</ul>
+<div class="callout task"><b>Ваше рішення.</b> Два блоки Markdown+Code за схемою завдання 2.</div>
+</div></article>
+
+<article class="block" id="itstep-task-3"><div class="block-head"><h3>Завдання 3 + 3.1 · Звіт із продажів</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">~10 хв</span></div></div><div class="block-body">
+<p><b>3 · приклад з курсу.</b> Короткий звіт: дані → розрахунки → таблиця.</p>
+<ul>
+  <li>Markdown: <em>«Звіт із продажів»</em> + підпис про прості дані.</li>
+  <li>Code: <code>sales = [120, 135, 100, 150, 90, 200, 170]</code></li>
+  <li>Порахуйте суму, середнє, макс, мін.</li>
+  <li>Markdown-таблиця з результатами (числа, не «…»).</li>
+</ul>
+<table>
+  <thead><tr><th>Показник</th><th>Значення</th></tr></thead>
+  <tbody>
+    <tr><td>Загальна сума</td><td>…</td></tr>
+    <tr><td>Середнє</td><td>…</td></tr>
+    <tr><td>Максимум</td><td>…</td></tr>
+    <tr><td>Мінімум</td><td>…</td></tr>
+  </tbody>
+</table>
+<div class="callout tip"><b>Орієнтир до 3.</b>
+<pre><code class="language-python">sales = [120, 135, 100, 150, 90, 200, 170]
+total = sum(sales)
+avg = total / len(sales)
+print(total, round(avg, 1), max(sales), min(sales))
+</code></pre>
+</div>
+
+<p style="margin-top:1.1rem"><b>3.1 · зробіть за аналогією.</b></p>
+<ul>
+  <li>Markdown: <em>«Звіт із продажів за 2 тижні»</em> + підпис про довші дані.</li>
+  <li>Code: 14 днів —
+    <code>sales = [120, 135, 100, 150, 90, 200, 170, 160, 145, 110, 180, 95, 210, 155]</code></li>
+  <li>Плюс до суми/середнього/макс/мін: <b>кількість днів вище середнього</b>.</li>
+</ul>
+<table>
+  <thead><tr><th>Показник</th><th>Значення</th></tr></thead>
+  <tbody>
+    <tr><td>Загальна сума</td><td>…</td></tr>
+    <tr><td>Середнє</td><td>…</td></tr>
+    <tr><td>Максимум</td><td>…</td></tr>
+    <tr><td>Мінімум</td><td>…</td></tr>
+    <tr><td>Днів вище середнього</td><td>…</td></tr>
+  </tbody>
+</table>
+<div class="callout task"><b>Ваше рішення.</b> Та сама схема звіту, довший список + один новий рядок у таблиці.</div>
+</div></article>
+
+<article class="block" id="itstep-task-4"><div class="block-head"><h3>Завдання 4 + 4.1 · Оцінки студентів</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">~10 хв</span></div></div><div class="block-body">
+<p><b>4 · приклад з курсу.</b> Міні-звіт з оцінками.</p>
+<ul>
+  <li>Markdown: <em>«Оцінки студентів»</em> + 1–2 речення опису.</li>
+  <li>Code: <code>students = [("Alex", 85), ("Maria", 92), ("John", 74), ("Olga", 60), ("Max", 48)]</code></li>
+  <li>Середній / макс / мін; список з балом &lt; 60.</li>
+  <li>Текстова візуалізація: <code>Ім'я | *****</code> (кількість <code>*</code> = десятки оцінки).</li>
+  <li>Markdown-таблиця результатів.</li>
+</ul>
+<table>
+  <thead><tr><th>Показник</th><th>Значення</th></tr></thead>
+  <tbody>
+    <tr><td>Середній бал</td><td>…</td></tr>
+    <tr><td>Максимальний бал</td><td>…</td></tr>
+    <tr><td>Мінімальний бал</td><td>…</td></tr>
+  </tbody>
+</table>
+<div class="callout tip"><b>Орієнтир до 4.</b>
+<pre><code class="language-python">students = [("Alex", 85), ("Maria", 92), ("John", 74), ("Olga", 60), ("Max", 48)]
+scores = [s[1] for s in students]
+avg = sum(scores) / len(scores)
+below_60 = [name for name, score in students if score &lt; 60]
+for name, score in students:
+    print(f"{name:6} | {'*' * (score // 10)} ({score})")
+</code></pre>
+</div>
+
+<p style="margin-top:1.1rem"><b>4.1 · зробіть за аналогією.</b></p>
+<ul>
+  <li>Markdown: <em>«Оцінки студентів (розширена група)»</em>.</li>
+  <li>Довший список (10 студентів):
+<pre><code class="language-python">students = [
+    ("Alex", 85), ("Maria", 92), ("John", 74), ("Olga", 60), ("Max", 48),
+    ("Nina", 88), ("Taras", 55), ("Kate", 79), ("Bohdan", 95), ("Lina", 67),
+]
+</code></pre></li>
+  <li>Плюс: кількість з балом &lt; 60 і кількість з балом ≥ 80.</li>
+  <li>Зірки + Markdown-таблиця з 5 рядками показників.</li>
+</ul>
+<table>
+  <thead><tr><th>Показник</th><th>Значення</th></tr></thead>
+  <tbody>
+    <tr><td>Середній бал</td><td>…</td></tr>
+    <tr><td>Максимальний бал</td><td>…</td></tr>
+    <tr><td>Мінімальний бал</td><td>…</td></tr>
+    <tr><td>Кількість з балом &lt;60</td><td>…</td></tr>
+    <tr><td>Кількість з балом ≥80</td><td>…</td></tr>
+  </tbody>
+</table>
+<div class="callout task"><b>Здайте.</b> У кожній парі X → X.1: спочатку приклад, потім ваше рішення.</div>
+</div></article>
+
+<article class="block" id="deep-schema"><div class="block-head"><h3>Додатково: data dictionary і схема</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body">
+<p>Перед моделюванням заведіть <b>data dictionary</b> — навіть на 1 сторінку:</p>
+<table>
+  <thead><tr><th>Колонка</th><th>Тип</th><th>Опис</th><th>Допустимі значення</th><th>Роль</th></tr></thead>
+  <tbody>
+    <tr><td>area_m2</td><td>float</td><td>площа</td><td>&gt; 0</td><td>feature</td></tr>
+    <tr><td>district</td><td>category</td><td>район</td><td>довідник районів</td><td>feature</td></tr>
+    <tr><td>rent_uah</td><td>float</td><td>оренда/міс</td><td>&gt; 0</td><td>target</td></tr>
+  </tbody>
+</table>
+<pre><code class="language-python">schema = {
+    &quot;area_m2&quot;: {&quot;dtype&quot;: &quot;float&quot;, &quot;role&quot;: &quot;feature&quot;, &quot;checks&quot;: [&quot;&gt; 0&quot;]},
+    &quot;district&quot;: {&quot;dtype&quot;: &quot;category&quot;, &quot;role&quot;: &quot;feature&quot;, &quot;checks&quot;: [&quot;in dictionary&quot;]},
+    &quot;rent_uah&quot;: {&quot;dtype&quot;: &quot;float&quot;, &quot;role&quot;: &quot;target&quot;, &quot;checks&quot;: [&quot;&gt; 0&quot;]},
+}
+for col, meta in schema.items():
+    print(col, meta[&quot;role&quot;], meta[&quot;dtype&quot;])
+</code></pre>
+<div class="viz">
+  <h4>Шаблон · data dictionary</h4>
+  <div class="cards two">
+    <div class="card"><h5>Колонка</h5><p>імʼя, dtype, опис українською</p></div>
+    <div class="card"><h5>Правила</h5><p>допустимі значення, пропуски, роль feature/target</p></div>
+  </div>
+</div>
+<div class="callout tip"><b>Додатково</b>
+<p>У командах це рятує від «тихої» зміни сенсу колонки (наприклад, rent у грн vs дол.).
+На курсі вимагайте короткий dictionary у кожному ноутбуці EDA.</p>
+</div></div></article>
+
+<article class="block" id="checklist"><div class="block-head"><h3>Чекліст якості даних перед моделюванням</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body">
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · типові проблеми датасету</h4>
+    <div class="chart-wrap"><canvas id="chart-data-issues"></canvas></div>
+  </div>
+  <div class="viz">
+    <h4>Що перевірити сьогодні</h4>
+    <div class="cards">
+      <div class="card"><h5>1. Репрезентативність</h5><p>Чи покриває реальний прод?</p></div>
+      <div class="card"><h5>2. Leakage</h5><p>Чи немає «майбутніх» полів у X?</p></div>
+      <div class="card"><h5>3. Пропуски / дублікати</h5><p>Скільки NaN і повторів?</p></div>
+      <div class="card"><h5>4. Час</h5><p>Train у минулому, test у майбутньому</p></div>
+    </div>
+  </div>
+</div>
+<p style="color:var(--mute);font-size:.9rem;margin-top:.8rem">Місток далі: той самий CSV відкриємо через <code>pandas.read_csv</code> і порівняємо зі списками/словниками.</p>
+</div></article>
+    <div class="nav"><a href="Lesson1_00_presentation.html">← Попередня пара</a></div>
+    <p class="foot">Python AI Materials · Lesson2_00_presentation.html · атомарні тултіпи: Lesson2_ae_term_glossary.js</p>
+  </main>
+</div>
+<script>
+(function () {
+  const body = document.body;
+  const openBtn = document.getElementById('toc-open');
+  const closeBtn = document.getElementById('toc-close');
+  const backdrop = document.getElementById('toc-backdrop');
+  function setOpen(v) {
+    body.classList.toggle('toc-open', v);
+    if (openBtn) openBtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  openBtn && openBtn.addEventListener('click', () => setOpen(true));
+  closeBtn && closeBtn.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('.toc a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+
+<script>
+(function () {
+  const pads = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    return pads(Math.floor(s / 60)) + ":" + pads(s % 60);
+  };
+
+  let active = null; // { el, left, tick }
+
+  function stopActive(reset) {
+    if (!active) return;
+    clearInterval(active.tick);
+    const el = active.el;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    el.classList.remove("is-running");
+    if (reset) {
+      el.classList.remove("is-done");
+      if (check) check.checked = false;
+      if (live) {
+        live.hidden = true;
+        live.textContent = fmt(Number(el.dataset.minutes || 0) * 60);
+      }
+    }
+    active = null;
+  }
+
+  function start(el) {
+    stopActive(true);
+    const minutes = Number(el.dataset.minutes || 0);
+    if (!minutes || minutes <= 0) return;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    let left = minutes * 60;
+    el.classList.add("is-running");
+    el.classList.remove("is-done");
+    if (check) check.checked = true;
+    if (live) {
+      live.hidden = false;
+      live.textContent = fmt(left);
+    }
+    const tick = setInterval(() => {
+      left -= 1;
+      if (live) live.textContent = fmt(left);
+      if (left <= 0) {
+        clearInterval(tick);
+        el.classList.remove("is-running");
+        el.classList.add("is-done");
+        if (live) live.textContent = "00:00";
+        active = null;
+        try { if (navigator.vibrate) navigator.vibrate(80); } catch (_) {}
+      }
+    }, 1000);
+    active = { el, left, tick };
+  }
+
+  document.querySelectorAll(".block-timer").forEach((el) => {
+    const check = el.querySelector(".timer-check");
+    const minutes = Number(el.dataset.minutes || 0);
+    const live = el.querySelector(".timer-live");
+    if (live) live.textContent = fmt(minutes * 60);
+
+    const onToggle = () => {
+      if (!check) return;
+      if (check.checked) start(el);
+      else {
+        if (active && active.el === el) stopActive(true);
+        else {
+          el.classList.remove("is-running", "is-done");
+          if (live) {
+            live.hidden = true;
+            live.textContent = fmt(minutes * 60);
+          }
+        }
+      }
+    };
+    check && check.addEventListener("change", onToggle);
+    // click on label text also works via checkbox; prevent double-handling on live span
+  });
+})();
+</script>
+
+<script src="Lesson2_ae_term_glossary.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+  Chart.defaults.color = mute;
+  Chart.defaults.borderColor = grid;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const rent = document.getElementById('chart-rent-scatter');
+  if (rent) {
+    new Chart(rent, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Квартири: area_m2 → rent_uah',
+          data: [
+            {x: 42, y: 18500}, {x: 61, y: 15200}, {x: 78, y: 24100},
+            {x: 55, y: 17000}, {x: 90, y: 28000}, {x: 33, y: 12000},
+            {x: 70, y: 21000}, {x: 48, y: 16000}
+          ],
+          backgroundColor: '#7dffb3',
+          borderColor: '#7dffb3',
+          pointRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: ink } },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `площа ${ctx.raw.x} м² → ${ctx.raw.y} грн`
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'area_m2 (feature)', color: mute },
+            ticks: { color: mute }, grid: { color: grid }
+          },
+          y: {
+            title: { display: true, text: 'rent_uah (target)', color: mute },
+            ticks: { color: mute }, grid: { color: grid }
+          }
+        }
+      }
+    });
+  }
+
+  const feats = document.getElementById('chart-feature-types');
+  if (feats) {
+    new Chart(feats, {
+      type: 'polarArea',
+      data: {
+        labels: ['Числові', 'Категоріальні', 'Datetime', 'Текст', 'Image/Audio'],
+        datasets: [{
+          data: [34, 28, 14, 16, 8],
+          backgroundColor: [
+            'rgba(125,255,179,.75)',
+            'rgba(126,200,255,.75)',
+            'rgba(255,184,107,.75)',
+            'rgba(255,143,171,.75)',
+            'rgba(180,160,255,.75)'
+          ],
+          borderWidth: 1,
+          borderColor: '#0f1412'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: ink, boxWidth: 12 } },
+          title: {
+            display: true,
+            text: 'Типова «суміш» ознак у табличних продуктах (ілюстрація)',
+            color: mute,
+            font: { size: 12 }
+          }
+        },
+        scales: {
+          r: {
+            ticks: { display: false },
+            grid: { color: grid }
+          }
+        }
+      }
+    });
+  }
+
+  const pass = document.getElementById('chart-exam-pass');
+  if (pass) {
+    new Chart(pass, {
+      type: 'bar',
+      data: {
+        labels: ['Студент 1','2','3','4','5','6','7','8'],
+        datasets: [
+          {
+            label: 'hours_study',
+            data: [2,4,5,6,1,7,3,8],
+            backgroundColor: '#7ec8ff'
+          },
+          {
+            label: 'practice_tasks',
+            data: [1,3,4,5,0,6,2,7],
+            backgroundColor: '#7dffb3'
+          },
+          {
+            label: 'passed',
+            data: [0,0,1,1,0,1,0,1],
+            backgroundColor: '#ffb86b',
+            type: 'line',
+            borderColor: '#ffb86b',
+            yAxisID: 'y1',
+            tension: 0.2,
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: ink, boxWidth: 12 } }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: 'ознаки', color: mute },
+            ticks: { color: mute }, grid: { color: grid }
+          },
+          y1: {
+            position: 'right',
+            min: 0, max: 1,
+            title: { display: true, text: 'target passed', color: mute },
+            ticks: { color: mute, stepSize: 1 },
+            grid: { drawOnChartArea: false }
+          },
+          x: { ticks: { color: mute }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  const issues = document.getElementById('chart-data-issues');
+  if (issues) {
+    new Chart(issues, {
+      type: 'radar',
+      data: {
+        labels: ['Пропуски', 'Дублікати', 'Leakage', 'Дисбаланс', 'Шум міток', 'Drift'],
+        datasets: [{
+          label: 'Рівень ризику (ілюстрація)',
+          data: [7, 4, 8, 6, 5, 7],
+          borderColor: '#7dffb3',
+          backgroundColor: 'rgba(125,255,179,.2)',
+          pointBackgroundColor: '#ffb86b'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ink } } },
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { display: false },
+            grid: { color: grid },
+            pointLabels: { color: mute }
+          }
+        }
+      }
+    });
+  }
+
+});
+</script>
+</body>
+</html>

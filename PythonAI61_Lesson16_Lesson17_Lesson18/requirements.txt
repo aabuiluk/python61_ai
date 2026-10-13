@@ -1,0 +1,19 @@
+# Винятковий роздаток: пари 16, 17 і 18 в одній папці.
+# torch у браузері (Pyodide) НЕ працює. Ставте локальний venv.
+#
+#   python -m venv .venv
+#   .venv\Scripts\activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#   python mlp_lab/run.py
+#
+# Живі комірки в HTML:
+#   python pair_kernel.py              # http://127.0.0.1:8765
+#
+# CPU-збірка з PyPI; GPU не потрібен. Диск ≈ 1 ГБ, RAM ≈ 200–300 МБ.
+# Докладніше: START.txt
+
+numpy>=1.26
+scikit-learn>=1.4
+matplotlib>=3.8
+torch>=2.2

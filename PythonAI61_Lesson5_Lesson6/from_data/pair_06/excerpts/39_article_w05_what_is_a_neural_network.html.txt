@@ -1,0 +1,18 @@
+SOURCE: data/kb_extracts/articles/w05_what_is_a_neural_network.html
+TITLE: w05_what_is_a_neural_network.html
+SCORE: 1.8
+
+56) = \frac{1}{1 + e^{-0.56}} \approx 0.636
+Final Classification:
+The output value of approximately
+0.636
+indicates the probability of the email being spam.
+Since this value is greater than 0.5, the neural network classifies the email as spam (1).
+Neural Network
+Learning of a Neural Network
+1. Learning with Supervised Learning
+In supervised learning, a neural network learns from labeled input-output pairs provided by a teacher. The network generates outputs based on inputs and by comparing these outputs to the known desired outputs, an error signal is created. The network iteratively adjusts its parameters to minimize errors until it reaches an acceptable performance level.
+2. Learning with Unsupervised Learning
+Unsupervised learning involves data without labeled output variables. The primary goal is to understand the underlying structure of the input data (X). Unlike supervised learning, there is no instructor to guide the process. Instead, the focus is on modeling data patterns and relationships, with techniques like clustering and association commonly used.
+3. Learning with Reinforcement Learning
+Reinforcement learning enables a neural network to learn through interaction with…

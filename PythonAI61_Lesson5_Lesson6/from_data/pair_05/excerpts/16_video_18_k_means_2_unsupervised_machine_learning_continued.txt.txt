@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/18_k_means_2_unsupervised_machine_learning_continued.txt
+TITLE: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG] · 18. K-means / 2. Unsupervised Machine Learning Continued
+SCORE: 4.0
+
+# 18. K-means / 2. Unsupervised Machine Learning Continued
+# course: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]/18. K-means/2. Unsupervised Machine Learning Continued.srt
+OK, so let's talk about ways, different ways to represent these clusters, so there are some of the common ways to represent clusters are as follows that one way to represent cluster is that using the centroid as the representation of the cluster. So what we do is that we calculate the radius, considering the center to be the center point, and then also we compute the standard deviation of the cluster. So in this way, we can actually estimate the spread of the cluster in each dimension. And along with the radius, we can use this information to represent the cluster itself. So the central representation works well if the clusters are of hypothetical shape. So the shapes we saw earlier before were not exactly spheres. They were shapes that were elongated and were cylindrical sometimes. So they were not, however, spherical shapes. So if the clusters are elongated or…

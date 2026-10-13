@@ -1,0 +1,43 @@
+Роздаток пар 31–32. Модуль 7 «Навчання без учителя».
+Пара 31: SVD і зниження розмірності — таблиця wine, StandardScaler, SVD-розклад, TruncatedSVD, SVD Projection.
+Пара 32: PCA у двох вимірах і порівняння з SVD — explained_variance_ratio_, два графіки поруч, скільки компонент лишати.
+Наскрізна задача: карта вин для DataVision Analytics (практичне і домашнє 7.1 ITSTEP).
+План заняття на 180 хвилин: Lesson31_32_plan_180.md
+
+1) Середовище (Python 3.10–3.14; інтернет потрібен лише для pip)
+   python -m venv .venv
+   .venv\Scripts\activate          (Windows)
+   source .venv/bin/activate        (macOS / Linux)
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+
+2) Готова програма — карта вин
+   python Lesson32_05_wine_map.py
+   python Lesson32_05_wine_map.py 0 70 150
+   python Lesson32_05_wine_map.py --new alcohol=14.5 proline=1500 flavanoids=3.5
+   python Lesson32_05_wine_map.py --features
+
+3) Пара 31 · крок за кроком
+   python Lesson31_01_prepare_wine.py         завдання 7.1.1: DataFrame, масштаби, StandardScaler (~2 с)
+   python Lesson31_02_svd_by_hand.py          SVD-розклад на numpy, ранг k, нові координати (~2 с)
+   python Lesson31_03_svd_projection.py       завдання 7.1.2: TruncatedSVD, SVD Projection, без scaler (~2 с)
+   python Lesson31_04_svd_text.py             навіщо TruncatedSVD: розріджений TF-IDF, теми (~2 с)
+
+4) Пара 32 · крок за кроком
+   python Lesson32_01_pca_projection.py       завдання 7.1.3: PCA, PCA Projection, частки дисперсії (~2 с)
+   python Lesson32_02_pca_by_hand.py          PCA руками; чому після scaler він дорівнює SVD (~2 с)
+   python Lesson32_03_svd_vs_pca.py           завдання 7.1.4: два графіки поруч, підсумковий PNG (~2 с)
+   python Lesson32_03_svd_vs_pca.py --raw     те саме плюс рядок без scaler
+   python Lesson32_04_how_many_components.py  scree plot, 90% дисперсії, PCA перед класифікацією (~3 с)
+
+5) Практичні завдання: Lesson31_tasks.md, Lesson32_tasks.md
+   Домашнє: Lesson31_homework.md, Lesson32_homework.md
+
+6) Презентації офлайн
+   Lesson31_00_presentation.html
+   Lesson32_00_presentation.html
+
+Усі графіки скрипти зберігають у results/. Вікна matplotlib не відкриваються.
+
+Локальне ядро кнопок «Запуск» у HTML (опційно):
+   python pair_kernel.py

@@ -1,0 +1,25 @@
+SOURCE: data/kb_extracts/articles/w03_supervised_machine_learning.html
+TITLE: w03_supervised_machine_learning.html
+SCORE: 1.8
+
+models step-by-step by correcting errors of previous models, creating a strong model.
+Naive Bayes Algorithm
+:
+Based on probability and Bayes’ Theorem, assuming features are independent of each other.
+Examples
+Fraud Detection in Banking
+: Uses labeled transaction data to identify and predict fraudulent activities.
+Parkinson Disease Prediction:
+Analyzes medical data such as voice recordings, motor symptoms, and clinical measurements to identify patterns and predict whether a patient has disease or not.
+Customer Churn Prediction:
+Uses historical customer data to predict whether a customer will leave a service.
+Cancer cell classification:
+Implements supervised learning for cancer cells based on their features and identifying them if they are ‘malignant’ or ‘benign.
+Stock Price Prediction
+: Uses past data to predict stock trends and support investment decisions.
+Advantages
+Easy to understand and implement as it learns from labeled data.
+Provides high accuracy when sufficient labeled data is available.
+Works for both classification (spam detection, disease prediction) and regression (price forecasting).
+Can generalize well to unseen data with proper training and diverse datasets.
+Widely…

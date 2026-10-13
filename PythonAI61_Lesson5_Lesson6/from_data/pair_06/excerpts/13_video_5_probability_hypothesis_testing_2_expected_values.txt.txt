@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/5_probability_hypothesis_testing_2_expected_values.txt
+TITLE: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG] · 5. Probability & Hypothesis Testing / 2. Expected Values
+SCORE: 3.0
+
+# 5. Probability & Hypothesis Testing / 2. Expected Values
+# course: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]/5. Probability & Hypothesis Testing/2. Expected Values.srt
+In this video, we're going to go over expected value, so in the previous video, we went over what exactly is probability in this particular video? We're going to walk through some examples and definitions of what exactly is the expected value. So let's go ahead and jump in here. So the expected values to school were some definitions here. So expected values are the average outcome we expect if we run an experiment many times. And so you can see on the right hand side there the formula. We have the event and we have the probability. And so what exactly is a trial then? So a trial is observing an event occur and recording an outcome. Right. So we're flipping the coin and we got a tails. So that is essentially one trial. Right. And then an experiment is a collection of one or more multiple trials. So we're flipping the coin ten times and we're recording 10 individual…

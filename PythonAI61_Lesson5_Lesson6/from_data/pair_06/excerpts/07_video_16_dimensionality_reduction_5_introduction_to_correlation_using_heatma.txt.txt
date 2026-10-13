@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/16_dimensionality_reduction_5_introduction_to_correlation_using_heatma.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 16. Dimensionality Reduction / 5. Introduction to Correlation using Heatmap
+SCORE: 3.0
+
+# 16. Dimensionality Reduction / 5. Introduction to Correlation using Heatmap
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/16. Dimensionality Reduction/5. Introduction to Correlation using Heatmap.srt
+Hello and welcome. In the previous lesson, we solved a small world problem by using the sportin at the decision tree algorithm and got good results. We also discussed that we can improve our solution by reducing the dimensions of the details at which gone and done. Help us to avoid overfitting and make our solution optimized by reducing the time and space complexity. Now, if you remember, we also discussed about various techniques that can be used for reducing the dimension of body, does it? Let's get started with the correlation filtering technique. Now, before going too deep, let's understand what is correlation, correlation is a statistical relationship between two variables in the broadest sense. It refers to the degree to which a pair of variables are linearly related. We are going to check the correlation…

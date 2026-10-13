@@ -1,0 +1,36 @@
+# Штучний інтелект з використанням Python · спільне середовище для всіх пар (1–32)
+# Python 3.10–3.14. Один venv у корені репозиторію замість окремого в кожній папці.
+#
+#   python -m venv .venv
+#   .venv\Scripts\activate          (Windows)
+#   source .venv/bin/activate        (macOS / Linux)
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#
+# Диск ≈ 1.5 ГБ (переважно torch, CPU-збірка; GPU не потрібен).
+# Скрипти запускайте з папки відповідної пари: cd PythonAI_Author_Lesson31_Lesson32
+
+# --- дані й обчислення (пари 3–14, 27–28, 31–32)
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+scikit-learn>=1.4
+matplotlib>=3.8
+
+# --- нейромережі (пари 15–30)
+torch>=2.2
+torchvision>=0.17
+Pillow>=10.0
+
+# --- NLP (пари 26–30)
+nltk>=3.8
+certifi
+gensim>=4.3; python_version < "3.14"   # на 3.14 не ставиться — пари 27–28 беруть word_vectors.py (numpy)
+
+# --- Jupyter (пари 1–2 і .ipynb)
+jupyterlab>=4.2
+notebook>=7.2
+ipykernel>=6.29
+
+# Необовʼязково, пара 30, завдання 6.3.4 (distilGPT2, ~350 МБ при першому запуску):
+# transformers>=4.40

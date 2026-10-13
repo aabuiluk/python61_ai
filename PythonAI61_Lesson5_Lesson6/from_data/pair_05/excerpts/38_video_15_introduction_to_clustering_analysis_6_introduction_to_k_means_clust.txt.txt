@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/15_introduction_to_clustering_analysis_6_introduction_to_k_means_clust.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 15. Introduction to Clustering Analysis / 6. Introduction to K Means Clustering
+SCORE: 3.0
+
+# 15. Introduction to Clustering Analysis / 6. Introduction to K Means Clustering
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/15. Introduction to Clustering Analysis/6. Introduction to K Means Clustering.srt
+Hello and welcome. In the previous lesson, we learned how to choose the best or optimal value for cake, that is the number of clusters to implement the K means clustering analysis. Now, in this lesson, we are going to learn and understand the working of the most popular and simple clustering algorithms, so without wasting any time. Let's get started. K means algorithm is a centroid based algorithm. It tries to make the entire cluster data points as similar as possible while also keeping the clusters as different as possible. It designs data points to a cluster such that the sum of the squared distance between the data points and the clusters centroid is minimum. The less variation we have within clusters, the more homogeneous the data points are within the same cluster. Now let's take a look at how the K…

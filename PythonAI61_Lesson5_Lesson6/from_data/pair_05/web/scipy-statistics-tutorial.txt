@@ -1,0 +1,97 @@
+# Statistics (scipy.stats)
+# source: https://docs.scipy.org/doc/scipy/tutorial/stats.html
+# fetched_via: curl
+# pairs: 3,4,5,6,7,8
+
+Statistics (scipy.stats) — SciPy v1.18.0 Manual 
+Skip to main content 
+Back to top Ctrl + K 
+
+Choose version 
+
+System Settings 
+Light 
+Dark 
+
+GitHub 
+Scientific Python Forum 
+
+Search Ctrl + K 
+
+Statistics ( scipy.stats ) # 
+In this tutorial, we discuss many, but certainly not all, features of scipy.stats . The intention here is to provide a user with a
+working knowledge of this package. We refer to the reference manual for further details. 
+Note: This documentation is work in progress. 
+
+Contents 
+Probability distributions 
+Continuous Statistical Distributions 
+Discrete Statistical Distributions 
+Getting help 
+Common methods 
+Random number generation 
+Shifting and scaling 
+Shape parameters 
+Freezing a distribution 
+Broadcasting 
+Specific points for discrete distributions 
+Fitting distributions 
+Performance issues and cautionary remarks 
+Remaining issues 
+Building specific distributions 
+Random Variable Transition Guide 
+Background 
+Basics 
+New and Advanced Features 
+Conclusion 
+Universal Non-Uniform Random Number Sampling in SciPy 
+Introduction 
+Basic concepts of the Interface 
+Generators in scipy.stats.sampling 
+References 
+Kernel density estimation 
+Univariate estimation 
+Multivariate estimation 
+Multiscale Graph Correlation (MGC) 
+Quasi-Monte Carlo 
+Calculate the discrepancy 
+Using a QMC engine 
+Making a QMC engine, i.e., subclassing QMCEngine 
+Guidelines on using QMC 
+Trimming and winsorization transition guide 
+Motivation 
+Identifying the threshold 
+Trimming and winsorizing 
+Computing the statistic 
+Recipes 
+
+Sample statistics and hypothesis tests 
+Analysing one sample 
+Descriptive statistics 
+T-test and KS-test 
+Tails of the distribution 
+Special tests for normal distributions 
+Comparing two samples 
+Comparing means 
+Kolmogorov-Smirnov test for two samples: ks_2samp 
+Resampling and Monte Carlo Methods 
+Introduction 
+Resampling and Monte Carlo methods tutorials 
+Hypothesis tests 
+Bartlett’s test for equal variances 
+Chi-square test 
+Chi-square test of independence of variables in a contingency table 
+Dunnett’s test 
+Fisher’s exact test 
+Fligner-Killeen test for equality of variance 
+Friedman test for repeated samples 
+Jarque-Bera goodness of fit test 
+Kendall’s tau test 
+Kurtosis test 
+Levene test for equal variances 
+Normal test 
+Odds ratio for a contingency table 
+Pearson’s Correlation 
+Shapiro-Wilk test for normality 
+Skewness test 
+Spearman correlation coefficient

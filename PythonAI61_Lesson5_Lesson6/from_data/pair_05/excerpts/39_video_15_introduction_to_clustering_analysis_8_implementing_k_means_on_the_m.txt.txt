@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/15_introduction_to_clustering_analysis_8_implementing_k_means_on_the_m.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 15. Introduction to Clustering Analysis / 8. Implementing K Means on the Mall Dataset
+SCORE: 3.0
+
+# 15. Introduction to Clustering Analysis / 8. Implementing K Means on the Mall Dataset
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/15. Introduction to Clustering Analysis/8. Implementing K Means on the Mall Dataset.srt
+Hello and welcome. In the previous lesson, we understood and broke down the problem statement. We also understood how we can solve the problem of the marketing team to improve their follow ups and targeting by using the K means clustering algorithm. Finally, we came to the conclusion that we will be using the annual income and the spending score of the customers to create clusters from the dataset. Now, in this lesson, we are going to start from where we left in the previous lesson. First of all, as we decided to create the clusters using the spending score and the annual income of the customers, let's visualize the relation between these two characteristics of a customer using a scatterplot available in the Seabourne Library. Taking a closer look at the scatterplot for annual income versus…

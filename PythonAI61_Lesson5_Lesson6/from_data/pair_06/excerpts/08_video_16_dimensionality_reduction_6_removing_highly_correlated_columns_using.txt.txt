@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/16_dimensionality_reduction_6_removing_highly_correlated_columns_using.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 16. Dimensionality Reduction / 6. Removing Highly Correlated Columns using Correlation
+SCORE: 3.0
+
+# 16. Dimensionality Reduction / 6. Removing Highly Correlated Columns using Correlation
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/16. Dimensionality Reduction/6. Removing Highly Correlated Columns using Correlation.srt
+Hello and welcome. I hope you guys enjoyed analyzing the highly correlated columns from the set using the heat map, if you remember. We have already found out the pairs of highly correlated columns from the heat map generated using the Seabourne Library. Now, in this lesson, we are going to remove one of the highly correlated columns using our understanding of the problems. Let's come back to the Juber Donald book. Out of age job, 11 monthly income and or good looking years even removed the job level column as it has the highest correlation with age. Then out of job growth and department will remove the job rule column as department could be more useful for predicting the addition of the employees. Next, we can see that the job level is highly correlated with monthly income and total working…

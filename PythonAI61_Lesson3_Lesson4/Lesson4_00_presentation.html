@@ -1,0 +1,3027 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pandas: створення DataFrame та інформаційні методи · Python AI Additional Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+:root {
+  --bg: #0f1412;
+  --panel: #18211c;
+  --panel-2: #1e2a24;
+  --ink: #e8f0e7;
+  --mute: #9aafa0;
+  --line: #2f4137;
+  --accent: #7dffb3;
+  --accent-ink: #062416;
+  --warm: #ffb86b;
+  --blue: #7ec8ff;
+  --rose: #ff8fab;
+  --font: "Manrope", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rail-w: 300px;
+}
+* { box-sizing: border-box; }
+
+/* --- overflow containment: keep block radius visible on mobile --- */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.shell,
+.stage {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.mobile-bar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  left: 0;
+  right: 0;
+}
+.banner,
+.block,
+.nav,
+.foot {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.block-body {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* display:block on <table> expands parents; keep real table + scroll on body */
+.block-body table {
+  display: table !important;
+  width: 100% !important;
+  max-width: 100%;
+  table-layout: auto;
+}
+.viz,
+.viz-grid,
+.diagram,
+.chart-wrap,
+.cards,
+.flow,
+.pre,
+pre {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.diagram svg {
+  overflow: hidden;
+}
+
+/* --- force block width within stage --- */
+.stage > .banner,
+.stage > .block {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(125,255,179,.12), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(126,200,255,.10), transparent 55%),
+    var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+.shell { display: block; min-height: 100dvh; width: 100%; padding-top: 58px; }
+.mobile-bar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(15,20,18,.92); backdrop-filter: blur(10px);
+  color: var(--ink); padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 1px solid var(--line);
+}
+.burger {
+  width: 44px; height: 44px; border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link, .rail .menu-link {
+  border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent);
+  text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: .45rem .55rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.rail .menu-link { margin: 0 0 .75rem; }
+.rail-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 45; }
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.45);
+  background: #101713; color: var(--ink); padding: 1rem .9rem 2rem; overflow: auto;
+  border-right: 1px solid var(--line);
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink); background: var(--accent); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.15rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #fff; font-weight: 700;
+}
+.rail .meta { color: var(--mute); font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b7c7bc; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--accent);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--accent); }
+
+.stage { padding: .9rem .75rem 2.4rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--panel-2));
+  padding: 1.15rem 1rem; margin-bottom: 1rem; border-radius: 18px;
+}
+.banner .kicker {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--warm);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  font-family: var(--display); font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  margin: 0 0 .55rem; line-height: 1.15; color: #fff;
+}
+.banner .lead { color: #c9d8cd; margin: 0 0 .85rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  border-radius: 999px; padding: .28rem .65rem; font-size: .78rem; color: var(--mute);
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.goals { margin: 0; padding-left: 1.15rem; color: #d5e3d8; }
+.goals li { margin: .25rem 0; }
+
+.block {
+  border: 1px solid var(--line); background: rgba(24,33,28,.88);
+  border-radius: 18px; margin: 0 0 1rem; overflow: hidden;
+}
+.block-head {
+  display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  align-items: flex-start; padding: .9rem 1rem .55rem;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.block-head h3 {
+  margin: 0; font-family: var(--display); font-size: 1.15rem; color: #fff; line-height: 1.25;
+}
+.kind {
+  font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  border-radius: 999px; padding: .22rem .5rem; border: 1px solid var(--line);
+}
+.kind.main { color: var(--blue); border-color: rgba(126,200,255,.35); }
+.kind.task { color: var(--warm); border-color: rgba(255,184,107,.4); }
+.kind.deep { color: var(--rose); border-color: rgba(255,143,171,.4); }
+.clock { font-family: var(--mono); font-size: .75rem; color: var(--mute); }
+
+.block-timer {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .18rem .55rem .18rem .35rem;
+  background: rgba(15,20,18,.55); user-select: none; cursor: pointer;
+}
+.block-timer input.timer-check {
+  width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0;
+}
+.block-timer .clock { border: 0; padding: 0; background: transparent; }
+.block-timer .timer-live {
+  color: var(--accent); font-weight: 700; min-width: 3.2rem; text-align: right;
+}
+.block-timer.is-running {
+  border-color: rgba(125,255,179,.55);
+  box-shadow: 0 0 0 1px rgba(125,255,179,.18);
+}
+.block-timer.is-done {
+  border-color: rgba(255,184,107,.55);
+}
+.block-timer.is-done .timer-live { color: var(--warm); }
+
+.block-body { padding: .85rem 1rem 1.1rem; }
+.block-body p, .block-body li { color: #d3e0d6; }
+.block-body ul, .block-body ol { padding-left: 1.15rem; }
+.block-body table {
+  width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0 1rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.block-body th, .block-body td {
+  border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top;
+}
+.block-body th { background: rgba(125,255,179,.08); color: var(--accent); }
+.block-body code, .inline-code {
+  font-family: var(--mono); font-size: .84em; color: var(--accent);
+  background: rgba(125,255,179,.08); padding: .08rem .28rem; border-radius: 5px;
+}
+.pre {
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0b100e; border: 1px solid var(--line); border-radius: 12px;
+  padding: .85rem .9rem; margin: .7rem 0 1rem; color: #d9f5e4;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.45;
+  max-width: 100%; white-space: pre;
+}
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: rgba(125,255,179,.06); padding: .7rem .85rem; border-radius: 10px; margin: .7rem 0;
+}
+.callout.tip { border-left-color: var(--blue); background: rgba(126,200,255,.07); }
+.callout.task {
+  border-left-color: var(--warm); background: rgba(255,184,107,.08);
+}
+.viz {
+  margin: .85rem 0 1.05rem; padding: .85rem; border-radius: 14px;
+  border: 1px solid var(--line); background: rgba(0,0,0,.22);
+}
+.viz h4 {
+  margin: 0 0 .65rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mute); font-weight: 700;
+}
+.viz-grid {
+  display: grid; gap: .85rem;
+  grid-template-columns: 1fr;
+}
+.chart-wrap { position: relative; width: 100%; min-height: 260px; }
+.chart-wrap.tall { min-height: 320px; }
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram svg text { paint-order: stroke fill; pointer-events: none; }
+.flow {
+  display: grid; gap: .45rem; grid-template-columns: 1fr;
+}
+.flow-step {
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .75rem;
+  background: rgba(255,255,255,.03);
+}
+.flow-step b { color: var(--accent); display: block; margin-bottom: .2rem; }
+.flow-arrow {
+  text-align: center; color: var(--mute); font-family: var(--mono); font-size: .85rem;
+}
+.cards {
+  display: grid; gap: .65rem; grid-template-columns: 1fr;
+}
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem;
+  background: rgba(255,255,255,.03);
+}
+.card h5 { margin: 0 0 .35rem; color: #fff; font-size: .95rem; }
+.card p { margin: 0; color: var(--mute); font-size: .88rem; }
+.legend {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .55rem;
+}
+.legend span {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .78rem; color: var(--mute);
+}
+.swatch { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.nav {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.1rem 0 .4rem;
+}
+.nav a {
+  text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+  padding: .55rem .75rem; border-radius: 999px; background: rgba(255,255,255,.03);
+}
+.foot { color: var(--mute); font-size: .82rem; margin-top: .4rem; }
+
+.term {
+  border-bottom: 1px dotted rgba(125,255,179,.7);
+  cursor: help;
+  color: inherit;
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.term-hint {
+  margin: .55rem 0 0;
+  font-size: .82rem;
+  color: var(--mute);
+}
+.term-hint b { color: var(--accent); font-weight: 700; }
+#term-tip {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #101713;
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+
+/* --- mobile-adaptive visuals (pairs 1–6) --- */
+.chart-wrap { min-height: 200px; max-width: 100%; }
+.chart-wrap.tall { min-height: 240px; }
+.viz { max-width: 100%; overflow: hidden; }
+.diagram svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+.diagram svg text {
+  font-size: 12px;
+}
+.viz-grid { grid-template-columns: 1fr; }
+.cards.two, .cards.three { grid-template-columns: 1fr; }
+.flow { grid-template-columns: 1fr; }
+.flow-arrow { display: block; text-align: center; }
+.matrix {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: .35rem;
+  font-size: .78rem;
+  max-width: 100%;
+}
+.matrix .cell {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .55rem .45rem;
+  background: rgba(255,255,255,.03);
+  text-align: center;
+}
+.matrix .head { color: var(--mute); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+.matrix .tp { border-color: rgba(125,255,179,.45); color: var(--accent); }
+.matrix .tn { border-color: rgba(126,200,255,.45); color: var(--blue); }
+.matrix .fp { border-color: rgba(255,184,107,.5); color: var(--warm); }
+.matrix .fn { border-color: rgba(255,143,171,.5); color: var(--rose); }
+@media (max-width: 899px) {
+  .banner .lead { font-size: .95rem; }
+  .block-head h3 { font-size: 1.05rem; }
+  .block-body { padding: .75rem .8rem 1rem; }
+  .pill { font-size: .72rem; }
+  .matrix { font-size: .72rem; }
+  .matrix .cell { padding: .45rem .3rem; }
+  .pre, pre code { font-size: .75rem; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .cards.two { grid-template-columns: 1fr 1fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+}
+
+
+/* --- embed + mobile layout polish --- */
+body.embed .mobile-bar { display: none !important; }
+body.embed .shell { padding-top: 0 !important; }
+@media (max-width: 899px) {
+  .shell { padding-top: 52px; }
+  body.embed .mobile-bar { display: flex !important; }
+  body.embed .shell { padding-top: 52px !important; }
+  .stage { padding: .65rem .55rem 1.8rem; }
+  .banner { padding: .9rem .75rem; border-radius: 14px; }
+  .banner h2 { font-size: clamp(1.2rem, 5.5vw, 1.55rem); }
+  .banner .lead { font-size: .92rem; }
+  .block { border-radius: 14px; margin-bottom: .85rem; }
+  .block-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .45rem;
+    padding: .75rem .75rem .5rem;
+  }
+  .block-head h3 {
+    font-size: clamp(1rem, 4.4vw, 1.12rem);
+    line-height: 1.3;
+  }
+  .block-head > div {
+    width: 100%;
+  }
+  .block-timer, .kind, .clock {
+    font-size: .7rem;
+  }
+  .block-timer {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  .block-body { padding: .7rem .75rem .95rem; }
+  .callout { padding: .6rem .7rem; font-size: .9rem; }
+  .timing-strip { gap: .3rem; }
+  .pill { font-size: .7rem; padding: .22rem .5rem; }
+  .mobile-bar .title {
+    font-size: .82rem;
+    -webkit-line-clamp: 1;
+  }
+  .mobile-bar {
+    padding: .5rem .65rem;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Fixed sidebar: sticky breaks under overflow-x:hidden on html/body */
+  .shell {
+    display: block;
+    padding-top: 0;
+    padding-left: var(--rail-w);
+    min-height: 100dvh;
+  }
+  .mobile-bar { display: none; }
+  .rail {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: none !important;
+    width: var(--rail-w);
+    max-width: var(--rail-w);
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: none;
+    z-index: 40;
+  }
+  .rail-backdrop, #toc-close { display: none !important; }
+  .stage {
+    max-width: min(1360px, 100%);
+    width: 100%;
+    padding: 1.4rem 1.8rem 3rem;
+    min-width: 0;
+    margin: 0;
+  }
+  .viz-grid.two { grid-template-columns: 1.1fr .9fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+  .flow { grid-template-columns: repeat(4, 1fr); align-items: stretch; }
+  .flow-arrow { display: none; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+
+/* --- auto-hide mobile bar on scroll --- */
+@media (max-width: 900px) {
+  .mobile-bar {
+    transition: transform 0.22s ease, opacity 0.18s ease;
+  }
+  body.nav-hidden .mobile-bar {
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.nav-hidden.embed .shell,
+  body.nav-hidden .shell {
+    padding-top: 0 !important;
+  }
+}
+
+
+/* --- wide desktop stage --- */
+.toc a {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+.rail h1 {
+  overflow-wrap: anywhere;
+}
+.pill {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
+}
+@media (max-width: 899px) {
+  .viz-grid.two,
+  .viz-grid.equal,
+  .cards.two,
+  .cards.three,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+  .rail h1 { font-size: 1.05rem; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+  .cards.three { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1400px) {
+  :root { --rail-w: 320px; }
+  .stage {
+    max-width: min(1520px, 100%);
+    padding: 1.55rem 2.25rem 3.4rem;
+  }
+}
+
+<!-- teacher-block-css:start -->
+[hidden] { display: none !important; }
+.teacher-deep-dive {
+  border: 1px solid #60a5fa;
+  border-left: 5px solid #3b82f6;
+  background: linear-gradient(145deg, rgba(30, 64, 175, .22), rgba(15, 23, 42, .94));
+  box-shadow: 0 14px 34px rgba(37, 99, 235, .13);
+}
+.teacher-deep-dive .block-head {
+  border-bottom-color: rgba(96, 165, 250, .4);
+  background: rgba(37, 99, 235, .14);
+}
+.teacher-deep-dive .block-head h3 { color: #dbeafe; }
+.teacher-deep-dive .teacher-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #60a5fa;
+  border-radius: 999px;
+  padding: .22rem .55rem;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, .2);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.teacher-deep-dive a { color: #93c5fd; }
+.teacher-deep-dive code {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, .15);
+}
+.teacher-deep-dive:focus-within {
+  outline: 3px solid rgba(96, 165, 250, .35);
+  outline-offset: 3px;
+}
+<!-- teacher-block-css:end -->
+</style>
+</head>
+<body>
+
+<script>
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    var embedded = q.get('embed') === '1' || window.self !== window.top;
+    if (embedded) document.body.classList.add('embed');
+  } catch (e) {
+    try { if (window.self !== window.top) document.body.classList.add('embed'); } catch (_) {}
+  }
+})();
+</script>
+
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити зміст" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Pandas: створення DataFrame та інформаційні методи</p>
+  </div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.55rem">
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <h1>Pandas: створення DataFrame та інформаційні методи</h1>
+    <div class="meta">Пара 4/50 · 80 хв · старт 20:00 · Python AI Additional Materials · матеріали для студентів</div>
+    <div class="label">Зміст</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#dataframe-create">Створення DataFrame з Python-структур</a></li><!-- deep-dive-toc:start:4:1 --><li><a href="#extra-4-1">Додатково: Створення DataFrame з Python-структур</a></li><li data-teacher-toc hidden><a href="#teacher-4-1">Для викладача: Створення DataFrame з Python-структур</a></li><!-- deep-dive-toc:end:4:1 --><li><a href="#head-tail-sample">Методи head(), tail() і sample()</a></li><!-- deep-dive-toc:start:4:2 --><li><a href="#extra-4-2">Додатково: Методи head(), tail() і sample()</a></li><li data-teacher-toc hidden><a href="#teacher-4-2">Для викладача: Методи head(), tail() і sample()</a></li><!-- deep-dive-toc:end:4:2 --><li><a href="#info-describe">Методи info(), describe() та перевірка якості таблиці</a></li><!-- deep-dive-toc:start:4:3 --><li><a href="#extra-4-3">Додатково: Методи info(), describe() та перевірка якості таблиці</a></li><li data-teacher-toc hidden><a href="#teacher-4-3">Для викладача: Методи info(), describe() та перевірка якості таблиці</a></li><!-- deep-dive-toc:end:4:3 --><li><a href="#dtype-na">dtype, пропуски і категорії</a></li><!-- deep-dive-toc:start:4:4 --><li><a href="#extra-4-4">Додатково: dtype, пропуски і категорії</a></li><li data-teacher-toc hidden><a href="#teacher-4-4">Для викладача: dtype, пропуски і категорії</a></li><!-- deep-dive-toc:end:4:4 --><li><a href="#csv-bridge">CSV, read_csv() і первинний огляд перед аналізом</a></li><!-- deep-dive-toc:start:4:5 --><li><a href="#extra-4-5">Додатково: CSV, read_csv() і первинний огляд перед аналізом</a></li><li data-teacher-toc hidden><a href="#teacher-4-5">Для викладача: CSV, read_csv() і первинний огляд перед аналізом</a></li><!-- deep-dive-toc:end:4:5 --><li><a href="#extra-kb-pandas">Додатково: ритуал info / пропуски / dtype</a></li><li><a href="#checkpoint">Checkpoint</a></li><li><a href="#si-thread">Support Intelligence</a></li><li><a href="#practice-levels">Рівні практики</a></li><li><a href="#repro-bar">Відтворюваність</a></li><li><a href="#practice-bar">Очікуваний результат</a></li><li><a href="#itstep-practical">Обовʼязкові практичні · ITSTEP Практичне завдання 2.2</a></li><li><a href="#itstep-task-1">Завдання 1 + 1.1 · DataFrame зі словника</a></li><li><a href="#itstep-task-2">Завдання 2 + 2.1 · CSV з фільмами</a></li><li><a href="#itstep-task-3">Завдання 3 + 3.1 · Фільтрація і сортування співробітників</a></li><li><a href="#itstep-task-4">Завдання 4 + 4.1 · Новий стовпець «Виручка»</a></li><li><a href="#itstep-task-5">Завдання 5 + 5.1 · groupby за курсом</a></li><li><a href="#itstep-task-6">Завдання 6 + 6.1 · Обʼєднання двох таблиць</a></li><li><a href="#exit-ticket">Exit ticket</a></li><li><a href="#homework-stretch">Домашнє / stretch</a></li><li><a href="#deep-study">Додатково: глибоке вивчення · модель DataFrame і merge</a></li></ol>
+  </aside>
+  <main class="stage"><header class="banner" id="agenda">
+  <p class="kicker">Python AI Additional Materials · презентація</p>
+  <h2>Pandas: створення DataFrame та інформаційні методи</h2>
+  <p class="lead">Перед будь-яким аналізом нам треба <b>побачити таблицю очима</b>: як вона створена, які в неї розміри, типи даних, пропуски й базова статистика. Саме це роблять <b>head</b>, <b>tail</b>, <b>sample</b>, <b>info</b> і <b>describe</b>.</p>
+  <div class="timing-strip"><span class="pill"><b>7 хв</b> Створення DataFrame</span><span class="pill"><b>7 хв</b> head / tail / sample</span><span class="pill"><b>7 хв</b> info / describe</span><span class="pill"><b>8 хв</b> dtype і пропуски</span><span class="pill"><b>7 хв</b> CSV і первинний огляд</span><span class="pill"><b>3 хв</b> Checkpoint</span><span class="pill"><b>37 хв</b> ITSTEP 2.2 (1–6)</span><span class="pill"><b>4 хв</b> Exit ticket</span></div>
+  <ul class="goals"><li>Створювати <b>DataFrame</b> зі словників і списків записів</li><li>Користуватись методами <b>head()</b>, <b>tail()</b>, <b>sample()</b>, <b>info()</b>, <b>describe()</b></li><li>Починати аналіз таблиці з безпечного первинного огляду</li><li>Виконати ITSTEP Практичне 2.2: задачі 1–6 і самостійні аналоги 1.1–6.1</li></ul><div class="callout tip" id="before-start"><b>Перед початком</b><ul><li>Різниця list і таблиці рядків</li><li>Що таке ознака і ціль</li><li>Jupyter: порядок комірок і kernel</li></ul></div><div class="callout tip" id="after-pair"><b>Після пари ви можете</b><ul><li>Створити DataFrame трьома способами</li><li>Прочитати info/describe і знайти пропуски</li><li>Відфільтрувати рядки за умовою</li></ul></div>
+  <p class="term-hint"><b>Підказка:</b> терміни з пунктирним підкресленням — наведіть курсор (або тапніть на телефоні), щоб побачити коротке пояснення. Словник уже вбудований у цей файл: терміни з пунктиром показують підказку без журналу й без інтернету.</p>
+</header>
+
+<article class="block" id="dataframe-create"><div class="block-head"><h3>Створення DataFrame з Python-структур</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:00–20:07 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body">
+<p>Найпростіший спосіб почати роботу в <b>pandas</b> — створити <b>DataFrame</b> зі словника або списку словників. Це добре тренує розуміння: колонки, рядки, індекс, типи значень.</p>
+<pre><code class="language-python">import pandas as pd
+
+data = {
+    "name": ["Anna", "Maksym", "Ira", "Bohdan", "Nazar"],
+    "age": [19, 21, 20, 22, 19],
+    "city": ["Lviv", "Kyiv", "Dnipro", "Odesa", "Lviv"],
+}
+df = pd.DataFrame(data)
+print(df)
+print(df.shape)</code></pre>
+<div class="callout tip"><b>Практичний орієнтир</b><p>Якщо джерело схоже на табличний CSV або Google Sheet, думайте в категоріях «колонка» і «рядок», а не «вкладений список списків».</p></div>
+
+
+<!-- viz:dataframe-grid -->
+<div class="viz diagram">
+  <h4>Візуал · DataFrame як сітка</h4>
+  <svg viewBox="0 0 560 200" role="img" aria-label="DataFrame grid">
+    <rect x="80" y="30" width="100" height="36" rx="8" fill="#24332b" stroke="#7dffb3"/><text x="130" y="53" text-anchor="middle" fill="#7dffb3" font-size="13">name</text>
+    <rect x="190" y="30" width="100" height="36" rx="8" fill="#24332b" stroke="#7ec8ff"/><text x="240" y="53" text-anchor="middle" fill="#7ec8ff" font-size="13">age</text>
+    <rect x="300" y="30" width="100" height="36" rx="8" fill="#24332b" stroke="#ffb86b"/><text x="350" y="53" text-anchor="middle" fill="#ffb86b" font-size="13">city</text>
+    <text x="30" y="95" fill="#9aafa0" font-size="12">0</text>
+    <rect x="80" y="75" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="130" y="98" text-anchor="middle" fill="#d3e0d6" font-size="13">Anna</text>
+    <rect x="190" y="75" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="240" y="98" text-anchor="middle" fill="#d3e0d6" font-size="13">28</text>
+    <rect x="300" y="75" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="350" y="98" text-anchor="middle" fill="#d3e0d6" font-size="13">Львів</text>
+    <text x="30" y="140" fill="#9aafa0" font-size="12">1</text>
+    <rect x="80" y="120" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="130" y="143" text-anchor="middle" fill="#d3e0d6" font-size="13">Bohdan</text>
+    <rect x="190" y="120" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="240" y="143" text-anchor="middle" fill="#d3e0d6" font-size="13">34</text>
+    <rect x="300" y="120" width="100" height="36" rx="8" fill="#1e2a24" stroke="#2f4137"/><text x="350" y="143" text-anchor="middle" fill="#d3e0d6" font-size="13">Київ</text>
+    <text x="80" y="185" fill="#9aafa0" font-size="12">index зліва · колонки зверху · клітинка = значення</text>
+  </svg>
+</div>
+
+</div></article><!-- deep-dive:start:4:1 --><article class="block extra-deep-dive" id="extra-4-1" data-topic-id="pair-4-dataframe-create"><div class="block-head"><h3>Додатково: Створення DataFrame з Python-структур</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p><b>Створення DataFrame з Python-структур</b> варто читати як контракт «вхід → перетворення → вихід», а не як окреме слово або виклик бібліотеки.</p><ul><li>Назвіть тип і форму входу.</li><li>Зафіксуйте припущення методу.</li><li>Перевірте результат на малому контрприкладі.</li></ul><p>Зіставте правильний результат із одним failure case: так межі поняття стають видимими до практики.</p></div></article><article class="block teacher-deep-dive" id="teacher-4-1" data-topic-id="pair-4-dataframe-create" data-project-feature="python-ai-additional-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Створення DataFrame з Python-структур</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p><b>Поглиблення теми «Створення DataFrame з Python-структур».</b> Відокремте математичний або системний механізм від зручного API. На дошці сформулюйте інваріант, одне приховане припущення та контрприклад, у якому стандартний підхід дає оманливий результат.</p><p><b>Запитання для обговорення:</b> який доказ змусив би вас відмовитися від цього методу або змінити pipeline?</p><div class="callout tip"><b>Актуальний контекст · 2026</b><p>Стабільна документація вже відображає NumPy 2.5 і pandas 3.0.x: приклади потрібно звіряти з актуальною семантикою dtype, missing data та Copy-on-Write.</p></div><div class="teacher-sources"><h4>Перевірені джерела</h4><ul><li><a href="https://numpy.org/doc/stable/user/index.html" target="_blank" rel="noreferrer">NumPy user guide</a> — NumPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: масиви, типи, векторизацію та агрегування.</li><li><a href="https://numpy.org/doc/stable/user/basics.broadcasting.html" target="_blank" rel="noreferrer">Broadcasting</a> — NumPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: правила сумісності форм і вартість broadcasting.</li></ul></div></div></article><!-- deep-dive:end:4:1 -->
+
+<article class="block" id="head-tail-sample"><div class="block-head"><h3>Методи head(), tail() і sample()</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:07–20:14 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body">
+<p>Коли таблиця велика, ми не друкуємо все підряд. Замість цього беремо кілька рядків зверху, знизу або випадкову підвибірку.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "movie": ["Dune", "Coco", "Interstellar", "Soul", "Avatar", "Inside Out"],
+        "year": [2021, 2017, 2014, 2020, 2009, 2015],
+        "rating": [8.1, 8.4, 8.7, 8.0, 7.9, 8.2],
+    }
+)
+print(df.head(3))
+print(df.tail(2))
+print(df.sample(2, random_state=42))</code></pre>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · коли який метод</h4><div class="chart-wrap"><canvas id="chart-method-purpose"></canvas></div></div>
+  <div class="viz"><h4>Памʼятка</h4><div class="cards"><div class="card"><h5><code>head(n)</code></h5><p>Перші <code>n</code> рядків, швидка перевірка структури.</p></div><div class="card"><h5><code>tail(n)</code></h5><p>Останні <code>n</code> рядків, корисно для логів і часових рядів.</p></div><div class="card"><h5><code>sample(n)</code></h5><p>Випадковий зріз без упередження «тільки з початку файлу».</p></div></div></div>
+</div>
+</div></article><!-- deep-dive:start:4:2 --><article class="block extra-deep-dive" id="extra-4-2" data-topic-id="pair-4-head-tail-sample"><div class="block-head"><h3>Додатково: Методи head(), tail() і sample()</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p><b>Методи head(), tail() і sample()</b> варто читати як контракт «вхід → перетворення → вихід», а не як окреме слово або виклик бібліотеки.</p><ul><li>Назвіть тип і форму входу.</li><li>Зафіксуйте припущення методу.</li><li>Перевірте результат на малому контрприкладі.</li></ul><p>Зіставте правильний результат із одним failure case: так межі поняття стають видимими до практики.</p></div></article><article class="block teacher-deep-dive" id="teacher-4-2" data-topic-id="pair-4-head-tail-sample" data-project-feature="python-ai-additional-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Методи head(), tail() і sample()</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p><b>Поглиблення теми «Методи head(), tail() і sample()».</b> Відокремте математичний або системний механізм від зручного API. На дошці сформулюйте інваріант, одне приховане припущення та контрприклад, у якому стандартний підхід дає оманливий результат.</p><p><b>Запитання для обговорення:</b> який доказ змусив би вас відмовитися від цього методу або змінити pipeline?</p><div class="callout tip"><b>Актуальний контекст · 2026</b><p>Стабільна документація вже відображає NumPy 2.5 і pandas 3.0.x: приклади потрібно звіряти з актуальною семантикою dtype, missing data та Copy-on-Write.</p></div><div class="teacher-sources"><h4>Перевірені джерела</h4><ul><li><a href="https://numpy.org/doc/stable/user/basics.broadcasting.html" target="_blank" rel="noreferrer">Broadcasting</a> — NumPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: правила сумісності форм і вартість broadcasting.</li><li><a href="https://pandas.pydata.org/docs/user_guide/" target="_blank" rel="noreferrer">pandas user guide</a> — pandas; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: DataFrame, dtype, пропуски та перетворення таблиць.</li></ul></div></div></article><!-- deep-dive:end:4:2 -->
+
+<article class="block" id="info-describe"><div class="block-head"><h3>Методи info(), describe() та перевірка якості таблиці</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:14–20:21 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body">
+<p><code>info()</code> показує структуру таблиці: кількість рядків, назви колонок, <code>dtypes</code>, кількість ненульових значень. <code>describe()</code> дає базову статистику для числових колонок.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "student": ["Anna", "Maksym", "Ira", "Bohdan"],
+        "score": [95, 88, 91, 76],
+        "hours": [8.5, 7.0, 8.0, 5.5],
+    }
+)
+print(df.info())
+print(df.describe())
+print(df.isna().sum())</code></pre>
+<div class="callout tip"><b>Сеньйорська звичка</b><p>Перш ніж фільтрувати, сортувати або рахувати середні, майже автоматично викликайте <code>df.shape</code>, <code>df.columns</code>, <code>df.info()</code> і <code>df.isna().sum()</code>.</p></div>
+
+
+<!-- viz:groupby -->
+<div class="viz diagram">
+  <h4>Схема · groupby → aggregate</h4>
+  <svg viewBox="0 0 700 180" role="img" aria-label="Groupby aggregation">
+    <rect x="20" y="40" width="160" height="100" rx="12" fill="#1e2a24" stroke="#9aafa0"/>
+    <text x="100" y="75" text-anchor="middle" fill="#e8f0e7" font-size="13">рядки</text>
+    <text x="100" y="98" text-anchor="middle" fill="#9aafa0" font-size="11">course · grade</text>
+    <text x="200" y="95" fill="#9aafa0" font-size="22">→</text>
+    <rect x="230" y="30" width="180" height="120" rx="12" fill="#1e2a24" stroke="#7ec8ff"/>
+    <text x="320" y="60" text-anchor="middle" fill="#7ec8ff" font-size="13">групи</text>
+    <text x="320" y="85" text-anchor="middle" fill="#d3e0d6" font-size="12">Python</text>
+    <text x="320" y="108" text-anchor="middle" fill="#d3e0d6" font-size="12">SQL</text>
+    <text x="320" y="131" text-anchor="middle" fill="#d3e0d6" font-size="12">ML</text>
+    <text x="430" y="95" fill="#9aafa0" font-size="22">→</text>
+    <rect x="460" y="40" width="200" height="100" rx="12" fill="#1e2a24" stroke="#7dffb3"/>
+    <text x="560" y="75" text-anchor="middle" fill="#7dffb3" font-size="13">mean / max / min</text>
+    <text x="560" y="100" text-anchor="middle" fill="#9aafa0" font-size="11">одна цифра на групу</text>
+  </svg>
+</div>
+
+</div></article><!-- deep-dive:start:4:3 --><article class="block extra-deep-dive" id="extra-4-3" data-topic-id="pair-4-info-describe"><div class="block-head"><h3>Додатково: Методи info(), describe() та перевірка якості таблиці</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p><b>Методи info(), describe() та перевірка якості таблиці</b> варто читати як контракт «вхід → перетворення → вихід», а не як окреме слово або виклик бібліотеки.</p><ul><li>Назвіть тип і форму входу.</li><li>Зафіксуйте припущення методу.</li><li>Перевірте результат на малому контрприкладі.</li></ul><p>Зіставте правильний результат із одним failure case: так межі поняття стають видимими до практики.</p></div></article><article class="block teacher-deep-dive" id="teacher-4-3" data-topic-id="pair-4-info-describe" data-project-feature="python-ai-additional-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Методи info(), describe() та перевірка якості таблиці</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p><b>Поглиблення теми «Методи info(), describe() та перевірка якості таблиці».</b> Відокремте математичний або системний механізм від зручного API. На дошці сформулюйте інваріант, одне приховане припущення та контрприклад, у якому стандартний підхід дає оманливий результат.</p><p><b>Запитання для обговорення:</b> який доказ змусив би вас відмовитися від цього методу або змінити pipeline?</p><div class="callout tip"><b>Актуальний контекст · 2026</b><p>Стабільна документація вже відображає NumPy 2.5 і pandas 3.0.x: приклади потрібно звіряти з актуальною семантикою dtype, missing data та Copy-on-Write.</p></div><div class="teacher-sources"><h4>Перевірені джерела</h4><ul><li><a href="https://pandas.pydata.org/docs/user_guide/" target="_blank" rel="noreferrer">pandas user guide</a> — pandas; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: DataFrame, dtype, пропуски та перетворення таблиць.</li><li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noreferrer">Statistical functions</a> — SciPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: розподіли, описову статистику та статистичні функції.</li></ul></div></div></article><!-- deep-dive:end:4:3 -->
+
+<article class="block" id="dtype-na"><div class="block-head"><h3>dtype, пропуски і категорії</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">20:21–20:29 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body"><p><b>dtype і пропуски</b> — часта причина «дивних» результатів у Pandas.</p>
+<ul>
+  <li><code>object</code> часто означає змішані типи або рядки; перевіряйте <code>df.dtypes</code>.</li>
+  <li>Пропуски: <code>NaN</code>/<code>NA</code>; методи <code>isna</code>, <code>fillna</code>, <code>dropna</code> — свідомий вибір, не звичка.</li>
+  <li>Категорії економлять памʼять і фіксують допустимі рівні.</li>
+</ul>
+<pre class="pre">import pandas as pd
+s = pd.Series(["10", "12", None, "11"])
+print(s.dtype)
+print(pd.to_numeric(s, errors="coerce"))</pre>
+
+<!-- viz:dtype-flow -->
+<div class="viz diagram">
+  <h4>Схема · від сирого стовпця до dtype</h4>
+  <svg viewBox="0 0 720 150" role="img" aria-label="dtype pipeline">
+    <rect x="20" y="40" width="140" height="70" rx="12" fill="#1e2a24" stroke="#9aafa0"/>
+    <text x="90" y="80" text-anchor="middle" fill="#e8f0e7" font-size="13">CSV / dict</text>
+    <text x="175" y="80" fill="#9aafa0" font-size="20">→</text>
+    <rect x="200" y="40" width="150" height="70" rx="12" fill="#1e2a24" stroke="#ff8fab"/>
+    <text x="275" y="75" text-anchor="middle" fill="#ff8fab" font-size="13">object?</text>
+    <text x="275" y="95" text-anchor="middle" fill="#9aafa0" font-size="11">змішані типи</text>
+    <text x="365" y="80" fill="#9aafa0" font-size="20">→</text>
+    <rect x="390" y="40" width="150" height="70" rx="12" fill="#1e2a24" stroke="#7ec8ff"/>
+    <text x="465" y="75" text-anchor="middle" fill="#7ec8ff" font-size="13">to_numeric</text>
+    <text x="465" y="95" text-anchor="middle" fill="#9aafa0" font-size="11">/ astype</text>
+    <text x="555" y="80" fill="#9aafa0" font-size="20">→</text>
+    <rect x="580" y="40" width="120" height="70" rx="12" fill="#1e2a24" stroke="#7dffb3"/>
+    <text x="640" y="80" text-anchor="middle" fill="#7dffb3" font-size="13">float64</text>
+  </svg>
+</div>
+<div class="cards two">
+  <div class="card"><h5>isna / dropna</h5><p>Спочатку порахуйте частку пропусків, потім вирішуйте.</p></div>
+  <div class="card"><h5>category</h5><p>Фіксує рівні й економить памʼять на повторюваних мітках.</p></div>
+</div>
+
+</div></article><!-- deep-dive:start:4:4 --><article class="block extra-deep-dive" id="extra-4-4" data-topic-id="pair-4-dtype-na"><div class="block-head"><h3>Додатково: dtype, пропуски і категорії</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p><b>dtype, пропуски і категорії</b> варто читати як контракт «вхід → перетворення → вихід», а не як окреме слово або виклик бібліотеки.</p><ul><li>Назвіть тип і форму входу.</li><li>Зафіксуйте припущення методу.</li><li>Перевірте результат на малому контрприкладі.</li></ul><p>Зіставте правильний результат із одним failure case: так межі поняття стають видимими до практики.</p></div></article><article class="block teacher-deep-dive" id="teacher-4-4" data-topic-id="pair-4-dtype-na" data-project-feature="python-ai-additional-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: dtype, пропуски і категорії</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p><b>Поглиблення теми «dtype, пропуски і категорії».</b> Відокремте математичний або системний механізм від зручного API. На дошці сформулюйте інваріант, одне приховане припущення та контрприклад, у якому стандартний підхід дає оманливий результат.</p><p><b>Запитання для обговорення:</b> який доказ змусив би вас відмовитися від цього методу або змінити pipeline?</p><div class="callout tip"><b>Актуальний контекст · 2026</b><p>Стабільна документація вже відображає NumPy 2.5 і pandas 3.0.x: приклади потрібно звіряти з актуальною семантикою dtype, missing data та Copy-on-Write.</p></div><div class="teacher-sources"><h4>Перевірені джерела</h4><ul><li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noreferrer">Statistical functions</a> — SciPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: розподіли, описову статистику та статистичні функції.</li><li><a href="https://matplotlib.org/stable/users/index.html" target="_blank" rel="noreferrer">Matplotlib user guide</a> — Matplotlib; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: Figure/Axes API та принципи побудови графіків.</li></ul></div></div></article><!-- deep-dive:end:4:4 --><article class="block" id="csv-bridge"><div class="block-head"><h3>CSV, read_csv() і первинний огляд перед аналізом</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">20:29–20:36 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body">
+<p>Типовий старт пайплайна: читаємо CSV, дивимось кілька рядків, форму, типи й пропуски, а вже після цього щось модифікуємо.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("movies.csv")
+print(df.head())
+print("shape:", df.shape)
+print(df.dtypes)
+print(df.isna().sum())</code></pre>
+<div class="callout tip"><b>Не поспішайте</b><p>Навіть якщо файл маленький, перевірка <code>head()</code> і <code>isna().sum()</code> часто рятує від «тихих» помилок у назвах колонок і пропущених значеннях.</p></div>
+<div class="callout tip" data-kb="kb-pair-callout"><b>Коротко</b><p>Ритуал після <code>read_csv</code>: <code>head</code>, <code>info</code>, <code>isna().sum()</code>. Без цього фільтри ловлять object замість int.</p></div></div></article><!-- deep-dive:start:4:5 --><article class="block extra-deep-dive" id="extra-4-5" data-topic-id="pair-4-csv-bridge"><div class="block-head"><h3>Додатково: CSV, read_csv() і первинний огляд перед аналізом</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p><b>CSV, read_csv() і первинний огляд перед аналізом</b> варто читати як контракт «вхід → перетворення → вихід», а не як окреме слово або виклик бібліотеки.</p><ul><li>Назвіть тип і форму входу.</li><li>Зафіксуйте припущення методу.</li><li>Перевірте результат на малому контрприкладі.</li></ul><p>Зіставте правильний результат із одним failure case: так межі поняття стають видимими до практики.</p></div></article><article class="block teacher-deep-dive" id="teacher-4-5" data-topic-id="pair-4-csv-bridge" data-project-feature="python-ai-additional-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: CSV, read_csv() і первинний огляд перед аналізом</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p><b>Поглиблення теми «CSV, read_csv() і первинний огляд перед аналізом».</b> Відокремте математичний або системний механізм від зручного API. На дошці сформулюйте інваріант, одне приховане припущення та контрприклад, у якому стандартний підхід дає оманливий результат.</p><p><b>Запитання для обговорення:</b> який доказ змусив би вас відмовитися від цього методу або змінити pipeline?</p><div class="callout tip"><b>Актуальний контекст · 2026</b><p>Стабільна документація вже відображає NumPy 2.5 і pandas 3.0.x: приклади потрібно звіряти з актуальною семантикою dtype, missing data та Copy-on-Write.</p></div><div class="teacher-sources"><h4>Перевірені джерела</h4><ul><li><a href="https://matplotlib.org/stable/users/index.html" target="_blank" rel="noreferrer">Matplotlib user guide</a> — Matplotlib; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: Figure/Axes API та принципи побудови графіків.</li><li><a href="https://numpy.org/doc/stable/user/index.html" target="_blank" rel="noreferrer">NumPy user guide</a> — NumPy; опубліковано/оновлено: без дати; перевірено: 2026-08-14. Підтверджує: масиви, типи, векторизацію та агрегування.</li></ul></div></div></article><!-- deep-dive:end:4:5 -->
+<article class="block" id="extra-kb-pandas"><div class="block-head"><h3>Додатково: ритуал info / пропуски / dtype</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Спочатку зберіть DataFrame зі словника або CSV і перевірте пропуски й типи. <code>info()</code> + <code>isnull().sum()</code> — обовʼязковий ритуал до фільтрів.</p>
+<pre><code class="language-python">import pandas as pd
+df = pd.read_csv("movies.csv")  # файл поруч зі стартером
+print(df.head())
+print(df.info())
+print(df.isna().sum())
+print(df.describe(include="all"))</code></pre>
+<p><code>describe()</code> на колонках <code>object</code> не дасть mean/std — це не «зламаний pandas», а тип даних.</p>
+<div class="callout tip"><b>Зверніть увагу</b><ul><li>SettingWithCopy: правка зрізу без .loc / .copy();</li><li>порівняння рядка з int («Вік» лишився object);</li><li>очікувати статистику від describe() на тексті.</li></ul></div><div class="extra-more" data-kb="extra-more">
+<p>У туторіалі pandas <code>df.isnull().sum()</code> дає пропуски по колонках; подвійний <code>.sum().sum()</code> — загальну кількість NaN. Це швидше, ніж шукати дірки очима в <code>head()</code>.</p>
+<pre><code class="language-python">import pandas as pd
+df = pd.read_csv("movies.csv")
+print(df.dtypes)
+print(df.isna().sum())
+print("усього NaN:", int(df.isna().sum().sum()))
+# фільтр після ритуалу, не до нього
+adults = df.loc[df["Вік"] >= 18].copy()</code></pre>
+<p><code>.copy()</code> після фільтра знімає SettingWithCopy: далі безпечно писати в колонки зрізу. Якщо «Вік» лишився <code>object</code>, порівняння з <code>18</code> дасть сюрприз — спочатку <code>pd.to_numeric(..., errors="coerce")</code>.</p>
+<div class="callout"><b>Джерела</b><ul><li>Python pandas tutorial (у KB): <code>isnull().sum()</code> по колонках.</li><li>10 minutes to pandas; Working with missing data; indexing.</li><li>Essentials of Python for AI/ML — DataFrame і <code>isnull()</code>.</li></ul></div>
+</div></div></article>
+
+<article class="block" id="checkpoint"><div class="block-head"><h3>Checkpoint</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="3" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 3 хв" /><span class="clock">20:36–20:39 · 3 хв</span><span class="timer-live" hidden>03:00</span></label></div></div><div class="block-body"><p>Три короткі питання. Відповідайте вголос або в нотатках — без ноутбука з розвʼязком.</p><ol><li>Чим loc відрізняється від iloc?</li><li>Що означає dtype object на числах?</li><li>Як знайти дублікати ticket_id?</li></ol><div class="callout tip"><b>Коротко</b><p>Якщо два з трьох «пливуть» — поверніться до попереднього блоку, не починайте практику «на удачу».</p></div></div></article><article class="block" id="si-thread"><div class="block-head"><h3>Support Intelligence і відповідальний AI</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div><p>Рівні практики на цій парі: <b>База</b> — мінімальний прохідний артефакт; <b>Практика</b> — основне ITSTEP / куроване завдання; <b>Stretch</b> — Value_counts(priority) і короткий коментар про дисбаланс.. Кроки — у блоці «Домашнє / stretch».</p></div></article><article class="block" id="practice-levels"><div class="block-head"><h3>Рівні практики</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p><b>База.</b> Один ланцюжок: read_csv → head → isna().sum() для tickets.csv. Доказ: Таблиця пропусків по колонках; 0 критичних NaN у ticket_id.</p><p><b>Практика.</b> Обовʼязкові блоки ITSTEP / куровані завдання — нижче в презентації. Зафіксуйте seed=42, якщо є модель. Support Intelligence: Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII. Файл: <code>project/support_intelligence/m02_eda.py</code>.</p><p><b>Stretch.</b> Value_counts(priority) і короткий коментар про дисбаланс.. Кроки (що зробити / що здати / коли готово) — у блоці «Домашнє / stretch». Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div></div></article><article class="block" id="repro-bar"><div class="block-head"><h3>Відтворюваність</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><ul><li>Python 3.10+</li><li>seed / random_state = 42, якщо є модель</li><li>CPU, без обовʼязкового GPU</li><li>Немає API-ключів у файлах</li><li>Дані: локальний <code>tickets.csv</code></li><li>Команда модуля: <code>python3 m02_eda.py</code> з <code>project/support_intelligence/</code></li><li>Fallback: мок / numpy, якщо немає sklearn чи torch — дивіться README проєкту</li></ul></div></article><article class="block" id="practice-bar"><div class="block-head"><h3>Очікуваний результат і зверніть увагу</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><div class="callout tip"><b>Очікуваний результат</b><p>Таблиця пропусків по колонках; 0 критичних NaN у ticket_id.</p></div><div class="callout tip"><b>Зверніть увагу</b><ul><li>SettingWithCopy: змінювати зріз і чекати запис у вихідний кадр.</li><li>Читати CSV без encoding='utf-8'.</li></ul></div></div></article><article class="block" id="itstep-practical"><div class="block-head"><h3>Обовʼязкові практичні · ITSTEP Практичне завдання 2.2</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">обовʼязково</span><label class="block-timer" data-minutes="37" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 37 хв" /><span class="clock">20:39–21:16 · 37 хв</span><span class="timer-live" hidden>37:00</span></label></div></div><div class="block-body">
+<p><b>Creating AI Applications Using Python — Practical Assignments</b></p>
+<p>У кожному блоці: <b>X</b> — офіційне завдання ITSTEP, <b>X.1</b> — ваш аналог на ту саму навичку з трохи більшим набором рядків. Спочатку розбираємо базу, далі робите свій варіант.</p>
+<div class="callout task"><b>Критерій здачі.</b> Показані таблиці/виводи, код читається, методи DataFrame застосовані усвідомлено: не «друкуємо все», а дивимось рівно те, що потрібно перевірити.</div>
+</div></article>
+
+<article class="block" id="itstep-task-1"><div class="block-head"><h3>Завдання 1 + 1.1 · DataFrame зі словника</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP · база</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="база"><b>База · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>1 · приклад з курсу.</b> Є поля «Ім'я», «Вік», «Місто». Створіть DataFrame з 5 записів, покажіть усю таблицю, кількість рядків/стовпців, назви колонок і перші 3 рядки.</p>
+<div class="callout tip"><b>Орієнтир до 1.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "name": ["Anna", "Maksym", "Ira", "Bohdan", "Nazar"],
+        "age": [19, 21, 20, 22, 19],
+        "city": ["Lviv", "Kyiv", "Dnipro", "Odesa", "Lviv"],
+    }
+)
+print(df)
+print(df.shape)
+print(df.columns.tolist())
+print(df.head(3))</code></pre></div>
+<p><b>1.1 · зробіть за аналогією.</b> Створіть таку саму таблицю, але вже з 7 записів.</p>
+</div></article>
+
+<article class="block" id="itstep-task-2"><div class="block-head"><h3>Завдання 2 + 2.1 · CSV з фільмами</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>2 · приклад з курсу.</b> Прочитайте CSV з колонками про фільми, покажіть перші 5 рядків, форму таблиці, типи даних і перевірте пропуски.</p>
+<div class="callout tip"><b>Орієнтир до 2.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("movies.csv")
+print(df.head())
+print(df.shape)
+print(df.dtypes)
+print(df.isna().sum())</code></pre></div>
+<p><b>2.1 · зробіть за аналогією.</b> Підготуйте інший CSV мінімум на 8 рядків і повторіть той самий огляд.</p>
+</div></article>
+
+<article class="block" id="itstep-task-3"><div class="block-head"><h3>Завдання 3 + 3.1 · Фільтрація і сортування співробітників</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>3 · приклад з курсу.</b> Створіть таблицю співробітників з колонками «Ім'я», «Вік», «Відділ», «Зарплата», виведіть рядки із зарплатою понад 50000, відсортуйте за віком вгору і за зарплатою вниз.</p>
+<div class="callout tip"><b>Орієнтир до 3.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "name": ["Anna", "Maksym", "Ira", "Bohdan", "Nazar"],
+        "age": [24, 31, 27, 29, 26],
+        "department": ["QA", "DS", "Backend", "DS", "Support"],
+        "salary": [48000, 62000, 57000, 54000, 43000],
+    }
+)
+print(df[df["salary"] > 50000])
+print(df.sort_values("age"))
+print(df.sort_values("salary", ascending=False))</code></pre></div>
+<p><b>3.1 · зробіть за аналогією.</b> Збільшіть таблицю до 8 рядків і повторіть ті самі дії.</p>
+</div></article>
+
+<article class="block" id="itstep-task-4"><div class="block-head"><h3>Завдання 4 + 4.1 · Новий стовпець «Виручка»</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>4 · приклад з курсу.</b> Створіть таблицю продажів мінімум на 10 рядків, покажіть DataFrame, додайте колонку <code>revenue</code> як добуток ціни і кількості, виведіть оновлену таблицю.</p>
+<div class="callout tip"><b>Орієнтир до 4.</b><pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "product": ["SSD", "Mouse", "Keyboard", "Monitor", "Cable", "USB Hub", "Chair", "Desk", "Webcam", "Mic"],
+        "category": ["PC", "PC", "PC", "PC", "PC", "PC", "Office", "Office", "PC", "PC"],
+        "price": [2499, 699, 1299, 6999, 249, 899, 5200, 9100, 1799, 2299],
+        "qty": [3, 5, 2, 1, 8, 4, 1, 1, 2, 2],
+    }
+)
+df["revenue"] = df["price"] * df["qty"]
+print(df)</code></pre></div>
+<p><b>4.1 · зробіть за аналогією.</b> Створіть таблицю вже на 12 рядків і додайте той самий стовпець.</p>
+</div></article>
+
+<article class="block" id="itstep-task-5"><div class="block-head"><h3>Завдання 5 + 5.1 · groupby за курсом</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>5 · офіційне завдання.</b> Є список студентів з полями «Ім'я», «Курс», «Оцінка». Побудуйте DataFrame на 8 рядків, порахуйте середню, мінімальну і максимальну оцінку за курсом.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame(
+    {
+        "name": ["Anna", "Maksym", "Ira", "Bohdan", "Nazar", "Lina", "Oleh", "Marta"],
+        "course": [1, 1, 2, 2, 3, 3, 1, 2],
+        "score": [95, 88, 91, 76, 84, 79, 90, 85],
+    }
+)
+print(df.groupby("course")["score"].agg(["mean", "min", "max"]))</code></pre>
+<p><b>5.1 · аналог.</b> Розширте таблицю до 10 рядків і повторіть агрегацію.</p>
+</div></article>
+
+<article class="block" id="itstep-task-6"><div class="block-head"><h3>Завдання 6 + 6.1 · Обʼєднання двох таблиць</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">stretch / take-home</span><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="stretch"><b>Stretch / take-home · поза вікном 80 хв</b><p>Тема є в <a href="https://materials.itstep.org/content/beef810f-be75-4b3c-9c1b-a8124a1a4b01/uk">плані ITSTEP</a>. Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись і зробити після заняття.</p><p><b>Що зробити.</b> Повторіть офіційне завдання за зразком на слайді. Потім зробіть аналог X.1 самостійно (у роздатку немає готового файлу). Збережіть скрипт і рядок з очікуваним print.</p><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>6 · офіційне завдання.</b> Створіть дві таблиці: товари і кількості, обʼєднайте їх за <code>ID</code>, порахуйте стовпець <code>total</code>.</p>
+<pre><code class="language-python">import pandas as pd
+
+products = pd.DataFrame({"id": [1, 2, 3, 4, 5], "name": ["SSD", "Mouse", "Keyboard", "Mic", "Lamp"], "price": [2499, 699, 1299, 2299, 799]})
+qty = pd.DataFrame({"id": [1, 2, 3, 4, 5], "qty": [3, 5, 2, 2, 4]})
+merged = products.merge(qty, on="id")
+merged["total"] = merged["price"] * merged["qty"]
+print(merged)</code></pre>
+<p><b>6.1 · аналог.</b> Зробіть те саме для 6 товарів замість 5.</p>
+</div></article>
+<article class="block" id="exit-ticket"><div class="block-head"><h3>Exit ticket</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="4" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 4 хв" /><span class="clock">21:16–21:20 · 4 хв</span><span class="timer-live" hidden>04:00</span></label></div></div><div class="block-body"><p>Один ланцюжок: read_csv → head → isna().sum() для tickets.csv.</p><div class="callout task"><b>Ваше рішення</b><p>Один артефакт: текст, мінікод або схема файлів. Не «зрозумів тему» без доказу.</p></div></div></article><article class="block" id="homework-stretch"><div class="block-head"><h3>Домашнє / stretch</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><p><b>Тема.</b> Value_counts(priority) і короткий коментар про дисбаланс.</p><p><b>Що зробити</b></p><ol><li>Завантажте таблицю тікетів у DataFrame.</li><li>Викличте <code>value_counts()</code> для колонки <code>priority</code> (або аналога).</li><li>Надрукуйте counts і частки (<code>normalize=True</code>).</li><li>Двома реченнями напишіть, чи є дисбаланс і як це вплине на accuracy.</li></ol><p><b>Що здати.</b> Скрипт або комірка + 2 речення коментаря.</p><p><b>Готово, коли.</b> Є таблиця частот і висновок про дисбаланс, не лише «класів кілька».</p><p><b>Завдання ITSTEP з міткою Stretch.</b> Відкрийте блок у презентації з міткою Stretch / take-home. Спочатку повторіть офіційне завдання за зразком коду на слайді. Потім зробіть аналог X.1 самостійно (у роздатку немає готового файлу). Збережіть свій скрипт і один рядок: який print ви очікуєте і що побачили.</p></div></article><article class="block" id="deep-study"><div class="block-head"><h3>Додатково: глибоке вивчення · модель DataFrame і merge</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал · ~30 хв</span></div></div><div class="block-body"><p>Блок <b>поза вікном</b> (~30 хв): модель даних Pandas і типові пастки продакшену.</p>
+
+<h4 style="color:#fff;font-family:var(--display)">1. DataFrame = індексована таблиця</h4>
+<p>Індекс — частина моделі даних: join, reindex, time series. Сліпий <code>reset_index</code> ховає проблеми, а не лікує їх.</p>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">2. Method chaining для читабельності</h4>
+<pre class="pre">import pandas as pd
+# ідея пайплайна огляду
+# (df.assign(revenue=lambda d: d.price * d.qty)
+#    .query("revenue &gt; 0")
+#    .groupby("category", as_index=False)["revenue"].mean())
+print("assign → query → groupby → agg")</pre>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">3. Merge pitfalls</h4>
+<ul>
+  <li>Перевіряйте cardinality one-to-one / one-to-many до merge.</li>
+  <li>Дублікати ключів розмножують рядки (fan-out).</li>
+  <li>Після merge — <code>shape</code> до/після і контроль сум.</li>
+</ul>
+
+<div class="callout"><b>Джерела</b>
+<ul>
+  <li>pandas documentation — User Guide: <a href="https://pandas.pydata.org/docs/user_guide/index.html" target="_blank" rel="noopener">pandas.pydata.org/docs</a></li>
+  <li>W. McKinney. <i>Python for Data Analysis</i> (OʼReilly) — DataFrame, dtypes, reshaping.</li>
+  <li>pandas API reference — <code>merge</code>, <code>groupby</code>, missing data.</li>
+</ul>
+</div><div class="extra-more" data-kb="extra-more">
+<p>Модель DataFrame: індекс + колонки з dtype. Merge ламається, коли ключ не унікальний або типи ключів різні (<code>id</code> як int у одній таблиці й рядок у іншій). Перед <code>merge</code> завжди <code>value_counts()</code> ключа.</p>
+<div class="callout"><b>Джерела</b><ul><li>10 minutes to pandas; pandas User Guide — merge / join.</li><li>Essentials of Python for AI/ML — розділ Pandas DataFrame.</li></ul></div>
+</div></div></article>
+    <div class="nav"><a href="Lesson3_00_presentation.html">← Попередня пара</a><a href="../PythonAI61_Lesson5_Lesson6/Lesson5_00_presentation.html">Далі → Пара 5</a></div>
+<p class="foot">Python AI Additional Materials · модуль 2 · пара 4 · терміни з підказками при наведенні</p></main>
+</div>
+<script>
+(function () {
+  const body = document.body;
+  const openBtn = document.getElementById('toc-open');
+  const closeBtn = document.getElementById('toc-close');
+  const backdrop = document.getElementById('toc-backdrop');
+  function setOpen(v) {
+    body.classList.toggle('toc-open', v);
+    if (openBtn) openBtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  openBtn && openBtn.addEventListener('click', () => setOpen(true));
+  closeBtn && closeBtn.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('.toc a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+
+<script>
+(function () {
+  const pads = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    return pads(Math.floor(s / 60)) + ":" + pads(s % 60);
+  };
+
+  let active = null; // { el, left, tick }
+
+  function stopActive(reset) {
+    if (!active) return;
+    clearInterval(active.tick);
+    const el = active.el;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    el.classList.remove("is-running");
+    if (reset) {
+      el.classList.remove("is-done");
+      if (check) check.checked = false;
+      if (live) {
+        live.hidden = true;
+        live.textContent = fmt(Number(el.dataset.minutes || 0) * 60);
+      }
+    }
+    active = null;
+  }
+
+  function start(el) {
+    stopActive(true);
+    const minutes = Number(el.dataset.minutes || 0);
+    if (!minutes || minutes <= 0) return;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    let left = minutes * 60;
+    el.classList.add("is-running");
+    el.classList.remove("is-done");
+    if (check) check.checked = true;
+    if (live) {
+      live.hidden = false;
+      live.textContent = fmt(left);
+    }
+    const tick = setInterval(() => {
+      left -= 1;
+      if (live) live.textContent = fmt(left);
+      if (left <= 0) {
+        clearInterval(tick);
+        el.classList.remove("is-running");
+        el.classList.add("is-done");
+        if (live) live.textContent = "00:00";
+        active = null;
+        try { if (navigator.vibrate) navigator.vibrate(80); } catch (_) {}
+      }
+    }, 1000);
+    active = { el, left, tick };
+  }
+
+  document.querySelectorAll(".block-timer").forEach((el) => {
+    const check = el.querySelector(".timer-check");
+    const minutes = Number(el.dataset.minutes || 0);
+    const live = el.querySelector(".timer-live");
+    if (live) live.textContent = fmt(minutes * 60);
+
+    const onToggle = () => {
+      if (!check) return;
+      if (check.checked) start(el);
+      else {
+        if (active && active.el === el) stopActive(true);
+        else {
+          el.classList.remove("is-running", "is-done");
+          if (live) {
+            live.hidden = true;
+            live.textContent = fmt(minutes * 60);
+          }
+        }
+      }
+    };
+    check && check.addEventListener("change", onToggle);
+    // click on label text also works via checkbox; prevent double-handling on live span
+  });
+})();
+</script>
+
+<script>
+/* baked term-glossary.js — tooltips work offline */
+/**
+ * Hover glossary for Python AI Additional Materials.
+ * Tooltip format: English name + Ukrainian explanation (from course dictionary).
+ * Canonical term set for the whole course; SVG-safe engine.
+ */
+(function () {
+  "use strict";
+
+  /** @type {{keys: string[], tip: string}[]} */
+  const ENTRIES = [
+    {
+      keys: ["Штучний інтелект, ШІ", "Штучний інтелект", "ШІ", "Artificial Intelligence, AI", "Artificial Intelligence", "AI"],
+      tip: "Artificial Intelligence\nМашинна система, яка для явних або неявних цілей виводить із вхідних даних, як згенерувати виходи: прогнози, контент, рекомендації чи рішення, що впливають на фізичне або віртуальне середовище. Системи різняться рівнем автономності й адаптивності після розгортання. (OECD AI Principles.)",
+    },
+    {
+      keys: ["Наука про дані", "Data Science, DS", "Data Science", "DS"],
+      tip: "Data Science\nМіждисциплінарний процес: бізнес-/дослідницьке питання → дані → аналіз / моделювання → інсайт або продукт. Не обовʼязково включає ML: інколи достатньо описової статистики й візуалізації.",
+    },
+    {
+      keys: ["Машинне навчання", "Machine Learning, ML", "Machine Learning", "ML"],
+      tip: "Machine Learning\nПідхід, за якого модель покращує якість прогнозу/рішення на основі досвіду (даних), а не лише за жорстко прописаними правилами. Практична рамка курсу: f(ознаки) → прогноз, параметри підбираються з прикладів.",
+    },
+    {
+      keys: ["Глибоке навчання", "Deep Learning, DL", "Deep Learning", "DL"],
+      tip: "Deep Learning\nПідмножина ML на багатошарових нейронних мережах, що вчаться складних внутрішніх представлень даних (зображення, мова, аудіо). (Goodfellow, Bengio, Courville.)",
+    },
+    {
+      keys: ["Генеративний ШІ", "Generative AI, GenAI", "Generative AI", "AI", "GenAI"],
+      tip: "Generative AI\nМоделі, що створюють новий контент (текст, зображення, код, аудіо), моделюючи розподіл даних. У дефініції OECD вихід «content» прямо включено до виходів AI-системи.",
+    },
+    {
+      keys: ["Велика мовна модель", "Large Language Model, LLM", "Large Language Model", "LLM"],
+      tip: "Large Language Model\nНейромережа (зазвичай на архітектурі Transformer), навчена на великих текстових корпусах передбачати / генерувати мову. На практиці — основа сучасних чат-ботів і кодових асистентів.",
+    },
+    {
+      keys: ["Трансформер", "Transformer"],
+      tip: "Transformer\nАрхітектура нейромереж (Vaswani et al., 2017), що спирається на механізми уваги (attention) без рекурентності й згорткових шарів як основи. Основа сучасних LLM і багатьох моделей мови / зору.",
+    },
+    {
+      keys: ["Навчання представлень", "Representation learning"],
+      tip: "Representation learning\nПідхід, коли модель сама вчить внутрішні представлення (ембедінги / ознаки) даних, замість покладатись лише на ручний feature engineering.",
+    },
+    {
+      keys: ["Контрастивне навчання", "Contrastive learning"],
+      tip: "Contrastive learning\nSelf-supervised підхід: зближувати представлення «схожих» пар і відштовхувати «несхожі» в просторі ембедінгів. Класичний приклад — SimCLR (Chen et al., 2020).",
+    },
+    {
+      keys: ["Ембедінг / векторне представлення", "Ембедінг", "векторне представлення", "Embedding"],
+      tip: "Embedding\nЧисловий вектор обʼєкта (слова, речення, клієнта, товару), у якому близькість векторів відображає семантичну / поведінкову схожість.",
+    },
+    {
+      keys: ["Нейронна мережа", "Neural network"],
+      tip: "Neural network\nМодель із шарів повʼязаних «нейронів» (лінійне перетворення + нелінійна активація), що апроксимує складні функції з даних.",
+    },
+    {
+      keys: ["Компʼютерний зір", "Computer Vision, CV", "Computer Vision", "CV"],
+      tip: "Computer Vision\nГалузь ШІ / ML про розуміння зображень і відео: класифікація, детекція, сегментація тощо.",
+    },
+    {
+      keys: ["Обробка природної мови", "Natural Language Processing, NLP", "Natural Language Processing", "NLP"],
+      tip: "Natural Language Processing\nГалузь про автоматичну обробку людської мови: токенізація, класифікація тексту, машинний переклад, діалог, витяг інформації.",
+    },
+    {
+      keys: ["Buzzwords"],
+      tip: "Buzzwords\nМодні слова без чіткого змісту. На курсі замінюємо їх на постановку: дані → ознаки → ціль → метрика → обмеження.",
+    },
+    {
+      keys: ["Тест Тюрінга", "Turing test"],
+      tip: "Turing test\nОпераційний критерій Алана Тюрінга (1950): чи може машина вести діалог так, щоб людина-суддя не відрізнила її від людини. Це імітаційна гра, не математичне визначення інтелекту.",
+    },
+    {
+      keys: ["Дартмутський семінар", "Dartmouth Workshop, 1956", "Dartmouth Workshop", "1956"],
+      tip: "Dartmouth Workshop\nПодія, з якої зазвичай ведуть відлік терміна Artificial Intelligence як назви дослідницького напряму.",
+    },
+    {
+      keys: ["Символьний ШІ", "Symbolic AI / rule-based AI", "Symbolic AI", "AI", "rule-based AI"],
+      tip: "Symbolic AI / rule-based AI\nПідхід, де знання й логіку явно кодує людина правилами / символами («якщо–то»), а не виводить закономірності з великих даних.",
+    },
+    {
+      keys: ["Експертна система", "Expert system"],
+      tip: "Expert system\nСистема на ручних правилах / базі знань експерта. Потужна у вузькій сфері, але крихка й дорога в підтримці при зміні світу.",
+    },
+    {
+      keys: ["Статистичний / data-driven ML", "Статистичний", "data-driven ML", "Statistical / data-driven ML", "Statistical", "ML"],
+      tip: "Statistical / data-driven ML\nПідхід, де закономірності оцінюють із даних (статистика, ML), а не лише з ручних правил.",
+    },
+    {
+      keys: ["Зима ШІ", "AI winter", "AI"],
+      tip: "AI winter\nПеріод спаду інтересу й фінансування через завищені обіцянки, брак даних / обчислень і крихкість ранніх систем.",
+    },
+    {
+      keys: ["ImageNet"],
+      tip: "ImageNet\nВеликий ієрархічний датасет зображень для навчання й бенчмаркінгу розпізнавання обʼєктів. Перемоги глибоких мереж на ImageNet (бл. 2012+) стали точкою вибуху DL.",
+    },
+    {
+      keys: ["Обчислювальні ресурси", "Compute"],
+      tip: "Compute\nCPU / GPU / TPU, час і вартість обчислень. Один із трьох стовпів сучасного буму ШІ разом із даними й алгоритмами представлення.",
+    },
+    {
+      keys: ["Навчання з учителем", "Supervised learning", "supervised"],
+      tip: "Supervised learning\nНавчання, де для кожного навчального прикладу відома очікувана відповідь y (мітка / ground truth). Типові оцінки: класифікатор, регресор. (scikit-learn Glossary.)",
+    },
+    {
+      keys: ["Навчання без учителя", "Unsupervised learning", "supervised", "unsupervised"],
+      tip: "Unsupervised learning\nНавчання без y: шукаємо структуру в X (кластери, аномалії, зменшення розмірності). (scikit-learn Glossary.)",
+    },
+    {
+      keys: ["Навчання з підкріпленням", "Reinforcement Learning, RL", "Reinforcement Learning", "RL", "reinforcement"],
+      tip: "Reinforcement Learning\nАгент взаємодіє із середовищем, отримує нагороди і вчиться політиці дій, що максимізує сумарну нагороду в довгостроковій перспективі. (Sutton & Barto.)",
+    },
+    {
+      keys: ["Напівкероване навчання", "Semi-supervised learning", "supervised"],
+      tip: "Semi-supervised learning\nМало міток + багато нерозмічених даних; мітки «підтягують» навчання на нерозміченій масі. У scikit-learn для нерозмічених часто використовують мітку -1.",
+    },
+    {
+      keys: ["Самонавчання / самокероване", "Самонавчання", "самокероване", "Self-supervised learning", "supervised"],
+      tip: "Self-supervised learning\nМітки створюються з самих даних (маски токенів, contrastive-пари). Основа pretraining сучасних LLM і багатьох моделей зору.",
+    },
+    {
+      keys: ["Навчання наслідуванням", "Imitation learning"],
+      tip: "Imitation learning\nНавчання поведінці експерта (демонстрації); на межі supervised і RL: копіюємо дії, а не лише оптимізуємо reward.",
+    },
+    {
+      keys: ["Агент", "Agent"],
+      tip: "Agent\nУ RL — сутність, що спостерігає стан середовища, обирає дію й отримує нагороду. У GenAI — також система, що викликає інструменти в циклі думка → дія → спостереження.",
+    },
+    {
+      keys: ["Політика", "Policy"],
+      tip: "Policy\nУ RL — правило поведінки агента: відображення стану (або розподілу) у дії. (Sutton & Barto.)",
+    },
+    {
+      keys: ["Нагорода", "Reward"],
+      tip: "Reward\nЧисловий сигнал від середовища після кроку; формалізує «що добре / погано». Мета агента — максимізувати сукупну нагороду. (Sutton & Barto.)",
+    },
+    {
+      keys: ["Середовище", "Environment"],
+      tip: "Environment\nУ RL — усе зовнішнє відносно агента: стани, переходи, видача нагород.",
+    },
+    {
+      keys: ["Класифікація", "Classification"],
+      tip: "Classification\nSupervised-задача зі скінченною дискретною множиною можливих виходів (класів). Приклади: spam / not-spam, діагноз «так/ні».",
+    },
+    {
+      keys: ["Регресія", "Regression"],
+      tip: "Regression\nSupervised-задача з числовим неперервним (або майже неперервним) y: ціна, температура, LTV.",
+    },
+    {
+      keys: ["Кластеризація", "Clustering"],
+      tip: "Clustering\nUnsupervised-задача: групування схожих обʼєктів без заздалегідь заданих міток класів. Не плутати з класифікацією.",
+    },
+    {
+      keys: ["Зменшення розмірності", "Dimensionality reduction"],
+      tip: "Dimensionality reduction\nПеретворення високо-вимірних ознак у меншу кількість координат зі збереженням головної структури / дисперсії (напр. PCA, SVD).",
+    },
+    {
+      keys: ["Детекція аномалій", "Anomaly / outlier detection", "Anomaly", "outlier detection"],
+      tip: "Anomaly / outlier detection\nПошук рідкісних або нетипових спостережень без (або з частковими) мітками.",
+    },
+    {
+      keys: ["Моделювання тем", "Topic modeling"],
+      tip: "Topic modeling\nUnsupervised-методи виділення тем у текстах (напр. LDA): документ → суміш тем.",
+    },
+    {
+      keys: ["Детекція обʼєктів", "Object detection"],
+      tip: "Object detection\nCV-задача: знайти обʼєкти на зображенні й локалізувати їх (рамки / маски).",
+    },
+    {
+      keys: ["Сегментація", "Segmentation"],
+      tip: "Segmentation\nCV-задача: попіксельна (або порегіонна) розмітка класів на зображенні.",
+    },
+    {
+      keys: ["Рекомендаційна система", "Recommender system"],
+      tip: "Recommender system\nСистема, що пропонує користувачу елементи (товари, фільми, статті) за релевантністю / уподобаннями.",
+    },
+    {
+      keys: ["Контентні рекомендації", "Content-based filtering"],
+      tip: "Content-based filtering\nРекомендації на основі схожості описів / ознак елементів із профілем користувача.",
+    },
+    {
+      keys: ["Колаборативна фільтрація", "Collaborative filtering"],
+      tip: "Collaborative filtering\nРекомендації на основі спільної поведінки користувачів / оцінок (user-based, item-based, matrix factorization).",
+    },
+    {
+      keys: ["Багатокласова класифікація", "Multi-class classification"],
+      tip: "Multi-class classification\nОдин приклад належить рівно до одного з K>2 класів.",
+    },
+    {
+      keys: ["Мультиміткова класифікація", "Multi-label classification", "label"],
+      tip: "Multi-label classification\nОдин приклад може мати кілька міток одночасно (напр. теги статті).",
+    },
+    {
+      keys: ["Аналіз тональності", "Sentiment analysis"],
+      tip: "Sentiment analysis\nКласифікація тексту за емоційним забарвленням (позитив / негатив / нейтраль тощо).",
+    },
+    {
+      keys: ["PCA", "Principal Component Analysis"],
+      tip: "Principal Component Analysis\nМетод зменшення розмірності: проєкція даних на головні компоненти з максимальною дисперсією. (scikit-learn decomposition.)",
+    },
+    {
+      keys: ["SVD", "Singular Value Decomposition"],
+      tip: "Singular Value Decomposition\nРозклад матриці на сингулярні вектори/значення. У ML — основа стиснення, латентних факторів і частини PCA.",
+    },
+    {
+      keys: ["SVM", "Support Vector Machine"],
+      tip: "Support Vector Machine\nАлгоритм, що шукає роздільну гіперплощину з максимальним запасом (margin) між класами (або регресійний аналог).",
+    },
+    {
+      keys: ["Лінійна регресія / МНК", "Лінійна регресія", "МНК", "Ordinary Least Squares, OLS", "Ordinary Least Squares", "OLS"],
+      tip: "Ordinary Least Squares\nМодель y ≈ Xw + b, де ваги мінімізують суму квадратів залишків. Аналітичний розвʼязок існує для найпростіших випадків.",
+    },
+    {
+      keys: ["Поліноміальні ознаки", "Polynomial features", "feature"],
+      tip: "Polynomial features\nРозширення простору ознак степенями й взаємодіями (x, x², xy…), щоб лінійна модель описувала нелінійні залежності.",
+    },
+    {
+      keys: ["Ridge-регресія", "Ridge, L2 regularization", "Ridge", "L2 regularization"],
+      tip: "Ridge\nЛінійна модель зі штрафом λ‖w‖²₂ за величину ваг — зменшує перенавчання при корельованих ознаках.",
+    },
+    {
+      keys: ["Lasso-регресія", "Lasso, L1 regularization", "Lasso", "L1 regularization"],
+      tip: "Lasso\nЛінійна модель зі штрафом λ‖w‖₁; схильна занулювати частину ваг (розріджений відбір ознак).",
+    },
+    {
+      keys: ["Дерево рішень", "Decision tree"],
+      tip: "Decision tree\nМодель, що ділить простір ознак порогами («питаннями») до однорідних листків із прогнозом.",
+    },
+    {
+      keys: ["Ентропія (інформаційна)", "Ентропія", "Entropy"],
+      tip: "Entropy\nМіра невизначеності розподілу класів у вузлі. Зменшення ентропії — приріст інформації при розбитті.",
+    },
+    {
+      keys: ["Індекс Джіні", "Gini impurity"],
+      tip: "Gini impurity\nАльтернативна міра «забрудненості» вузла в дереві: чим ближче до 0, тим чистіший клас.",
+    },
+    {
+      keys: ["Приріст інформації", "Information gain"],
+      tip: "Information gain\nНаскільки розбиття зменшує ентропію (або іншу домішку) порівняно з батьківським вузлом.",
+    },
+    {
+      keys: ["Беггінг", "Bagging"],
+      tip: "Bagging\nАнсамбль: навчаємо багато моделей на бутстреп-вибірках і агрегуємо прогнози (основа Random Forest).",
+    },
+    {
+      keys: ["Бустинг", "Boosting"],
+      tip: "Boosting\nАнсамбль, де наступні моделі виправляють помилки попередніх (напр. градієнтний бустинг, XGBoost).",
+    },
+    {
+      keys: ["Випадковий ліс", "Random Forest"],
+      tip: "Random Forest\nАнсамбль дерев рішень із випадковістю ознак/вибірок: багато дерев голосують → стійкіший прогноз.",
+    },
+    {
+      keys: ["XGBoost"],
+      tip: "XGBoost\nПопулярна реалізація градієнтного бустингу дерев із регуляризацією та ефективним навчанням.",
+    },
+    {
+      keys: ["Логістична регресія", "Logistic regression"],
+      tip: "Logistic regression\nЛінійний класифікатор: лінійна комбінація ознак проходить через сигмоїду → ймовірність класу; навчання мінімізує log loss.",
+    },
+    {
+      keys: ["Сигмоїда", "Sigmoid"],
+      tip: "Sigmoid\nФункція σ(z)=1/(1+e^{-z}), що стискає дійсне число в інтервал (0, 1) — зручно як ймовірність.",
+    },
+    {
+      keys: ["Softmax"],
+      tip: "Softmax\nУзагальнення сигмоїди на K класів: перетворює логіти на розподіл ймовірностей, що сумується до 1.",
+    },
+    {
+      keys: ["K-means"],
+      tip: "K-means\nКластеризація: K центроїдів; точки відносять до найближчого центроїда, центроїди оновлюють до середнього кластера. (scikit-learn.)",
+    },
+    {
+      keys: ["K-means++"],
+      tip: "K-means++\nЕвристика ініціалізації центроїдів подалі один від одного — стабільніше збігання K-means.",
+    },
+    {
+      keys: ["DBSCAN"],
+      tip: "DBSCAN\nКластеризація за щільністю: параметри eps і min_samples; знаходить кластери довільної форми і позначає шум. (Ester et al.; scikit-learn.)",
+    },
+    {
+      keys: ["Матрична факторизація", "Matrix factorization"],
+      tip: "Matrix factorization\nРозклад user–item матриці на латентні фактори користувачів і елементів для рекомендацій.",
+    },
+    {
+      keys: ["Датасет / набір даних", "Датасет", "набір даних", "Dataset"],
+      tip: "Dataset\nСтруктурований набір спостережень під конкретне питання. У табличному вигляді: рядки = обʼєкти, стовпці = ознаки / ціль.",
+    },
+    {
+      keys: ["Спостереження / приклад / семпл", "Спостереження", "приклад", "семпл", "Observation / instance / sample", "Observation", "instance", "sample"],
+      tip: "Observation / instance / sample\nОдин обʼєкт у датасеті — зазвичай один рядок. У ML n_samples = кількість рядків X. Увага: у статистиці sample часто означає вибірку (множину).",
+    },
+    {
+      keys: ["Ознака", "Feature"],
+      tip: "Feature\nХарактеристика обʼєкта, яку подаємо в модель. У матриці даних — стовпець. Також: predictor, independent variable. (scikit-learn Glossary.)",
+    },
+    {
+      keys: ["Цільова змінна / ціль", "Цільова змінна", "ціль", "Target"],
+      tip: "Target\nЗалежна змінна y у supervised: те, що передбачаємо. Синоніми: outcome, ground truth, label.",
+    },
+    {
+      keys: ["Мітка", "Label"],
+      tip: "Label\nКонкретне значення цілі для прикладу (клас «spam», число 18500).",
+    },
+    {
+      keys: ["Матриця ознак X", "Feature matrix", "feature"],
+      tip: "Feature matrix\nПрямокутна таблиця: рядки = семпли, стовпці = ознаки.",
+    },
+    {
+      keys: ["Інженерія ознак", "Feature engineering", "feature"],
+      tip: "Feature engineering\nСтворення / перетворення ознак із сирих даних (день тижня з дати, відношення, бінінг), щоб моделі було легше вчитися.",
+    },
+    {
+      keys: ["Сховище ознак", "Feature store", "feature"],
+      tip: "Feature store\nІнфраструктура повторного використання перевірених ознак (онлайн-serving + офлайн для тренування). Референсна open-source реалізація — Feast.",
+    },
+    {
+      keys: ["Числові неперервні ознаки", "Continuous numeric features", "feature"],
+      tip: "Continuous numeric features\nЗначення з плавною шкалою: площа, температура, сума чека.",
+    },
+    {
+      keys: ["Числові дискретні / лічильні", "Числові дискретні", "лічильні", "Discrete / count features", "Discrete", "count features", "feature"],
+      tip: "Discrete / count features\nЦілі або лічильні значення: кількість кімнат, кількість покупок.",
+    },
+    {
+      keys: ["Бінарна ознака", "Binary feature", "feature"],
+      tip: "Binary feature\nОзнака з двома рівнями (0/1, так/ні). Окремий випадок категоріальної.",
+    },
+    {
+      keys: ["Категоріальні ознаки", "Categorical features", "feature"],
+      tip: "Categorical features\nЯкісні значення зі скінченною множиною рівнів; часто потребують кодування перед лінійними моделями.",
+    },
+    {
+      keys: ["Номінальні", "Nominal"],
+      tip: "Nominal\nКатегорії без порядку: район, бренд, колір.",
+    },
+    {
+      keys: ["Порядкові", "Ordinal"],
+      tip: "Ordinal\nКатегорії з порядком: освіта, rating 1–5, розмір S/M/L.",
+    },
+    {
+      keys: ["Datetime-ознаки", "Datetime features", "feature"],
+      tip: "Datetime features\nДата / час; з них роблять похідні: година, день тижня, is_weekend, дні від події.",
+    },
+    {
+      keys: ["Ідентифікатор", "ID"],
+      tip: "ID\nУнікальний ключ рядка (user_id). Зазвичай не ознака для навчання — модель не повинна запамʼятовувати id.",
+    },
+    {
+      keys: ["Токен", "Token"],
+      tip: "Token\nОдиниця тексту після токенізації: слово, підслово або символ, яку бачить модель.",
+    },
+    {
+      keys: ["RFM", "Recency, Frequency, Monetary", "Recency", "Frequency", "Monetary"],
+      tip: "Recency\nКласичні маркетингові ознаки клієнта: як давно купував, як часто, на яку суму.",
+    },
+    {
+      keys: ["User–item матриця", "User–item matrix"],
+      tip: "User–item matrix\nТаблиця взаємодій користувачів з елементами (оцінки, кліки, покупки); основа collaborative filtering.",
+    },
+    {
+      keys: ["Холодний старт", "Cold start"],
+      tip: "Cold start\nПроблема рекомендацій для нового користувача / елемента без історії взаємодій.",
+    },
+    {
+      keys: ["Словник даних", "Data dictionary"],
+      tip: "Data dictionary\nПаспорт колонок для людей: тип, сенс, одиниці, допустимі значення, роль feature / target / id.",
+    },
+    {
+      keys: ["Схема даних", "Schema"],
+      tip: "Schema\nФормальний опис структури (імена, типи, обмеження, перевірки).",
+    },
+    {
+      keys: ["Репрезентативність", "Representativeness"],
+      tip: "Representativeness\nЧи відображає датасет реальний продакшен / цільову популяцію.",
+    },
+    {
+      keys: ["Пропуски", "Missing values"],
+      tip: "Missing values\nВідсутні значення. У float-масивах scikit-learn віддає перевагу NaN як позначці пропуску.",
+    },
+    {
+      keys: ["NaN", "Not a Number"],
+      tip: "Not a Number\nСпеціальне значення з IEEE floating-point; у pandas / NumPy / sklearn часто означає «немає даних».",
+    },
+    {
+      keys: ["Дублікати", "Duplicates"],
+      tip: "Duplicates\nПовторювані рядки / записи. Можуть спотворювати навчання й оцінку.",
+    },
+    {
+      keys: ["Витік даних / витік цілі", "Витік даних", "витік цілі", "Data leakage"],
+      tip: "Data leakage\nВикористання інформації, якої не буде на момент прогнозу в проді. Дає завищені метрики на валідації. (scikit-learn Common pitfalls.)",
+    },
+    {
+      keys: ["Циркулярність ознаки", "Circularity / target leakage", "Circularity", "target leakage", "target"],
+      tip: "Circularity / target leakage\nОкремий випадок leakage: ознака побудована з y (напр. price_per_m2 = rent/area при target=rent).",
+    },
+    {
+      keys: ["Holdout / відкладена вибірка", "Holdout", "відкладена вибірка", "Holdout set"],
+      tip: "Holdout set\nЧастина даних, відкладена лише для оцінки. Time split: train раніше, test пізніше.",
+    },
+    {
+      keys: ["Train / validation / test", "Train", "validation", "test", "Train / val / test split", "val", "test split"],
+      tip: "Train / val / test split\nРозбиття: train — навчання, validation — підбір гіперпараметрів, test — фінальна чесна оцінка.",
+    },
+    {
+      keys: ["Крос-валідація", "Cross-validation, k-fold", "Cross-validation", "k-fold"],
+      tip: "Cross-validation\nІтеративний поділ на train/test підмножини для стійкішої оцінки на «небаченому».",
+    },
+    {
+      keys: ["Дрейф даних", "Data drift / covariate drift", "Data drift", "covariate drift"],
+      tip: "Data drift / covariate drift\nЗміна розподілу вхідних даних P(X) у часі відносно навчання.",
+    },
+    {
+      keys: ["Концепт-дрейф", "Concept drift"],
+      tip: "Concept drift\nЗміна звʼязку P(y|X) у часі: ті самі ознаки — інша ціль. (Gama et al., 2014.)",
+    },
+    {
+      keys: ["Дисбаланс класів", "Class imbalance"],
+      tip: "Class imbalance\nОдин клас трапляється набагато рідше. Тоді accuracy часто оманлива — дивіться recall / precision / F1 / balanced accuracy.",
+    },
+    {
+      keys: ["Перенавчання", "Overfitting"],
+      tip: "Overfitting\nМодель добре на train і погано на нових даних: запамʼятала шум / специфіку вибірки.",
+    },
+    {
+      keys: ["Недонавчання", "Underfitting"],
+      tip: "Underfitting\nМодель занадто проста: погано і на train, і на test.",
+    },
+    {
+      keys: ["Компроміс зміщення–дисперсії", "Bias–variance tradeoff"],
+      tip: "Bias–variance tradeoff\nЗанадто проста модель → високе bias; занадто гнучка → висока variance. Шукаємо баланс.",
+    },
+    {
+      keys: ["Прокляття розмірності", "Curse of dimensionality"],
+      tip: "Curse of dimensionality\nУ високих вимірностях відстані й щільності поводяться контрінтуїтивно; потрібно більше даних або зменшення розмірності.",
+    },
+    {
+      keys: ["Розрідженість", "Sparsity"],
+      tip: "Sparsity\nБільшість значень нульові / відсутні (розріджені вектори BoW, user–item матриці).",
+    },
+    {
+      keys: ["Метрика якості", "Evaluation metric / score", "Evaluation metric", "score"],
+      tip: "Evaluation metric / score\nЧисловий критерій якості прогнозу (accuracy, F1, RMSE тощо).",
+    },
+    {
+      keys: ["Accuracy / частка правильних", "Accuracy", "частка правильних"],
+      tip: "Accuracy\nЧастка правильних прогнозів серед усіх. На дисбалансі може бути оманливою. Українська пастка: не плутати з precision («точність»).",
+    },
+    {
+      keys: ["Precision"],
+      tip: "Precision\nСеред спрогнозованих позитивних — яка частка справді позитивні: tp/(tp+fp).",
+    },
+    {
+      keys: ["Recall / повнота", "Recall", "повнота", "Recall, sensitivity, TPR", "sensitivity", "TPR"],
+      tip: "Recall\nСеред справжніх позитивних — яку частку знайшли: tp/(tp+fn).",
+    },
+    {
+      keys: ["F1-міра", "F1 score"],
+      tip: "F1 score\nГармонійне середнє precision і recall. Macro / micro — способи усереднення для багатьох класів.",
+    },
+    {
+      keys: ["Істинно позитивний", "True Positive, TP", "True Positive", "TP"],
+      tip: "True Positive\nМодель сказала «так», і насправді «так».",
+    },
+    {
+      keys: ["Хибно позитивний", "False Positive, FP", "False Positive", "FP"],
+      tip: "False Positive\nМодель сказала «так», а насправді «ні».",
+    },
+    {
+      keys: ["Хибно негативний", "False Negative, FN", "False Negative", "FN"],
+      tip: "False Negative\nМодель сказала «ні», а насправді «так».",
+    },
+    {
+      keys: ["Істинно негативний", "True Negative, TN", "True Negative", "TN"],
+      tip: "True Negative\nМодель сказала «ні», і насправді «ні».",
+    },
+    {
+      keys: ["Матриця помилок", "Confusion matrix"],
+      tip: "Confusion matrix\nТаблиця TP / FP / FN / TN (або багатокласовий аналог) для розбору типів помилок.",
+    },
+    {
+      keys: ["ROC / AUC", "ROC", "AUC", "ROC curve / AUC", "ROC curve"],
+      tip: "ROC curve / AUC\nROC — крива TPR проти FPR при зміні порога; AUC — площа під нею (якість ранжування класів).",
+    },
+    {
+      keys: ["Log loss / крос-ентропія", "Log loss", "крос-ентропія", "Log loss / cross-entropy", "cross-entropy"],
+      tip: "Log loss / cross-entropy\nВтрата, що штрафує за невпевнені або хибні ймовірнісні прогнози; основа логістичної регресії і багатьох нейромереж.",
+    },
+    {
+      keys: ["MAE", "Mean Absolute Error"],
+      tip: "Mean Absolute Error\nСереднє абсолютних |ŷ − y|. Робастніше до великих помилок, ніж MSE.",
+    },
+    {
+      keys: ["MSE", "Mean Squared Error"],
+      tip: "Mean Squared Error\nСереднє квадратів помилок (ŷ − y)². Сильніше штрафує великі відхилення.",
+    },
+    {
+      keys: ["RMSE", "Root Mean Squared Error"],
+      tip: "Root Mean Squared Error\nКорінь із MSE; у тих самих одиницях, що й ціль.",
+    },
+    {
+      keys: ["R²", "Coefficient of determination"],
+      tip: "Coefficient of determination\nЧастка дисперсії цілі, пояснена моделлю (1 — ідеально відносно baseline середнього).",
+    },
+    {
+      keys: ["Baseline"],
+      tip: "Baseline\nПростий орієнтир якості до «складної» моделі: константа mean/mode, правило, евристика.",
+    },
+    {
+      keys: ["Inertia / elbow", "Inertia", "elbow", "Inertia / elbow method", "elbow method"],
+      tip: "Inertia / elbow method\nInertia — сума квадратів відстаней до центроїдів у K-means; elbow — евристика вибору K.",
+    },
+    {
+      keys: ["Силует", "Silhouette score"],
+      tip: "Silhouette score\nМетрика якості кластеризації: наскільки точка ближча до свого кластера, ніж до чужих.",
+    },
+    {
+      keys: ["Precision@k / Recall@k", "Precision@k", "Recall@k"],
+      tip: "Precision@k / Recall@k\nМетрики ранжування / рекомендацій у топ-k результатах.",
+    },
+    {
+      keys: ["EDA", "Exploratory Data Analysis"],
+      tip: "Exploratory Data Analysis\nРозвідковий аналіз: розподіли, пропуски, звʼязки, аномалії перед серйозним моделюванням.",
+    },
+    {
+      keys: ["Середнє арифметичне", "Mean"],
+      tip: "Mean\nСума значень, поділена на кількість. Чутливе до викидів.",
+    },
+    {
+      keys: ["Медіана", "Median"],
+      tip: "Median\nСереднє за порядком значення; стійкіше до викидів, ніж середнє.",
+    },
+    {
+      keys: ["Мода", "Mode"],
+      tip: "Mode\nНайчастіше значення у вибірці (особливо корисно для категорій).",
+    },
+    {
+      keys: ["Дисперсія", "Variance"],
+      tip: "Variance\nСередній квадрат відхилення від середнього; міра розкиду.",
+    },
+    {
+      keys: ["Стандартне відхилення", "Standard deviation, std", "Standard deviation", "std"],
+      tip: "Standard deviation\nКорінь із дисперсії; у тих самих одиницях, що дані. Увага: NumPy `std` за замовчуванням ddof=0; для вибіркової оцінки з поправкою Бесселя ставте ddof=1.",
+    },
+    {
+      keys: ["Викид", "Outlier"],
+      tip: "Outlier\nСпостереження, що різко випадає з решти даних. Єдиної канонічної дефініції немає — на курсі завжди називайте правило виявлення (IQR fences, |z| ≥ k, DBSCAN noise тощо).",
+    },
+    {
+      keys: ["Коваріація", "Covariance"],
+      tip: "Covariance\nМіра спільної змінності двох змінних (масштаб залежить від одиниць).",
+    },
+    {
+      keys: ["Кореляція Пірсона", "Pearson correlation"],
+      tip: "Pearson correlation\nНормована коваріація в [-1, 1]: сила й напрям лінійного звʼязку. Кореляція ≠ причинність.",
+    },
+    {
+      keys: ["Мультиколінеарність", "Multicollinearity"],
+      tip: "Multicollinearity\nСильна лінійна залежність між ознаками; ускладнює інтерпретацію лінійних моделей.",
+    },
+    {
+      keys: ["z-score"],
+      tip: "Z-score\nСтандартизоване значення: (x − mean) / std. Показує, на скільки σ від середнього.",
+    },
+    {
+      keys: ["Правило трьох сигм", "Three-sigma rule"],
+      tip: "Three-sigma rule\nУ нормальному розподілі ≈99.7% маси лежить у межах mean ± 3σ; евристика для викидів.",
+    },
+    {
+      keys: ["Гістограма", "Histogram"],
+      tip: "Histogram\nГрафік розподілу: частота потраплянь у біни (інтервали).",
+    },
+    {
+      keys: ["Box-plot / «ящик з вусами»", "Box-plot", "«ящик з вусами»", "Box plot"],
+      tip: "Box plot\nВізуалізація квартилів, медіани та потенційних викидів за IQR.",
+    },
+    {
+      keys: ["Квартилі / IQR", "Квартилі", "IQR", "Quartiles / Interquartile range", "Quartiles", "Interquartile range"],
+      tip: "Quartiles / Interquartile range\nQ1/Q2/Q3 ділять розподіл на чверті; IQR = Q3 − Q1 — міра розкиду «середини».",
+    },
+    {
+      keys: ["Діаграма розсіювання", "Scatter plot"],
+      tip: "Scatter plot\nТочки (x, y) для візуального пошуку звʼязку двох змінних.",
+    },
+    {
+      keys: ["Стандартизація / масштабування", "Стандартизація", "масштабування", "Standardization / scaling", "Standardization", "scaling"],
+      tip: "Standardization / scaling\nПриведення ознак до спільного масштабу (StandardScaler, MinMaxScaler), важливо для відстаней і градієнтних методів.",
+    },
+    {
+      keys: ["Функція втрат", "Loss function"],
+      tip: "Loss function\nЧисло, яке оптимізатор зменшує під час навчання (MSE, log loss, cross-entropy…).",
+    },
+    {
+      keys: ["Залишки", "Residuals"],
+      tip: "Residuals\nРізниці ŷ − y (або y − ŷ) у регресії; показують, де модель помиляється.",
+    },
+    {
+      keys: ["Градієнтний спуск", "Gradient descent"],
+      tip: "Gradient descent\nІтеративне оновлення параметрів у напрямку антиградієнта функції втрат.",
+    },
+    {
+      keys: ["Learning rate"],
+      tip: "Learning rate\nРозмір кроку оновлення ваг. Занадто великий — розбіжність; занадто малий — повільне навчання.",
+    },
+    {
+      keys: ["Епоха", "Epoch"],
+      tip: "Epoch\nОдин повний прохід навчальної вибірки під час оптимізації.",
+    },
+    {
+      keys: ["Батч / міні-батч", "Батч", "міні-батч", "Batch / mini-batch", "Batch", "mini-batch"],
+      tip: "Batch / mini-batch\nПідмножина прикладів, на якій рахують градієнт за один крок. SGD — часто batch size = 1 або малий.",
+    },
+    {
+      keys: ["SGD / Adam", "SGD", "Adam"],
+      tip: "SGD / Adam\nSGD — стохастичний градієнтний спуск; Adam — адаптивний оптимізатор із моментами (популярний у глибокому навчанні).",
+    },
+    {
+      keys: ["Поріг класифікації", "Decision threshold"],
+      tip: "Decision threshold\nМежа ймовірності (напр. 0.5), вище якої призначаємо позитивний клас; зсув порога міняє баланс FP/FN.",
+    },
+    {
+      keys: ["Раннє зупинення", "Early stopping"],
+      tip: "Early stopping\nПрипинення навчання, коли метрика на validation перестає покращуватись (patience — терпіння в епохах).",
+    },
+    {
+      keys: ["Інференс", "Inference (ML serving)", "ML"],
+      tip: "Inference (ML serving)\nУ ML/проді: застосування вже навченої моделі для прогнозу (forward без оновлення ваг). Не плутати зі статистичним inference (висновки про популяцію з вибірки).",
+    },
+    {
+      keys: ["Чекпойнт", "Checkpoint / state_dict", "Checkpoint", "state_dict"],
+      tip: "Checkpoint / state_dict\nЗбережений знімок ваг моделі (у PyTorch часто state_dict) для відновлення / деплою.",
+    },
+    {
+      keys: ["Персептрон", "Perceptron"],
+      tip: "Perceptron\nІсторично — алгоритм / лінійний бінарний класифікатор (Rosenblatt); у сучасних текстах часто означає один нейрон (лінійний шар + активація). Не плутати з MLP (багатошарова мережа).",
+    },
+    {
+      keys: ["Багатошаровий персептрон", "Multilayer Perceptron, MLP", "Multilayer Perceptron", "MLP"],
+      tip: "Multilayer Perceptron\nНейромережа з одним або кількома прихованими шарами fully-connected + активації.",
+    },
+    {
+      keys: ["Прихований шар", "Hidden layer"],
+      tip: "Hidden layer\nШар між входом і виходом, що вчить внутрішні представлення.",
+    },
+    {
+      keys: ["Зворотне поширення помилки", "Backpropagation"],
+      tip: "Backpropagation\nАлгоритм обчислення градієнтів ваг через ланцюгове правило (forward → loss → backward).",
+    },
+    {
+      keys: ["ReLU", "Rectified Linear Unit"],
+      tip: "Rectified Linear Unit\nАктивація max(0, x): проста, зменшує затухання градієнта порівняно з сигмоїдою в глибоких мережах.",
+    },
+    {
+      keys: ["Dropout"],
+      tip: "Dropout\nРегуляризація: під час навчання випадково «вимикаємо» нейрони, щоб зменшити співзалежність.",
+    },
+    {
+      keys: ["Weight decay"],
+      tip: "Weight decay\nШтраф за величину ваг (близько до L2) під час оптимізації — боротьба з перенавчанням.",
+    },
+    {
+      keys: ["Затухання / вибух градієнта", "Затухання", "вибух градієнта", "Vanishing / exploding gradients", "Vanishing", "exploding gradients"],
+      tip: "Vanishing / exploding gradients\nГрадієнти стають надто малими або великими в глибоких / рекурентних мережах — навчання ламається.",
+    },
+    {
+      keys: ["Ініціалізація Xavier / He", "Ініціалізація Xavier", "He", "Xavier / He initialization", "Xavier", "He initialization"],
+      tip: "Xavier / He initialization\nСхеми початкових ваг, узгоджені з активаціями, щоб стабілізувати масштаб сигналу й градієнта.",
+    },
+    {
+      keys: ["Згорткова нейромережа", "Convolutional Neural Network, CNN", "Convolutional Neural Network", "CNN"],
+      tip: "Convolutional Neural Network\nАрхітектура для сіткових даних (зображення): локальні фільтри, спільні ваги, ієрархія ознак.",
+    },
+    {
+      keys: ["Згортка / фільтр", "Згортка", "фільтр", "Convolution / kernel / filter", "Convolution", "kernel", "filter"],
+      tip: "Convolution / kernel / filter\nЛокальна операція ковзання ядра по входу з отриманням карти ознак.",
+    },
+    {
+      keys: ["Stride / padding / pooling", "Stride", "padding", "pooling"],
+      tip: "Stride / padding / pooling\nStride — крок згортки; padding — обрамлення; pooling — зменшення просторового розміру (max/avg).",
+    },
+    {
+      keys: ["BatchNorm / LayerNorm", "BatchNorm", "LayerNorm", "Batch / Layer Normalization", "Batch", "Layer Normalization"],
+      tip: "Batch / Layer Normalization\nНормалізація активацій усередині мережі для стабільнішого й швидшого навчання.",
+    },
+    {
+      keys: ["Skip-connection", "Skip / residual connection", "Skip", "residual connection"],
+      tip: "Skip / residual connection\nПрямий шлях сигналу в обхід шарів (ResNet): полегшує навчання дуже глибоких мереж.",
+    },
+    {
+      keys: ["Transfer learning"],
+      tip: "Transfer learning\nПовторне використання моделі, навченої на великому датасеті, для нової задачі (часто freeze → unfreeze / fine-tuning).",
+    },
+    {
+      keys: ["Fine-tuning"],
+      tip: "Fine-tuning\nДонавчання (частини) pretrained-ваг на цільових даних під нову задачу.",
+    },
+    {
+      keys: ["RNN / LSTM / GRU", "RNN", "LSTM", "GRU", "Recurrent networks"],
+      tip: "Recurrent networks\nАрхітектури для послідовностей із прихованим станом. LSTM/GRU краще тримають довгі залежності (Hochreiter & Schmidhuber та наступники).",
+    },
+    {
+      keys: ["Увага / Attention", "Увага", "Attention"],
+      tip: "Attention\nМеханізм зважування релевантних елементів послідовності (запити/ключі/значення). Основа Transformer.",
+    },
+    {
+      keys: ["Токенізація", "Tokenization"],
+      tip: "Tokenization\nРозбиття тексту на токени (слова / підслова / символи) для подальшої обробки моделлю.",
+    },
+    {
+      keys: ["Стоп-слова", "Stop words"],
+      tip: "Stop words\nЧасті службові слова (і, the…), які інколи відкидають у класичних мішках слів.",
+    },
+    {
+      keys: ["Стемінг", "Stemming"],
+      tip: "Stemming\nГрубе обрізання закінчень евристикою до «основи» слова (швидко, менш точно).",
+    },
+    {
+      keys: ["Лематизація", "Lemmatization"],
+      tip: "Lemmatization\nПриведення слова до словникової форми (леми), зазвичай з урахуванням частини мови.",
+    },
+    {
+      keys: ["Мішок слів", "Bag-of-words, BoW", "Bag-of-words", "BoW"],
+      tip: "Bag-of-words\nПредставлення документа як підрахунків токенів без порядку слів.",
+    },
+    {
+      keys: ["TF-IDF", "Term Frequency–Inverse Document Frequency"],
+      tip: "Term Frequency–Inverse Document Frequency\nВаги токенів: часті в документі, але рідкісні в корпусі — важливіші. Класика текстового ML.",
+    },
+    {
+      keys: ["N-грами", "N-grams"],
+      tip: "N-grams\nПослідовності з n сусідніх токенів (біграми, триграми) як ознаки.",
+    },
+    {
+      keys: ["Word2Vec", "Word2Vec (CBOW / Skip-gram)", "Word2Vec (CBOW", "CBOW", "Skip-gram)"],
+      tip: "Word2Vec (CBOW / Skip-gram)\nАлгоритм навчання щільних ембедінгів слів із контексту (Mikolov et al.).",
+    },
+    {
+      keys: ["GloVe"],
+      tip: "GloVe\nГлобальні ембедінги слів на основі статистик співпояв у корпусі.",
+    },
+    {
+      keys: ["Косинусна схожість", "Cosine similarity"],
+      tip: "Cosine similarity\nСхожість векторів за кутом (не за довжиною); стандарт для ембедінгів і пошуку.",
+    },
+    {
+      keys: ["BPE / WordPiece", "BPE", "WordPiece", "Byte-Pair Encoding / WordPiece", "Byte-Pair Encoding"],
+      tip: "Byte-Pair Encoding / WordPiece\nПідсловесні токенізатори: рідкісні слова збираються з частин; основа сучасних LLM-токенайзерів.",
+    },
+    {
+      keys: ["Спецтокени", "[CLS] / [SEP] / [PAD]", "[CLS]", "CLS", "[SEP]", "SEP", "[PAD]", "PAD"],
+      tip: "[CLS] / [SEP] / [PAD]\nСлужбові токени трансформерів: класифікаційний, роздільник, паддинг; разом із attention_mask.",
+    },
+    {
+      keys: ["Дистрибутивна гіпотеза", "Distributional hypothesis"],
+      tip: "Distributional hypothesis\nСлова в схожих контекстах мають близькі значення — основа ембедінгів.",
+    },
+    {
+      keys: ["Jupyter Notebook"],
+      tip: "Jupyter Notebook\nВеб-застосунок і формат обчислювального документа: код + пояснення + результати в `.ipynb`.",
+    },
+    {
+      keys: ["JupyterLab"],
+      tip: "JupyterLab\nIDE-подібна оболонка навколо Jupyter: файли, кілька ноутбуків, термінал, розширення.",
+    },
+    {
+      keys: ["Ядро", "Kernel"],
+      tip: "Kernel\nОкремий процес мови (для Python — ipykernel), що виконує код комірок і зберігає стан.",
+    },
+    {
+      keys: ["Комірка коду", "Code cell"],
+      tip: "Code cell\nКомірка з виконуваним кодом; результат показується під коміркою.",
+    },
+    {
+      keys: ["Комірка Markdown", "Markdown cell"],
+      tip: "Markdown cell\nКомірка з розміткою для пояснень і структури документа.",
+    },
+    {
+      keys: ["Режим редагування / командний режим", "Режим редагування", "командний режим", "Edit mode / Command mode", "Edit mode", "Command mode"],
+      tip: "Edit mode / Command mode\nEdit — друкуємо в комірці; Command — керуємо комірками (додати, тип, видалити).",
+    },
+    {
+      keys: ["IPython magic", "IPython magics"],
+      tip: "IPython magics\nСпеціальні команди: % — line/cell magic, ! — shell. Приклади: %timeit, %matplotlib.",
+    },
+    {
+      keys: ["CSV", "Comma-Separated Values"],
+      tip: "Comma-Separated Values\nТекстовий табличний формат; MIME text/csv задокументовано в RFC 4180.",
+    },
+    {
+      keys: ["ndarray", "NumPy ndarray"],
+      tip: "NumPy ndarray\nN-вимірний однорідний масив NumPy — фундамент числових обчислень у Python DS/ML.",
+    },
+    {
+      keys: ["Broadcasting"],
+      tip: "Broadcasting\nПравила NumPy для поелементних операцій масивів різних, але сумісних форм без явного копіювання.",
+    },
+    {
+      keys: ["Векторизація", "Vectorization"],
+      tip: "Vectorization\nОбчислення над цілими масивами замість циклів Python — швидше завдяки низькорівневим ядрам.",
+    },
+    {
+      keys: ["Series", "pandas Series"],
+      tip: "pandas Series\nОдновимірний підписаний масив у pandas (колонка або ряд з індексом).",
+    },
+    {
+      keys: ["DataFrame", "pandas DataFrame"],
+      tip: "pandas DataFrame\nДвовимірна підписана таблиця в pandas: рядки + стовпці, основа табличного аналізу.",
+    },
+    {
+      keys: ["groupby / split-apply-combine", "groupby", "split-apply-combine"],
+      tip: "GroupBy\nПатерн: розбити на групи → застосувати функцію → зібрати результат (агрегації pandas).",
+    },
+    {
+      keys: ["Булева маска", "Boolean mask"],
+      tip: "Boolean mask\nМасив True/False для фільтрації рядків / елементів за умовою.",
+    },
+    {
+      keys: ["One-hot кодування", "One-hot encoding"],
+      tip: "One-hot encoding\nКатегорію представляють бінарними стовпцями (по одному на рівень).",
+    },
+    {
+      keys: ["Пайплайн", "Pipeline"],
+      tip: "Pipeline\nЛанцюжок кроків: дані → очищення → ознаки → модель → оцінка / деплой. У scikit-learn Pipeline також захищає від leakage у CV.",
+    },
+    {
+      keys: ["Тензор", "Tensor (PyTorch)"],
+      tip: "Tensor (PyTorch)\nБагатовимірний масив із підтримкою GPU та автодиференціювання (requires_grad).",
+    },
+    {
+      keys: ["Autograd", "Automatic differentiation"],
+      tip: "Automatic differentiation\nАвтоматичне обчислення градієнтів за графом операцій (основа backward у PyTorch).",
+    },
+    {
+      keys: ["nn.Module", "torch.nn.Module"],
+      tip: "torch.nn.Module\nБазовий клас шарів і моделей у PyTorch: параметри, forward, train/eval режими.",
+    },
+    {
+      keys: ["DataLoader"],
+      tip: "DataLoader\nІтератор батчів із Dataset: shuffle, batch size, багатопроцесорне читання.",
+    },
+    {
+      keys: ["Промпт", "Prompt"],
+      tip: "Prompt\nВхідний текст / інструкція для LLM: задача, контекст, формат відповіді, обмеження.",
+    },
+    {
+      keys: ["Zero-shot"],
+      tip: "Zero-shot\nВиконання задачі без прикладів у промпті — лише інструкція.",
+    },
+    {
+      keys: ["Few-shot"],
+      tip: "Few-shot\nКілька демонстраційних прикладів у промпті, щоб задати формат і стиль відповіді.",
+    },
+    {
+      keys: ["Chain-of-Thought", "Chain-of-Thought, CoT", "CoT"],
+      tip: "Chain-of-Thought\nТехніка: просити модель міркувати покроково перед відповіддю — часто покращує складні задачі.",
+    },
+    {
+      keys: ["ReAct", "Reason + Act"],
+      tip: "Reason + Act\nПатерн агента: чергування думки (Thought), дії (Action) і спостереження (Observation).",
+    },
+    {
+      keys: ["Контекстне вікно", "Context window"],
+      tip: "Context window\nМаксимальна кількість токенів (промпт + історія + відповідь), які модель бачить за раз.",
+    },
+    {
+      keys: ["Галюцинація", "Hallucination"],
+      tip: "Hallucination\nМодель генерує виглядає-правдоподібний, але фактично хибний або непідтверджений зміст (робоче визначення курсу: вигаданий факт без опори на джерело/контекст). Межі faithfulness / factuality у літературі розмиті.",
+    },
+    {
+      keys: ["RAG", "Retrieval-Augmented Generation"],
+      tip: "Retrieval-Augmented Generation\nСпочатку шукаємо релевантні фрагменти знань, потім підставляємо їх у промпт генерації — менше галюцинацій і актуальніші факти.",
+    },
+    {
+      keys: ["Чанк / overlap", "Чанк", "overlap", "Chunk / overlap", "Chunk"],
+      tip: "Chunk / overlap\nФрагмент документа для індексації; overlap — перекриття сусідніх чанків, щоб не різати сенс.",
+    },
+    {
+      keys: ["Vector search / top-k", "Vector search", "top-k"],
+      tip: "Vector search / top-k\nПошук найближчих ембедінгів у векторній базі; top-k — скільки фрагментів віддати в контекст.",
+    },
+    {
+      keys: ["Function calling", "Function / tool calling", "Function", "tool calling"],
+      tip: "Function / tool calling\nМодель повертає структурований виклик інструмента (імʼя + аргументи) замість «вільного» тексту.",
+    },
+    {
+      keys: ["Prompt injection"],
+      tip: "Prompt injection\nАтака / збій: шкідливий або сторонній текст у даних змушує модель порушити інструкції системи.",
+    },
+    {
+      keys: ["PII", "Personally Identifiable Information"],
+      tip: "Personally Identifiable Information\nДані, що ідентифікують особу; їх треба мінімізувати, маскувати й не світити в логах/промптах.",
+    },
+    {
+      keys: ["Human-in-the-loop"],
+      tip: "Human-in-the-loop\nЛюдина підтверджує / виправляє критичні кроки агента перед виконанням.",
+    },
+    {
+      keys: ["Спостережуваність", "Observability (traces / spans)", "Observability (traces", "spans)"],
+      tip: "Observability (traces / spans)\nТрасування викликів LLM/інструментів для дебагу якості, вартості й затримок (напр. LangSmith).",
+    },
+    {
+      keys: ["Структурований вивід", "Structured output"],
+      tip: "Structured output\nПримус відповіді моделі до схеми (JSON / tool schema) для надійної інтеграції з кодом.",
+    },
+    {
+      keys: ["Продакшен", "Production"],
+      tip: "Production\nБойове середовище продукту. Демо в ноутбуці ≠ production: потрібні тести, моніторинг, відтворюваність, обмеження latency / вартості.",
+    },
+    {
+      keys: ["Моніторинг моделі", "Model monitoring"],
+      tip: "Model monitoring\nСпостереження після запуску: якість, drift, вартість помилок, інциденти, latency.",
+    },
+    {
+      keys: ["Затримка", "Latency"],
+      tip: "Latency\nЧас відповіді системи. Модель може бути точною, але занадто повільною для продукту.",
+    },
+    {
+      keys: ["Інтерпретованість", "Interpretability"],
+      tip: "Interpretability\nНаскільки можна пояснити, чому модель так вирішила. Критично у фінансах, медицині, регуляції.",
+    },
+    {
+      keys: ["Приватність", "Privacy"],
+      tip: "Privacy\nЗахист персональних і чутливих даних протягом життєвого циклу AI-системи. (NIST AI RMF.)",
+    },
+    {
+      keys: ["Етика ШІ", "AI ethics / responsible AI", "AI ethics", "AI", "responsible AI"],
+      tip: "AI ethics / responsible AI\nСправедливість, уникнення шкоди й дискримінації, прозорість і підзвітність у рішеннях моделі.",
+    },
+    {
+      keys: ["Proxy-дискримінація", "Proxy discrimination"],
+      tip: "Proxy discrimination\nКоли «нейтральна» ознака (район, ПІБ) корелює із захищеною групою й модель дискримінує опосередковано.",
+    },
+    {
+      keys: ["LTV", "Lifetime Value"],
+      tip: "Lifetime Value\nОчікувана цінність клієнта за весь час співпраці. Часто ціль регресії в бізнесі.",
+    },
+    {
+      keys: ["Triage"],
+      tip: "Triage\nПріоритезація випадків (напр. медичних) за терміновістю / ризиком — типовий кейс класифікації.",
+    },
+    {
+      keys: ["Decision framing"],
+      tip: "Decision framing\nЯке бізнес-рішення покращуємо і хто/що діє за прогнозом.",
+    },
+    {
+      keys: ["Label design", "label"],
+      tip: "Label design\nЯк чесно визначити y: що вимірюємо, з якою затримкою, з якими помилками розмітки.",
+    },
+    {
+      keys: ["Offline / online evaluation", "Offline", "online evaluation"],
+      tip: "Offline / online evaluation\nOffline — holdout/CV до запуску; online — A/B, shadow mode, моніторинг у проді.",
+    },
+    {
+      keys: ["Журнал", "Journal"],
+      tip: "Journal\nОсновний FastAPI + React застосунок для лекційних нотаток і матеріалів тем.",
+    },
+    {
+      keys: ["Курс", "Course"],
+      tip: "Course\nФайловий Python AI курс під backend/data/courses/... (не в БД журналу).",
+    },
+    {
+      keys: ["Пара", "Pair"],
+      tip: "Pair\nОдиниця уроку mXX/pair_YY: презентація, план, ДЗ, квіз, нотатки викладача.",
+    },
+    {
+      keys: ["Маніфест", "Manifest"],
+      tip: "Manifest\nWhitelist файлів, доступних для завантаження в межах пари.",
+    },
+    {
+      keys: ["Матеріали викладача", "Teacher materials"],
+      tip: "Teacher materials\nteacher.md / teacher guides — за замовчуванням не студентський інтерфейс.",
+    },
+    {
+      keys: ["Збірка курсу", "Course build"],
+      tip: "Course build\nІдемпотентні генератори в scripts/course_build/; джерела правди — content packs.",
+    },
+    {
+      keys: ["Дошка термінів", "Board"],
+      tip: "Board\nСписок ключових термінів пари зі сценарію заняття (поле board у content packs).",
+    },
+    {
+      keys: ["ШІ", "AI", "Artificial Intelligence", "штучний інтелект"],
+      tip: "Artificial Intelligence\nМашинна система, яка для явних або неявних цілей виводить із вхідних даних, як згенерувати виходи: прогнози, контент, рекомендації чи рішення, що впливають на фізичне або віртуальне середовище. Системи різняться рівнем автономності й адаптивності після розгортання. (OECD AI Principles.)",
+    },
+    {
+      keys: ["DS", "Data Science", "наука про дані"],
+      tip: "Data Science\nМіждисциплінарний процес: бізнес-/дослідницьке питання → дані → аналіз / моделювання → інсайт або продукт. Не обовʼязково включає ML: інколи достатньо описової статистики й візуалізації.",
+    },
+    {
+      keys: ["ML", "Machine Learning", "машинне навчання"],
+      tip: "Machine Learning\nПідхід, за якого модель покращує якість прогнозу/рішення на основі досвіду (даних), а не лише за жорстко прописаними правилами. Практична рамка курсу: f(ознаки) → прогноз, параметри підбираються з прикладів.",
+    },
+    {
+      keys: ["DL", "Deep Learning", "глибоке навчання"],
+      tip: "Deep Learning\nПідмножина ML на багатошарових нейронних мережах, що вчаться складних внутрішніх представлень даних (зображення, мова, аудіо). (Goodfellow, Bengio, Courville.)",
+    },
+    {
+      keys: ["GenAI", "Generative AI", "генеративний ШІ"],
+      tip: "Generative AI\nМоделі, що створюють новий контент (текст, зображення, код, аудіо), моделюючи розподіл даних. У дефініції OECD вихід «content» прямо включено до виходів AI-системи.",
+    },
+    {
+      keys: ["LLM", "Large Language Model"],
+      tip: "Large Language Model\nНейромережа (зазвичай на архітектурі Transformer), навчена на великих текстових корпусах передбачати / генерувати мову. На практиці — основа сучасних чат-ботів і кодових асистентів.",
+    },
+    {
+      keys: ["з учителем", "Supervised", "supervised"],
+      tip: "Supervised learning\nНавчання, де для кожного навчального прикладу відома очікувана відповідь y (мітка / ground truth). Типові оцінки: класифікатор, регресор. (scikit-learn Glossary.)",
+    },
+    {
+      keys: ["без учителя", "Unsupervised", "unsupervised"],
+      tip: "Unsupervised learning\nНавчання без y: шукаємо структуру в X (кластери, аномалії, зменшення розмірності). (scikit-learn Glossary.)",
+    },
+    {
+      keys: ["з підкріпленням", "Reinforcement", "reinforcement", "RL"],
+      tip: "Reinforcement Learning\nАгент взаємодіє із середовищем, отримує нагороди і вчиться політиці дій, що максимізує сумарну нагороду в довгостроковій перспективі. (Sutton & Barto.)",
+    },
+
+    {
+      keys: ["цільова змінна", "цільова ознака", "target", "мітка", "мітки", "label"],
+      tip: "Target\nЗалежна змінна y у supervised: те, що передбачаємо. Синоніми: outcome, ground truth, label.",
+    },
+    {
+      keys: ["зима ШІ", "зими ШІ"],
+      tip: "AI winter\nПеріод спаду інтересу й фінансування через завищені обіцянки, брак даних / обчислень і крихкість ранніх систем.",
+    },
+    {
+      keys: ["тест Тюрінга", "тест Тюринга"],
+      tip: "Turing test\nОпераційний критерій Алана Тюрінга (1950): чи може машина вести діалог так, щоб людина-суддя не відрізнила її від людини. Це імітаційна гра, не математичне визначення інтелекту.",
+    },
+    {
+      keys: ["ноутбук", "ноутбука", "ноутбуці", "Notebook", ".ipynb"],
+      tip: "Jupyter Notebook\nВеб-застосунок і формат обчислювального документа: код + пояснення + результати в `.ipynb`.",
+    },
+    {
+      keys: ["прод", "production", "продакшен"],
+      tip: "Production\nБойове середовище продукту. Демо в ноутбуці ≠ production: потрібні тести, моніторинг, відтворюваність, обмеження latency / вартості.",
+    },
+  /* === EXTRA_OBVIOUS_TERMS_BEGIN === */
+    {
+      keys: ["дані", "даних", "даними", "Data"],
+      tip: "Data\nФакти, виміри чи спостереження (числа, текст, зображення тощо), з яких будують аналіз або модель. Без якісних даних жоден алгоритм не «вгадає» правду про світ.",
+    },
+    {
+      keys: ["модель", "моделі", "моделлю", "Модель", "model"],
+      tip: "Model\nСпрощене математичне/програмне представлення залежності між входами (ознаками) і виходом (прогнозом чи рішенням). Модель навчають на даних і потім застосовують до нових прикладів.",
+    },
+    {
+      keys: ["алгоритм", "алгоритму", "алгоритми", "алгоритмів", "Алгоритм", "algorithm"],
+      tip: "Algorithm\nЧітка послідовність кроків для розвʼязання задачі. У ML алгоритм навчання підбирає параметри моделі з прикладів.",
+    },
+    {
+      keys: ["метрика", "метрики", "метрикою", "метрик", "Metric"],
+      tip: "Metric\nЧисло, яким вимірюємо якість моделі або продукту (accuracy, F1, MAE, recall тощо). Метрику обирають під бізнес-ціну помилок, а не «бо так прийнято».",
+    },
+    {
+      keys: ["прогноз", "прогнозу", "прогнози", "прогнозом", "Prediction", "prediction"],
+      tip: "Prediction\nВихід моделі для нового прикладу: клас, число, рейтинг, наступна дія тощо. Прогноз — це оцінка, а не гарантія.",
+    },
+    {
+      keys: ["навчання", "навчанні", "навчанням", "навчитись"],
+      tip: "Learning\nПроцес, у якому система покращує поведінку/прогноз на основі досвіду (даних або reward), а не лише за жорстко прописаними правилами.",
+    },
+    {
+      keys: ["параметри", "параметрів", "параметр", "Parameters", "parameters"],
+      tip: "Parameters\nЧисла всередині моделі, які підбираються під час навчання (ваги нейромережі, коефіцієнти регресії). Відрізняйте від гіперпараметрів, які задає людина до навчання.",
+    },
+    {
+      keys: ["гіперпараметри", "гіперпараметр", "Hyperparameters", "hyperparameters"],
+      tip: "Hyperparameters\nНалаштування навчання/моделі, які задає людина до (або зовні) оптимізації параметрів: learning rate, глибина дерева, кількість шарів тощо.",
+    },
+    {
+      keys: ["помилка", "помилки", "помилок", "помилкою", "Error", "error"],
+      tip: "Error\nРозбіжність між прогнозом моделі і істиною (або між рішенням і бажаним результатом). У бізнесі важлива ціна помилки, не лише її кількість.",
+    },
+    {
+      keys: ["файл", "файла", "файлі", "файлом", "File", "file"],
+      tip: "File\nОдиниця збереження даних або коду на диску (CSV, .ipynb, .py). У DS/ML файли — спосіб передати відтворюваний артефакт між людьми і системами.",
+    },
+    {
+      keys: ["таблиця", "таблиці", "таблицю", "Table", "table"],
+      tip: "Table\nСтруктура даних із рядків (спостережень) і колонок (ознак/цілей). Найпоширеніший формат табличного ML.",
+    },
+    {
+      keys: ["колонка", "колонки", "колонок", "колонках", "Column", "column", "columns"],
+      tip: "Column\nПоле таблиці: одна ознака або ціль для всіх рядків. Імʼя колонки має бути стабільним і описаним у data dictionary.",
+    },
+    {
+      keys: ["рядок", "рядка", "рядки", "рядків", "рядках", "Row", "row", "rows"],
+      tip: "Row\nОдин запис таблиці = одне спостереження (клієнт, день, транзакція тощо).",
+    },
+    {
+      keys: ["ознак", "ознаки", "ознаках", "Features", "feature-колонки", "feature-колонок"],
+      tip: "Feature\nВхідні змінні моделі (X). Морфологічні форми слова «ознака»: ознак / ознаки / ознаках — той самий сенс.",
+    },
+    {
+      keys: ["датасету", "датасеті", "датасетом", "Датасети", "датасети", "міні-датасет", "міні-датасету"],
+      tip: "Dataset\nНабір спостережень для аналізу чи навчання. Форми слова: датасет / датасету / датасеті.",
+    },
+    {
+      keys: ["цільова", "цільової", "цільову"],
+      tip: "Target\nПрикметник до target-змінної: цільова ознака / цільова змінна — те, що модель вчиться передбачати (y).",
+    },
+    {
+      keys: ["спостережень", "спостереженням"],
+      tip: "Observation\nОдин приклад у датасеті (рядок). Форми: спостереження / спостережень.",
+    },
+    {
+      keys: ["Python", "python"],
+      tip: "Python\nМова програмування, де-факто стандарт для Data Science і багатьох AI-прототипів: багата екосистема (NumPy, pandas, scikit-learn, PyTorch).",
+    },
+    {
+      keys: ["Python Core"],
+      tip: "Python Core\nБазовий курс/рівень Python без DS-бібліотек: синтаксис, структури даних, функції, ООП, файли, Git — передумова цього курсу.",
+    },
+    {
+      keys: ["GPU"],
+      tip: "GPU\nGraphics Processing Unit — прискорювач паралельних обчислень. Критичний для deep learning на великих моделях і зображеннях.",
+    },
+    {
+      keys: ["HTML"],
+      tip: "HTML\nHyperText Markup Language — мова розмітки вебсторінок. Ці навчальні презентації — HTML-документи.",
+    },
+    {
+      keys: ["API", "API keys"],
+      tip: "API\nApplication Programming Interface — контракт, як програми викликають одна одну. API keys — секрети доступу; їх не кладуть у .ipynb і git.",
+    },
+    {
+      keys: ["pip"],
+      tip: "pip\nСтандартний встановлювач пакетів Python. Приклад: pip install jupyterlab.",
+    },
+    {
+      keys: ["import", "imports", "імпорт", "імпорти"],
+      tip: "import\nОператор Python, що підключає модуль/бібліотеку. У ноутбуці імпорти тримають у верхній комірці.",
+    },
+    {
+      keys: ["pathlib"],
+      tip: "pathlib\nМодуль стандартної бібліотеки для шляхів до файлів незалежно від ОС. Зручніший і безпечніший за сирі рядки шляхів.",
+    },
+    {
+      keys: ["csv.DictReader", "csv.DictWriter", "DictReader", "DictWriter"],
+      tip: "csv module\nМодуль стандартної бібліотеки для читання/запису CSV. DictReader дає рядки як словники за назвами колонок.",
+    },
+    {
+      keys: ["Jupyter", "jupyter"],
+      tip: "Jupyter\nЕкосистема інтерактивних ноутбуків (Notebook/Lab): код, текст і результат в одному документі. Зручно для навчання й EDA.",
+    },
+    {
+      keys: ["JupyterLab"],
+      tip: "JupyterLab\nСучасна оболонка Jupyter: файловий браузер, кілька вкладок, термінал. Ближче до IDE, ніж класичний Notebook.",
+    },
+    {
+      keys: ["Google Colab", "Colab"],
+      tip: "Google Colab\nХмарні Jupyter-ноутбуки від Google з безкоштовним/обмеженим GPU. Зручно стартувати без локального встановлення.",
+    },
+    {
+      keys: ["VS Code notebooks", "VS Code"],
+      tip: "VS Code notebooks\nНоутбуки всередині редактора Visual Studio Code — альтернатива JupyterLab для тих, хто вже працює в IDE.",
+    },
+    {
+      keys: ["Markdown", "markdown", "Markdown cell", "markdown-описом"],
+      tip: "Markdown\nЛегка розмітка для тексту в ноутбуках: заголовки, списки, формули. Окремий тип комірки поруч із Code.",
+    },
+    {
+      keys: ["Code cell", "code-комірками", "code/markdown"],
+      tip: "Code cell\nКомірка ноутбука з виконуваним кодом (зазвичай Python). Результат зʼявляється під коміркою.",
+    },
+    {
+      keys: ["комірка", "комірки", "комірок", "комірках", "комірками", "комірці"],
+      tip: "Cell\nОдиниця ноутбука: code або markdown. Порядок виконання комірок може відрізнятися від порядку в файлі.",
+    },
+    {
+      keys: ["Restart Kernel", "Restart kernel", "Restart Kernel & Run All"],
+      tip: "Restart Kernel\nПерезапуск ядра очищає памʼять змінних. Перед здачею: Restart Kernel & Run All — перевірка відтворюваності.",
+    },
+    {
+      keys: ["Run All"],
+      tip: "Run All\nКоманда виконати всі комірки ноутбука зверху вниз. Разом із Restart Kernel — мінімальний тест «чи запускається з нуля».",
+    },
+    {
+      keys: ["Shift+Enter", "Ctrl/Cmd+Enter"],
+      tip: "Notebook shortcuts\nТипові скорочення Jupyter: Shift+Enter — виконати й перейти далі; Esc — command mode; Enter — edit mode.",
+    },
+    {
+      keys: ["edit mode", "command mode"],
+      tip: "Notebook modes\nEdit mode — редагуєте текст комірки; command mode — керуєте структурою ноутбука (додати/видалити комірки).",
+    },
+    {
+      keys: ["ipykernel"],
+      tip: "ipykernel\nПакет, що дає Python-ядро для Jupyter. Без встановленого ядра ноутбук не виконає код.",
+    },
+    {
+      keys: ["display_name", "display-name"],
+      tip: "Kernel display name\nЛюдська назва ядра в меню Jupyter (наприклад, Python 3). Не плутати з імʼям conda/venv середовища.",
+    },
+    {
+      keys: [".ipynb", "ipynb", "ноутбуки", "Ноутбуки", "ноутбуках"],
+      tip: "Notebook (.ipynb)\nФормат файлу Jupyter Notebook (JSON). Зручний для дослідження; стабільний код краще виносити в .py.",
+    },
+    {
+      keys: ["Jupyter magics", "%matplotlib", "%%time"],
+      tip: "Jupyter magics\nСпеціальні команди ноутбука на кшталт %matplotlib inline або %%time. Це не звичайний Python — працюють у IPython/Jupyter.",
+    },
+    {
+      keys: ["ML-задачі", "ML-задачу", "ML-задачею", "ML-продукту", "ML-продукт"],
+      tip: "ML task / product\nML-задача — постановка «дані → ознаки → ціль → метрика → обмеження». ML-продукт — система в проді з моніторингом і ціною помилок.",
+    },
+    {
+      keys: ["бінарна класифікація", "binary classification"],
+      tip: "Binary classification\nЗадача з двома класами (0/1, так/ні). Метрики часто: precision, recall, F1, ROC-AUC — залежно від ціни помилок.",
+    },
+    {
+      keys: ["багатокласова класифікація", "multiclass", "multiclass classification"],
+      tip: "Multiclass classification\nКласифікація з трьома і більше класами. Часто дивляться macro/micro-F1, а не лише accuracy.",
+    },
+    {
+      keys: ["F1", "F1-score", "macro-F1"],
+      tip: "F1-score\nГармонійне середнє precision і recall. Macro-F1 — середнє F1 по класах; корисно при дисбалансі.",
+    },
+    {
+      keys: ["false_negative", "false_positive", "False negative", "False positive"],
+      tip: "False positive / negative\nFalse positive — хибна тривога; false negative — пропущений позитивний випадок. Вартість цих помилок у бізнесі різна.",
+    },
+    {
+      keys: ["етика", "ethics"],
+      tip: "Ethics\nПитання справедливості, приватності й шкоди від моделі: кого система «карає» помилкою і чи немає дискримінації через proxy-ознаки.",
+    },
+    {
+      keys: ["loss", "Loss"],
+      tip: "Loss\nФункція втрат — що саме оптимізатор мінімізує під час навчання (наприклад log-loss, MSE). Це внутрішній критерій, не завжди = бізнес-метрика.",
+    },
+    {
+      keys: ["feedback", "feedback loop"],
+      tip: "Feedback\nЗворотний звʼязок: сигнал, за яким система або людина коригує поведінку (reward у RL, правки розмітки, online-метрики).",
+    },
+    {
+      keys: ["online evaluation", "Offline evaluation", "offline evaluation", "Online / human review"],
+      tip: "Online / offline evaluation\nOffline — оцінка на історичних даних; online — у живому продукті (A/B, моніторинг). Хороший offline не гарантує online-успіх.",
+    },
+    {
+      keys: ["Monitoring", "моніторинг"],
+      tip: "Monitoring\nСпостереження за моделлю в проді: якість, drift даних, затримки, вартість помилок. Без моніторингу модель «тихо» деградує.",
+    },
+    {
+      keys: ["drift", "Data drift", "Concept drift"],
+      tip: "Drift\nЗміна розподілу даних або звʼязку X→y з часом. Через drift вчорашня модель сьогодні помиляється частіше.",
+    },
+    {
+      keys: ["Decision framing"],
+      tip: "Decision framing\nФормулювання: яке рішення людини/процесу підтримує модель. Без цього ML легко будує «точний», але непотрібний прогноз.",
+    },
+    {
+      keys: ["Label design"],
+      tip: "Label design\nЯк визначити y чесно й доступно: що вважаємо «дефолтом», «спамом», «відтоком». Погана мітка = погана модель навіть із крутим алгоритмом.",
+    },
+    {
+      keys: ["Evaluate", "evaluation", "оцінювання"],
+      tip: "Evaluation\nПеревірка якості за метриками на даних, яких модель не бачила під час навчання (holdout / time split / online).",
+    },
+    {
+      keys: ["Anti-patterns", "anti-pattern", "антипатерн", "антипатерни"],
+      tip: "Anti-pattern\nТипова шкідлива практика: test на train, accuracy при дисбалансі, ігнор ціни помилок, плутанина демо-ноутбука з production.",
+    },
+    {
+      keys: ["Self-supervised", "self-supervised"],
+      tip: "Self-supervised learning\nНавчання з мітками, які автоматично зроблено з самих даних (наприклад, передбачити наступне слово). Основа сучасних LLM.",
+    },
+    {
+      keys: ["Semi-supervised", "semi-supervised"],
+      tip: "Semi-supervised learning\nНавчання на малій частці розмічених даних + великій частці нерозмічених. Компроміс між supervised і вартістю розмітки.",
+    },
+    {
+      keys: ["Imitation learning"],
+      tip: "Imitation learning\nАгент вчиться копіювати поведінку експерта (демонстрації), а не лише з reward. Часто місток між supervised і RL.",
+    },
+    {
+      keys: ["data-driven", "data driven"],
+      tip: "Data-driven\nПідхід, коли рішення спираються на дані й вимірювані ефекти, а не лише на інтуїцію. Не означає «без експертизи домену».",
+    },
+    {
+      keys: ["rule-based", "Rule-based"],
+      tip: "Rule-based\nСистема на явних правилах «якщо–то», які написала людина. Прозора, але погано масштабується на складні патерни.",
+    },
+    {
+      keys: ["random forest", "Random Forest"],
+      tip: "Random Forest\nАнсамбль дерев рішень: багато дерев голосують разом. Сильний baseline для табличних задач.",
+    },
+    {
+      keys: ["Transformers"],
+      tip: "Transformer\nАрхітектура з attention (Vaswani et al., 2017). Основа LLM і багатьох моделей мови/зору. «Transformers» у слайдах = ця родина моделей.",
+    },
+    {
+      keys: ["topic modeling"],
+      tip: "Topic modeling\nUnsupervised аналіз текстів: знайти «теми» як розподіли слів (наприклад LDA). Не те саме, що сучасні ембедінги LLM.",
+    },
+    {
+      keys: ["ImageNet"],
+      tip: "ImageNet\nВеликий розмічений датасет зображень; історичний бенчмарк, що підштовхнув вибух deep learning у computer vision.",
+    },
+    {
+      keys: ["LTV"],
+      tip: "LTV\nLifetime-Time Value — оцінка цінності клієнта за весь час співпраці. Часта бізнес-ціль для прогнозування й сегментації.",
+    },
+    {
+      keys: ["SVM"],
+      tip: "SVM\nSupport Vector Machine — класичний алгоритм ML з роздільною гіперплощиною; важливий історично й як сильний baseline.",
+    },
+    {
+      keys: ["PCA"],
+      tip: "PCA\nPrincipal Component Analysis — метод зменшення розмірності: нові осі пояснюють максимум дисперсії даних.",
+    },
+    {
+      keys: ["Policy", "політика агента"],
+      tip: "Policy\nУ RL: стратегія агента — яку дію обрати в стані. Навчання з підкріпленням якраз і шукає хорошу policy.",
+    },
+    {
+      keys: ["spam", "Spam", "is_spam"],
+      tip: "Spam detection\nКласичний приклад binary classification: відфільтрувати небажані повідомлення. Легко пояснити false positive vs false negative.",
+    },
+    {
+      keys: ["interpretability", "інтерпретованість"],
+      tip: "Interpretability\nНаскільки людина може зрозуміти, чому модель так вирішила. Часто обмеження продукту поряд із точністю й latency.",
+    },
+    {
+      keys: ["proxy", "proxy-дискримінації", "proxy-ознаки"],
+      tip: "Proxy feature\nОзнака, що непрямо кодує чутливий атрибут (район ≈ соціально-економічний статус). Ризик прихованої дискримінації.",
+    },
+    {
+      keys: ["human review", "human-in-the-loop"],
+      tip: "Human review\nЛюдина перевіряє або затверджує рішення моделі. Часто потрібно там, де ціна помилки висока.",
+    },
+    {
+      keys: ["senior-практики"],
+      tip: "Senior practice\nІнженерний рівень: починати з decision framing і baseline, а не з «наймоднішої» моделі; думати про прод, етику й моніторинг.",
+    },
+    {
+      keys: ["числові", "числовий", "numeric", "числова"],
+      tip: "Numeric feature\nОзнака з числовим значенням (ціна, вік, години). Буває continuous (float) або discrete (лічильник).",
+    },
+    {
+      keys: ["категоріальні", "категоріальний", "categorical", "категорія"],
+      tip: "Categorical feature\nОзнака з обмеженим набором міток (район, бренд, тариф). Зазвичай потребує кодування перед лінійними/нейро моделями.",
+    },
+    {
+      keys: ["текстові", "текстовий", "text feature", "текстові ознаки"],
+      tip: "Text feature\nОзнака-текст (відгук, опис). Для класичних моделей потрібна векторизація; для LLM часто йде як сирий вхід.",
+    },
+    {
+      keys: ["datetime", "дата/час"],
+      tip: "Datetime feature\nЧасова мітка або дата. З неї роблять похідні ознаки (день тижня, місяць) і правильно ріжуть train/test у часі.",
+    },
+    {
+      keys: ["image-ознаки", "image feature"],
+      tip: "Image feature\nВхід-зображення (або ембедінг зображення). Типовий домен computer vision / multimodal моделей.",
+    },
+    {
+      keys: ["audio feature", "аудіо-ознаки"],
+      tip: "Audio feature\nВхід-звук (хвиля або спектр). Окремий домен ML зі своїми пайплайнами ознак і моделями.",
+    },
+    {
+      keys: ["dtype"],
+      tip: "dtype\nТип даних колонки (float, int, category, bool, str). Правильний dtype запобігає тихим помилкам у розрахунках.",
+    },
+    {
+      keys: ["схема", "schema", "схему"],
+      tip: "Schema\nОпис структури датасету: колонки, типи, ролі feature/target, допустимі значення. Поруч із data dictionary.",
+    },
+    {
+      keys: ["leakage", "Leakage", "data leakage", "витік", "витоку"],
+      tip: "Data leakage\nУ X потрапляє інформація з майбутнього або прямий «спойлер» y. Метрики стають завищеними й модель провалюється в проді.",
+    },
+    {
+      keys: ["NaN", "пропусків"],
+      tip: "NaN / missing\nNot a Number — маркер пропущеного значення в числових масивах. Треба рахувати частку пропусків і вирішити стратегію обробки.",
+    },
+    {
+      keys: ["A/B", "A/B test", "A/B-тест"],
+      tip: "A/B test\nЕксперимент: порівнюємо варіанти продукту на випадкових групах користувачів. Основний спосіб online-перевірки гіпотез.",
+    },
+    {
+      keys: ["pandas", "pandas.read_csv"],
+      tip: "pandas\nГоловна бібліотека табличних даних у Python. Далі на курсі CSV відкриємо через pandas.read_csv замість ручного csv.",
+    },
+    {
+      keys: ["matplotlib"],
+      tip: "matplotlib\nБазова бібліотека графіків у Python. Часто перший інструмент візуалізації в EDA.",
+    },
+    {
+      keys: ["IDE"],
+      tip: "IDE\nIntegrated Development Environment — середовище розробки (VS Code, PyCharm). JupyterLab частково виконує цю роль для DS.",
+    },
+    {
+      keys: ["cloud notebooks", "cloud"],
+      tip: "Cloud notebooks\nНоутбуки в хмарі (Colab, SageMaker тощо): менше локальної налаштування, але залежність від мережі й політики даних.",
+    },
+    {
+      keys: ["інсайт", "інсайти", "insight"],
+      tip: "Insight\nКорисний висновок із даних, який змінює рішення. Мета Data Science не в графіку самому по собі, а в інсайті.",
+    },
+    {
+      keys: ["гіпотеза", "гіпотези", "hypothesis"],
+      tip: "Hypothesis\nПеревірюване припущення. EDA і експерименти існують, щоб гіпотези підтверджувати або спростовувати.",
+    },
+    {
+      keys: ["валідація", "validation"],
+      tip: "Validation\nПеревірка моделі на окремій вибірці для вибору гіперпараметрів / ранньої зупинки. Не плутати з фінальним test.",
+    },
+    {
+      keys: ["оптимізація", "optimization"],
+      tip: "Optimization\nПроцес мінімізації loss / максимізації метрики шляхом зміни параметрів (градієнтний спуск тощо).",
+    },
+    {
+      keys: ["градієнт", "gradient"],
+      tip: "Gradient\nВектор похідних loss за параметрами. Показує напрям найшвидшого зростання; оптимізатор іде приблизно в протилежний бік.",
+    },
+    {
+      keys: ["нейрон", "нейрони", "шар мережі", "шари мережі"],
+      tip: "Neuron / layer\nНейрон — базова одиниця нейромережі (лінійне перетворення + активація). Шар — група нейронів одного рівня глибини.",
+    },
+    {
+      keys: ["моделюванням", "моделювання", "modeling"],
+      tip: "Modeling\nЕтап, коли з ознак будують і порівнюють моделі. Перед ним — розуміння даних, схеми й метрики успіху.",
+    },
+    {
+      keys: ["середнє арифметичне", "mean baseline"],
+      tip: "Mean\nСереднє арифметичне. Простий baseline для регресії: завжди передбачати середнє y на train.",
+    },
+    {
+      keys: ["евристика", "евристики", "heuristic"],
+      tip: "Heuristic\nПросте правило «на око» / досвіді домену. Часто стає baseline перед складним ML.",
+    },
+    {
+      keys: ["дисбаланс", "дисбалансі", "class imbalance"],
+      tip: "Class imbalance\nКоли один клас зустрічається набагато рідше за інший. Accuracy стає оманливою — дивіться recall/precision/F1 і вартість помилок.",
+    },
+    {
+      keys: ["holdout", "hold-out"],
+      tip: "Holdout\nВідкладена частка даних лише для оцінки. Її не використовують для підбору параметрів «до останнього».",
+    },
+    {
+      keys: ["time split", "часовий спліт"],
+      tip: "Time-based split\nTrain у минулому, test у майбутньому. Критично для задач із часовою залежністю (інакше leakage).",
+    },
+    {
+      keys: ["продакшену", "продакшені"],
+      tip: "Production\nБойове середовище продукту. Відрізняється від ноутбука: затримки, моніторинг, безпека, відтворювані пайплайни.",
+    },
+    {
+      keys: ["обмеження", "constraints"],
+      tip: "Constraints\nОбмеження продукту: latency, вартість, interpretability, етика, privacy. Вони такі ж важливі, як метрика якості.",
+    },
+    {
+      keys: ["бізнес-ціль", "business_goal", "business goal"],
+      tip: "Business goal\nНавіщо бізнесу модель: яке рішення покращуємо і яку цінність очікуємо. Без цього ML — технологія без сенсу.",
+    },
+    {
+      keys: ["ризики", "ризик", "risks"],
+      tip: "Risk\nЩо станеться при помилці моделі (збиток, втрата клієнта, шкода людині). Визначає вибір метрики й порогів.",
+    },
+    {
+      keys: ["розмітка", "розмітки", "labeling"],
+      tip: "Labeling\nПроцес створення міток y людьми або правилами. Якість розмітки часто важливіша за вибір алгоритму.",
+    },
+    {
+      keys: ["відтворюваність", "reproducibility"],
+      tip: "Reproducibility\nЗдатність отримати той самий результат при повторному запуску (Restart Kernel & Run All, фіксовані seed, зафіксовані версії).",
+    },
+    {
+      keys: ["гігієна ноутбука", "гігієна ноутбука на парі"],
+      tip: "Notebook hygiene\nПравила порядку в .ipynb: імпорти зверху, Restart & Run All, без секретів, без зайвого виводу.",
+    },
+    /* === PAIRS_1_14_STACK_BEGIN === */
+    {
+      keys: ["reshape", "np.reshape"],
+      tip: "NumPy reshape\nЗміна форми масиву без зміни кількості елементів. Перед reshape перевіряйте, що добуток вимірів = size.",
+    },
+    {
+      keys: ["axis=0", "axis=1", "вісь axis"],
+      tip: "axis\nВимір, уздовж якого рахують агрегацію. У 2D: axis=0 — по рядках (результат по стовпцях), axis=1 — по стовпцях (результат по рядках). У Практичному 2.1 легко переплутати напрям.",
+    },
+    {
+      keys: ["concatenate", "np.concatenate", "vstack", "hstack"],
+      tip: "concatenate, vstack, hstack\nОбʼєднання масивів уздовж осі. concatenate — уздовж наявної осі; vstack / hstack — зручні обгортки для рядків і стовпців.",
+    },
+    {
+      keys: ["transpose", "np.transpose", ".T"],
+      tip: "transpose\nТранспонування: рядки стають стовпцями. У задачі 3 Практичного 2.1: 3×5 → T → 5×3, далі reshape іншої форми.",
+    },
+    {
+      keys: ["arange", "np.arange"],
+      tip: "numpy.arange\nПослідовність чисел з кроком, як range, але повертає ndarray. Кінець інтервалу не входить у результат.",
+    },
+    {
+      keys: ["loc", "iloc"],
+      tip: "loc / iloc\nВибір у DataFrame: loc — за мітками індексу/колонок; iloc — за позиціями 0,1,2… Плутанина між ними — часта пастка pandas.",
+    },
+    {
+      keys: ["read_csv", "pd.read_csv"],
+      tip: "pandas.read_csv\nЧитання таблиці з CSV. Після читання ритуал: head, info, isnull().sum(), dtypes — до будь-яких фільтрів і моделей.",
+    },
+    {
+      keys: ["SettingWithCopy", "SettingWithCopyWarning"],
+      tip: "SettingWithCopyWarning\nПопередження pandas: ви змінюєте зріз, який може бути копією, і правки «зникнуть». Рішення: .loc[рядки, колонка] = … або .copy().",
+    },
+    {
+      keys: ["StandardScaler"],
+      tip: "StandardScaler\nСкейлер scikit-learn: кожна ознака → середнє 0, std 1. Fit лише на train (або всередині Pipeline), інакше витік даних.",
+    },
+    {
+      keys: ["MinMaxScaler"],
+      tip: "MinMaxScaler\nСтискає значення в діапазон [0, 1] (або заданий). Корисний, коли потрібні однакові межі, не стандартизація в σ.",
+    },
+    {
+      keys: ["OneHotEncoder"],
+      tip: "OneHotEncoder\nКодер scikit-learn: категорія → набір бінарних колонок. Для лінійних моделей безпечніший за «випадкові цілі» factorize.",
+    },
+    {
+      keys: ["SimpleImputer"],
+      tip: "SimpleImputer\nЗаповнення пропусків стратегією (mean, median, most_frequent). Як і scaler — лише fit на train.",
+    },
+    {
+      keys: ["ColumnTransformer"],
+      tip: "ColumnTransformer\nЗастосовує різні перетворення до різних колонок (числа vs категорії) і збирає результат для моделі в Pipeline.",
+    },
+    {
+      keys: ["factorize", "pd.factorize"],
+      tip: "pandas.factorize\nШвидке кодування категорій цілими кодами. Зручно для EDA; для лінійної регресії зазвичай кращий OneHotEncoder.",
+    },
+    {
+      keys: ["LinearRegression"],
+      tip: "LinearRegression\nМодель scikit-learn: ŷ = w·x + b, параметри підбирає МНК. Для однієї ознаки x має бути reshape(-1, 1).",
+    },
+    {
+      keys: ["train_test_split"],
+      tip: "train_test_split\nРозбиття на train/test. Фіксуйте random_state, спочатку split — потім будь-який fit scaler/imputer/моделі.",
+    },
+    {
+      keys: ["cross_val_score"],
+      tip: "cross_val_score\nОцінка моделі k-fold крос-валідацією. Повертає масив метрик по фолдах: дивіться mean і std, не лише одне число.",
+    },
+    {
+      keys: ["PolynomialFeatures"],
+      tip: "PolynomialFeatures\nРозширює ознаки степенями й взаємодіями. Високий degree легко overfit-ить: дивіться R² на test, не лише на train.",
+    },
+    {
+      keys: ["регуляризація", "regularization"],
+      tip: "regularization\nШтраф на величину ваг, щоб модель не підганяла шум. L2 (Ridge) стискає ваги; L1 (Lasso) вміє зануляти зайві ознаки. Перед Ridge/Lasso масштабуйте X.",
+    },
+    {
+      keys: ["множинна регресія", "multiple regression"],
+      tip: "multiple regression\nОдин target y і кілька ознак X одночасно. Кожна ознака має свій коефіцієнт; більше колонок ≠ автоматично краща модель.",
+    },
+    {
+      keys: ["поліноміальна регресія", "polynomial regression"],
+      tip: "polynomial regression\nЛінійна модель на поліноміальних ознаках. Крива на графіку — це все ще лінійна регресія в розширеному просторі.",
+    },
+    {
+      keys: ["Figure", "plt.figure"],
+      tip: "matplotlib Figure\nПолотно графіка: вікно, на якому живуть один або кілька Axes. Зберігають через fig.savefig().",
+    },
+    {
+      keys: ["Axes", "ax.set_xlabel", "plt.subplots"],
+      tip: "matplotlib Axes\nСистема координат, на якій малюють (plot, hist, scatter, bar). Підписи осей і легенда — на Axes, не «десь у повітрі».",
+    },
+    {
+      keys: ["pyplot"],
+      tip: "matplotlib.pyplot\nІмперативний інтерфейс Matplotlib. На курсі зручніше явно: fig, ax = plt.subplots(), далі ax.plot(...).",
+    },
+    {
+      keys: ["subplot", "subplots", "tight_layout"],
+      tip: "subplot / tight_layout\nКілька Axes на одній Figure. tight_layout() прибирає накладання підписів перед savefig.",
+    },
+    {
+      keys: ["savefig", "fig.savefig"],
+      tip: "savefig\nЗбереження Figure у файл (PNG/SVG). Для звітів ставте dpi і bbox_inches='tight'.",
+    },
+    {
+      keys: ["random_state"],
+      tip: "random_state\nФіксоване зерно генератора: той самий split і та сама випадковість при повторному запуску. Обовʼязковий у демо й ДЗ.",
+    },
+    {
+      keys: ["fit_transform"],
+      tip: "fit_transform\nСпочатку fit на даних, потім transform. На test робіть лише transform (або весь крок у Pipeline). fit_transform на всій таблиці до split — витік.",
+    },
+    {
+      keys: ["max_depth"],
+      tip: "max_depth\nГіперпараметр дерева: максимальна глибина. None або дуже велике значення легко дає train R² ≈ 1 і просідання на test.",
+    },
+    {
+      keys: ["n_estimators"],
+      tip: "n_estimators\nКількість дерев у лісі або бустингу. Більше дерев — зазвичай стабільніше, але дорожче; дивіться криву якості, не лише одне число.",
+    },
+    {
+      keys: ["feature_importances_"],
+      tip: "feature_importances_\nОцінка внеску ознак у дереві / лісі. Це евристика моделі, не причинність. Зручно як горизонтальний bar.",
+    },
+    {
+      keys: ["Gradient Boosting", "GradientBoostingRegressor", "градієнтний бустинг"],
+      tip: "Gradient Boosting\nАнсамбль: наступне дерево вчиться на помилках попередніх. У sklearn — GradientBoostingRegressor; XGBoost — наступний крок, не обовʼязок пари 14.",
+    },
+    {
+      keys: ["MAD", "median absolute deviation"],
+      tip: "median absolute deviation\nМедіана абсолютних відхилень від медіани — робастна міра розкиду, стійкіша до викидів, ніж std.",
+    },
+    {
+      keys: ["ddof"],
+      tip: "delta degrees of freedom\nПоправка у формулі дисперсії/std. NumPy за замовчуванням ddof=0 (генеральна); для вибіркової оцінки ставте ddof=1.",
+    },
+    {
+      keys: ["кореляція", "кореляції", "correlation"],
+      tip: "correlation\nНормована міра лінійного звʼязку (Пірсон: від -1 до 1). Кореляція ≠ причинність: може бути confounder, зворотний звʼязок або випадковість.",
+    },
+    {
+      keys: ["unravel_index", "np.unravel_index"],
+      tip: "numpy.unravel_index\nПеретворює плоский індекс (argmin/argmax) на координати (рядок, стовпець). Без цього часто друкують одне число замість позиції в матриці.",
+    },
+    {
+      keys: ["np.min", "np.max", "np.mean"],
+      tip: "NumPy reductions\nАгрегації ndarray. Не плутати з Python min()/max() по списку: для масивів і axis працюють np.* .",
+    },
+    {
+      keys: ["California Housing", "fetch_california_housing"],
+      tip: "California Housing\nТабличний датасет scikit-learn: медіанна ціна житла в районах Каліфорнії. На курсі — стандартний приклад multiple regression.",
+    },
+    {
+      keys: ["r2_score", "коефіцієнт детермінації"],
+      tip: "r2_score\nЧастка дисперсії y, яку пояснює модель відносно baseline середнього. 1 — ідеально; 0 — як прогнозувати середнє; може бути відʼємним.",
+    },
+    /* === PAIRS_1_14_STACK_END === */
+    {
+      keys: ["LangChain"],
+      tip: "LangChain\nOpen-source фреймворк оркестрації LLM: промпти, ланцюжки, tools, памʼять, RAG. Не замінює саму модель — зʼєднує кроки навколо API.",
+    },
+    {
+      keys: ["LCEL", "LangChain Expression Language"],
+      tip: "LCEL\nLangChain Expression Language: композиція кроків через оператор | (prompt | model | parser). Сучасна заміна старих LLMChain.",
+    },
+    {
+      keys: ["LangSmith"],
+      tip: "LangSmith\nПлатформа трасування й оцінки LLM-ланцюжків: логи промптів, latency, faithfulness/relevance. Порівнянна ідея з Vertex AI Monitoring.",
+    },
+    {
+      keys: ["Vertex AI", "Google Vertex AI"],
+      tip: "Vertex AI\nПлатформа Google Cloud для навчання, хостингу й виклику моделей (Gemini, embeddings, Vector Search). Відрізняється від Google AI Studio проєктами, квотами й білінгом.",
+    },
+    {
+      keys: ["Function Calling", "tool calling"],
+      tip: "Function calling\nМодель повертає структурований виклик інструмента (імʼя + аргументи), а код виконує його й віддає результат назад у діалог.",
+    },
+    {
+      keys: ["Agent Engine", "Vertex AI Agent Engine"],
+      tip: "Vertex AI Agent Engine\nКерований рантайм агентів у GCP: tools, спостережуваність, безпека. Open-source аналоги — LangGraph / LangChain agents.",
+    },
+    {
+      keys: ["Swish"],
+      tip: "Swish\nАктивація x · sigmoid(x). Гладка альтернатива ReLU; на малих MLP рідко дає великий виграш без тюнінгу.",
+    },
+    {
+      keys: ["Softmax"],
+      tip: "Softmax\nПеретворює логіти на ймовірності, що сумуються до 1. Типовий вихід багатокласової класифікації разом із CrossEntropyLoss.",
+    },
+    {
+      keys: ["CrossEntropyLoss", "перехресна ентропія"],
+      tip: "Cross-entropy loss\nФункція втрат для класифікації: порівнює розподіл моделі з one-hot (або мʼякими) мітками. Не змішувати з MSE для класів.",
+    },
+    {
+      keys: ["cosine-similarity", "cosine similarity", "косинусна подібність"],
+      tip: "Cosine similarity\nСхожість двох векторів за кутом (1 — однакові напрямки). Базовий метрик у embeddings і content-based рекомендаціях.",
+    },
+  /* === EXTRA_OBVIOUS_TERMS_END === */
+
+  ];
+
+  const SKIP_TAGS = new Set([
+    "SCRIPT", "STYLE", "CODE", "PRE", "SVG", "TEXT", "TSPAN", "TEXTAREA", "INPUT", "KBD", "CANVAS",
+  ]);
+
+  function escapeRegExp(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  const pairs = [];
+  ENTRIES.forEach((e) => {
+    e.keys.forEach((k) => pairs.push({ key: k, tip: e.tip }));
+  });
+  pairs.sort((a, b) => b.key.length - a.key.length);
+
+  const pattern = new RegExp(
+    "(?<![\\p{L}\\p{N}_])(" + pairs.map((p) => escapeRegExp(p.key)).join("|") + ")(?![\\p{L}\\p{N}_])",
+    "giu"
+  );
+
+  const tipByLower = new Map();
+  pairs.forEach((p) => {
+    const low = p.key.toLowerCase();
+    if (!tipByLower.has(low)) tipByLower.set(low, p.tip);
+  });
+
+  function shouldSkip(node) {
+    let el = node.parentElement;
+    while (el) {
+      const tag = (el.tagName || "").toUpperCase();
+      if (SKIP_TAGS.has(tag)) return true;
+      if (el.namespaceURI === "http://www.w3.org/2000/svg") return true;
+      if (el.classList && (el.classList.contains("term") || el.classList.contains("toc") || el.classList.contains("diagram"))) {
+        return true;
+      }
+      if (el.id === "pair-toc") return true;
+      el = el.parentElement;
+    }
+    return false;
+  }
+
+  function wrapTextNode(textNode) {
+    const text = textNode.nodeValue;
+    if (!text || !pattern.test(text)) {
+      pattern.lastIndex = 0;
+      return;
+    }
+    pattern.lastIndex = 0;
+
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    let m;
+    while ((m = pattern.exec(text)) !== null) {
+      if (m.index > last) {
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      const raw = m[0];
+      const tip = tipByLower.get(raw.toLowerCase());
+      if (!tip) {
+        frag.appendChild(document.createTextNode(raw));
+      } else {
+        const span = document.createElement("span");
+        span.className = "term";
+        span.textContent = raw;
+        span.setAttribute("data-tip", tip);
+        span.setAttribute("tabindex", "0");
+        span.setAttribute("role", "button");
+        span.setAttribute("aria-label", raw + ": " + tip.replace(/\n/g, " — "));
+        frag.appendChild(span);
+      }
+      last = m.index + raw.length;
+    }
+    if (last < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(last)));
+    }
+    textNode.parentNode.replaceChild(frag, textNode);
+  }
+
+  function walk(root) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        if (shouldSkip(node)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(wrapTextNode);
+  }
+
+  function ensureTipEl() {
+    let tip = document.getElementById("term-tip");
+    if (tip) return tip;
+    tip = document.createElement("div");
+    tip.id = "term-tip";
+    tip.setAttribute("role", "tooltip");
+    tip.hidden = true;
+    document.body.appendChild(tip);
+    return tip;
+  }
+
+  function placeTip(tip, anchor) {
+    tip.hidden = false;
+    tip.innerHTML = "";
+    const parts = (tip._raw || "").split("\n");
+    const en = document.createElement("div");
+    en.className = "tip-en";
+    en.textContent = parts[0] || "";
+    tip.appendChild(en);
+    if (parts.length > 1) {
+      const ua = document.createElement("div");
+      ua.className = "tip-ua";
+      ua.textContent = parts.slice(1).join(" ");
+      tip.appendChild(ua);
+    }
+    const r = anchor.getBoundingClientRect();
+    const margin = 10;
+    const tw = tip.offsetWidth;
+    const th = tip.offsetHeight;
+    let left = r.left + r.width / 2 - tw / 2;
+    let top = r.top - th - 10;
+    if (top < margin) top = r.bottom + 10;
+    if (left < margin) left = margin;
+    if (left + tw > window.innerWidth - margin) left = window.innerWidth - tw - margin;
+    tip.style.left = Math.round(left) + "px";
+    tip.style.top = Math.round(top) + "px";
+  }
+
+  function bindTips(root) {
+    const tip = ensureTipEl();
+    let active = null;
+
+    function show(el) {
+      active = el;
+      tip._raw = el.getAttribute("data-tip") || "";
+      placeTip(tip, el);
+    }
+    function hide(el) {
+      if (el && active !== el) return;
+      active = null;
+      tip.hidden = true;
+    }
+
+    root.querySelectorAll(".term").forEach((el) => {
+      el.addEventListener("mouseenter", () => show(el));
+      el.addEventListener("mouseleave", () => hide(el));
+      el.addEventListener("focus", () => show(el));
+      el.addEventListener("blur", () => hide(el));
+      el.addEventListener("click", (ev) => {
+        if (window.matchMedia("(hover: none)").matches) {
+          ev.preventDefault();
+          if (active === el && !tip.hidden) hide(el);
+          else show(el);
+        }
+      });
+    });
+
+    document.addEventListener(
+      "click",
+      (ev) => {
+        if (!active) return;
+        if (ev.target && ev.target.closest && ev.target.closest(".term")) return;
+        hide(active);
+      },
+      true
+    );
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (active && !tip.hidden) placeTip(tip, active);
+      },
+      true
+    );
+  }
+
+  function init() {
+    const stage = document.querySelector(".stage");
+    if (!stage) return;
+    walk(stage);
+    bindTips(document);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+  Chart.defaults.color = mute;
+  Chart.defaults.borderColor = grid;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const methods = document.getElementById('chart-method-purpose');
+  if (methods) {
+    new Chart(methods, {
+      type: 'radar',
+      data: {
+        labels: ['Старт файлу', 'Кінець файлу', 'Випадковий зріз', 'Типи колонок', 'Статистика чисел'],
+        datasets: [
+          { label: 'head/tail/sample', data: [9, 8, 9, 2, 2], borderColor: '#7ec8ff', backgroundColor: 'rgba(126,200,255,.18)' },
+          { label: 'info/describe', data: [3, 3, 1, 10, 9], borderColor: '#7dffb3', backgroundColor: 'rgba(125,255,179,.18)' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ink } } },
+        scales: { r: { min: 0, max: 10, ticks: { display: false }, grid: { color: grid }, pointLabels: { color: mute } } }
+      }
+    });
+  }
+});
+</script>
+
+<script>
+/* hide mobile chrome on scroll down / show on scroll up */
+(function () {
+  if (window.matchMedia && !window.matchMedia("(max-width: 900px)").matches) return;
+  var bar = document.querySelector(".mobile-bar");
+  if (!bar) return;
+  var lastY = window.scrollY || 0;
+  var hidden = false;
+  function setHidden(next) {
+    if (hidden === next) return;
+    hidden = next;
+    document.body.classList.toggle("nav-hidden", next);
+  }
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY || 0;
+    var d = y - lastY;
+    if (y < 24) setHidden(false);
+    else if (d > 10) setHidden(true);
+    else if (d < -10) setHidden(false);
+    lastY = y;
+  }, { passive: true });
+})();
+</script>
+
+<!-- teacher-block-runtime:start -->
+<script>
+(function () {
+  "use strict";
+
+  const blocks = Array.from(
+    document.querySelectorAll(
+      '[data-project-feature="python-ai-additional-teacher-blocks"]'
+    )
+  );
+  const tocEntries = Array.from(document.querySelectorAll("[data-teacher-toc]"));
+
+  blocks.forEach((block) => {
+    block.hidden = true;
+  });
+  tocEntries.forEach((entry) => {
+    entry.hidden = true;
+  });
+
+  function applyFlag(enabled) {
+    blocks.forEach((block) => {
+      block.hidden = !enabled;
+    });
+    tocEntries.forEach((entry) => {
+      entry.hidden = !enabled;
+    });
+  }
+
+  function projectFlagUrl(pathname) {
+    const markers = [
+      "/additional_lesson_materials/",
+      "/backend/data/courses/python_ai_additional_materials/",
+    ];
+    for (const marker of markers) {
+      const markerIndex = pathname.indexOf(marker);
+      if (markerIndex !== -1) {
+        return `${pathname.slice(0, markerIndex)}/backend/data/project-flags.js`;
+      }
+    }
+    return null;
+  }
+
+  const candidates = ["/project-flags.js"];
+  const projectUrl = projectFlagUrl(window.location.pathname);
+  if (projectUrl && !candidates.includes(projectUrl)) {
+    candidates.push(projectUrl);
+  }
+
+  function loadCandidate(index) {
+    if (index >= candidates.length) return;
+
+    const script = document.createElement("script");
+    script.src = `${candidates[index]}?v=${Date.now()}`;
+    script.async = true;
+    script.onload = function () {
+      const enabled =
+        window.LESSON_HELPER_FLAGS?.pythonAiAdditionalTeacherBlocks;
+      if (typeof enabled === "boolean") {
+        applyFlag(enabled);
+        return;
+      }
+      loadCandidate(index + 1);
+    };
+    script.onerror = function () {
+      loadCandidate(index + 1);
+    };
+    document.head.appendChild(script);
+  }
+
+  loadCandidate(0);
+})();
+</script>
+<!-- teacher-block-runtime:end -->
+</body>
+</html>

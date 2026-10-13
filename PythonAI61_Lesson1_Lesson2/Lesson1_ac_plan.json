@@ -1,0 +1,78 @@
+{
+  "module": 1,
+  "pair_index": 1,
+  "global_index": 1,
+  "title": "Вступ до ШІ, Data Science і Machine Learning",
+  "duration_min": 90,
+  "objectives": [
+    "Пояснити різницю між AI, Data Science, ML і DL на індустріальних прикладах",
+    "Коротко пройти віхи історії ШІ та чому «зима ШІ» повторювалась",
+    "Класифікувати задачу як supervised / unsupervised / reinforcement",
+    "Сформулювати ML-задачу: дані → ознаки → ціль → метрика → обмеження"
+  ],
+  "topics": [
+    "Історія розвитку ШІ",
+    "Поняття AI / DS / ML",
+    "Supervised / Unsupervised / RL",
+    "Сфери застосування"
+  ],
+  "timing": [
+    {
+      "id": "history",
+      "title": "Історія розвитку штучного інтелекту",
+      "time": "15 хв",
+      "kind": "main",
+      "slot": "18:30–18:45"
+    },
+    {
+      "id": "concepts",
+      "title": "Поняття AI, Data Science, Machine Learning",
+      "time": "18 хв",
+      "kind": "main",
+      "slot": "18:45–19:03"
+    },
+    {
+      "id": "learning-types",
+      "title": "Види алгоритмів навчання",
+      "time": "18 хв",
+      "kind": "main",
+      "slot": "19:03–19:21"
+    },
+    {
+      "id": "applications",
+      "title": "Сфери застосування алгоритмів",
+      "time": "12 хв",
+      "kind": "main",
+      "slot": "19:21–19:33"
+    },
+    {
+      "id": "task-map",
+      "title": "Завдання 1. Карта ML-задачі",
+      "time": "12 хв",
+      "kind": "task",
+      "slot": "19:33–19:45"
+    },
+    {
+      "id": "task-classify",
+      "title": "Завдання 2. Класифікація сценаріїв",
+      "time": "10 хв",
+      "kind": "task",
+      "slot": "19:45–19:55"
+    },
+    {
+      "id": "deep-ml-loop",
+      "title": "Глибоко: цикл ML-продукту",
+      "time": "5 хв",
+      "kind": "main",
+      "slot": "19:55–20:00"
+    },
+    {
+      "id": "teacher-notes",
+      "title": "Нотатки викладача / таймінг пари",
+      "time": "3 хв",
+      "kind": "main"
+    }
+  ],
+  "pair_start": "18:30",
+  "pair_end": "20:00"
+}

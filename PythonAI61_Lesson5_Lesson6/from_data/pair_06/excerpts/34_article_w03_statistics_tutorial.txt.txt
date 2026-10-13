@@ -1,0 +1,22 @@
+SOURCE: data/kb_extracts/articles/w03_statistics_tutorial.txt
+TITLE: w03_statistics_tutorial.txt
+SCORE: 1.8
+
+riation Range Quartile & Percentile Interquartile Range Standard Deviation
+Inferential Statistics Statistical Inference Normal Distribution Standard Normal T-Distribution Estimation Proportion Estimation Mean Estimation Hypothesis Testing Testing Proportion Testing Mean
+Learning by Examples
+In our "Try it Yourself" editor, you can use Python modules and R code, and modify the code to see the result.
+Example
+With Python use the NumPy library mean() method to find the mean of the values 4,11,7,14: import numpy values = [4,11,7,14] x = numpy.mean(values) print(x) Try it Yourself »
+Track Your Progress Create a W3Schools account and get access to more features and learning materials:
+View your completed tutorials, exercises, and quizzes
+Keep an eye on your progress and daily streaks
+Join the leaderboard and compete with others
+Get your own avatar and unlock new skins
+Create your own personal website
+Sign Up »
+Note
+This is an optional feature. You can study at W3Schools without creating an account. ❮ Home Next ❯ ★ +1 Sign in to track progress
+REMOVE ADS
+Create a W3Schools Account
+Ad-free learning, track your progress, earn XP, streaks, compete in leagues, build and host websites, unlock…

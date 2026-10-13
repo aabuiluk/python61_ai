@@ -1,0 +1,9 @@
+# Python AI Additional Materials · пари 3–4
+#   python3 -m venv .venv && source .venv/bin/activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#
+# NumPy (пара 3) і pandas (пара 4). CSV movies.csv — у цій папці.
+
+numpy>=1.26
+pandas>=2.1

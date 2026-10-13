@@ -1,0 +1,17 @@
+# PythonAI61 · Lesson 1–2
+# Python 3.10+ (перевірено на 3.14)
+#
+# Встановлення на чистій машині:
+#   python3 -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#   python -m ipykernel install --user --name=pythonai61 --display-name="Python AI61"
+#   jupyter lab
+#
+# Практика пари 1–2 працює на стандартній бібліотеці (csv, pathlib).
+# JupyterLab + ipykernel — щоб відкривати .ipynb і запускати комірки.
+
+jupyterlab>=4.2
+ipykernel>=6.29
+notebook>=7.2

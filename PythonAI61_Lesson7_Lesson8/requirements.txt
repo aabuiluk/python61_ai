@@ -1,0 +1,13 @@
+# Презентація HTML
+#   автономно: відкрийте LessonN_00_presentation.html (Pyodide в браузері)
+#   з цим venv: python pair_kernel.py   # http://127.0.0.1:8765
+#
+# Штучний інтелект із використанням Python · Materials · пари 7–8
+#   python3 -m venv .venv && source .venv/bin/activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#
+# Графіки з results/ зберігаються поруч як PNG.
+
+numpy>=1.26
+matplotlib>=3.8

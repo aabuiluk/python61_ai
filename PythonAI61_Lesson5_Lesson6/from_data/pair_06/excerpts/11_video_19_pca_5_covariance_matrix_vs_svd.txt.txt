@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/19_pca_5_covariance_matrix_vs_svd.txt
+TITLE: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG] · 19. PCA / 5. Covariance Matrix vs SVD
+SCORE: 3.0
+
+# 19. PCA / 5. Covariance Matrix vs SVD
+# course: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]/19. PCA/5. Covariance Matrix vs SVD.srt
+Welcome back. So we discussed the steps of the BCA algorithm. Now let's see what is the problem. Now we computed the eigenvalues and eigenvectors from the covariance matrix, right. However, calculating the covariance matrix itself by just multiplying the matrix by its transpose. So how we computed the covariance matrix, we just got this matrix and then we multiply this matrix by its transpose. This can lead to problems, right, in terms of loads of precision and numerical errors. So we might have some information loss in this step even though we didn't redo any dimensionality reduction. So what I'm trying to say is that if we compute the covariance matrix like this and then the eigenvalues eigenvectors and use all the vectors to rebuild the data, then we will see that we have some errors, even though we didn't really do any dimensionality reduction. OK, so we should calculate the covariance matrix using…

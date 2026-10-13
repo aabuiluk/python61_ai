@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/5_data_cleaning_5_imputing_missing_values_using_meanmedianmode.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 5. Data Cleaning / 5. Imputing Missing Values using MeanMedianMode
+SCORE: 5.5
+
+# 5. Data Cleaning / 5. Imputing Missing Values using MeanMedianMode
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/5. Data Cleaning/5. Imputing Missing Values using MeanMedianMode.srt
+Hello and welcome back. In the previous lecture, we got to learn about business logic that can be utilized for the treatment of missing values. Now, in this lecture, we are going to learn about statistical methods or functions such as mean median and mode that can be utilized for computing missing values in a real world dataset. Till now, we have already learned about two ways that can be utilized for the treatment of missing values. So let us get started and learn about statistical ways of treating missing values in a dataset. First of all, let us take an example of a scenario where we can use the mode function for imputing missing values in a dataset. Let us suppose that we are having some missing values in a categorical variable called gender. This variable consists of two types of values males and females. Now, to impute or…

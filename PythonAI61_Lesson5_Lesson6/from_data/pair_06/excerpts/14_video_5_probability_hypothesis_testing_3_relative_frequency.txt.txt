@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/5_probability_hypothesis_testing_3_relative_frequency.txt
+TITLE: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG] · 5. Probability & Hypothesis Testing / 3. Relative Frequency
+SCORE: 3.0
+
+# 5. Probability & Hypothesis Testing / 3. Relative Frequency
+# course: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]/5. Probability & Hypothesis Testing/3. Relative Frequency.srt
+In this video, we're going to go over relative frequency. So this is going to be something that is, you know, giving us an understanding of how often things can occur, will occur and, you know, may potentially occur. Right. So let's go ahead and jump in to relative frequency. So when you toss a coin, there is an equal chance of heads or tails, right? Very, very simple. When you have a coin that has heads or tails. Right. It's very simple process to flip it and get one or the other as far as it coming out, you know, heads or tails. Right. Very, very simple. But in some cases, instead of using equally likely outcomes, you need to use relative frequency. And so in an experiment or survey, relative frequency of an event is the number of times the event occurs divided by the total number of trials. So let's look at some examples here or an example of a particular…

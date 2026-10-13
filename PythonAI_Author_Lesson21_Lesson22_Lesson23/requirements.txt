@@ -1,0 +1,13 @@
+# Відкрийте LessonN_00_presentation.html у браузері.
+# Локальне ядро для кнопок «Запуск»: python pair_kernel.py
+#
+# python -m venv .venv
+# .venv\Scripts\activate          (Windows)
+# source .venv/bin/activate        (macOS / Linux)
+# python -m pip install -U pip
+# python -m pip install -r requirements.txt
+
+numpy>=1.26
+matplotlib>=3.8
+torch>=2.2
+torchvision>=0.17

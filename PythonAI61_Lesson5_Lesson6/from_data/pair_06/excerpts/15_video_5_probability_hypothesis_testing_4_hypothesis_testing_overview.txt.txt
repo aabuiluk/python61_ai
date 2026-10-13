@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/5_probability_hypothesis_testing_4_hypothesis_testing_overview.txt
+TITLE: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG] · 5. Probability & Hypothesis Testing / 4. Hypothesis Testing Overview
+SCORE: 3.0
+
+# 5. Probability & Hypothesis Testing / 4. Hypothesis Testing Overview
+# course: [Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Python for Data Science & Machine Learning from A-Z [01.2021, ENG]/5. Probability & Hypothesis Testing/4. Hypothesis Testing Overview.srt
+In this video, we're going to go over hypothesis testing, so this is going to be a very simple introduction here to the hypothesis testing. I mean, just think about this at a very simple level as like kind of like the scientific process or the scientific method where you are going through a series of steps through a process to ultimately come to a conclusion. Right. And so let's go ahead and jump in to the hypothesis testing here and get a better understanding of how exactly this works. So hypothesis means an idea made from limited evidence, right. We're making guestimate. We're making some sort of claim based on certain limited information. Right. It's a starting point for further investigation and there's a seven step process. So the first step here is to make an assumption. Right. Assumptions are related to the distribution of data…

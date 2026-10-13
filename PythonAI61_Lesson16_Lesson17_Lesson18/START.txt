@@ -1,0 +1,37 @@
+Штучний інтелект із використанням Python · пари 16–17–18 (один проєкт)
+PyTorch MLP: тензори → Dropout → BatchNorm
+
+Це винятковий роздаток: три пари в одній папці. Далі курс знову йде пакетами по дві.
+
+У браузерному Python (Pyodide) немає torch. Відкрити HTML і натиснути
+«Запуск» без локального ядра — комірка не виконається. Працюйте з venv.
+
+1. Потрібен Python 3.10+.
+2. У цій папці:
+
+   python -m venv .venv
+   .venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+
+   pip ставить CPU-збірку torch з PyPI. GPU не потрібен.
+   На диск venv займе близько 1 ГБ; у RAM імпорт torch ≈ 200 МБ.
+
+3. Перевірка середовища:
+
+   python -c "import torch; from torch import nn; print(torch.__version__)"
+   python Lesson16_01_sgd_loop.py
+   python mlp_lab/run.py
+
+4. Презентація з живими комірками (залишіть термінал відкритим):
+
+   python pair_kernel.py
+   # має з’явитись: pair-kernel http://127.0.0.1:8765
+
+   Далі відкрийте Lesson16_00_presentation.html (або 17 / 18) у браузері.
+   Зверху має бути рядок
+   «Ядро: Python проєкту (venv). Запуск іде в pair_kernel.py.»
+
+Приклади: Lesson16_01_… / Lesson17_01_… / Lesson18_01_…
+Офіційні завдання 1–N: results/ (аналогів X.1 немає — їх робіть самі).
+Наскрізний код: mlp_lab/

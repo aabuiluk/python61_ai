@@ -1,0 +1,8 @@
+SOURCE: data/kb_extracts/videos/lectures/udemy_machine_learning_in_python_with_5_machine_learning_pro/16_dimensionality_reduction_8_introduction_to_variance_inflation_filte.txt
+TITLE: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG] · 16. Dimensionality Reduction / 8. Introduction to Variance Inflation Filtering
+SCORE: 3.0
+
+# 16. Dimensionality Reduction / 8. Introduction to Variance Inflation Filtering
+# course: [Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]
+# source: data/AI PYTHON_3161/faily/gdrive/[Udemy] Machine Learning in Python with 5 Machine Learning Projects [04.2021, ENG]/16. Dimensionality Reduction/8. Introduction to Variance Inflation Filtering.srt
+Hello and welcome to this new section of dimensionality reduction. You're going to learn about a new technique of dimensionality reduction in this section. That is the variance, inflation filtering. So let's first understand what is variance inflation filtering, which is also known as the if this is a statistical technique which helps us to solve the problem of multicore linearity, multicore linearity is a problem which occurs when there are two or more independent variables. This is a huge problem because when the features are highly correlated, the model has difficulty in distinguishing between the individual effects on the dependent variables in the via method. We pick each feature and aggressive against all of the other features present in the data set for each regression. The factor is calculated using…

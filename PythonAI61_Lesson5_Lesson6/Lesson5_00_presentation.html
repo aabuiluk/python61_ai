@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Основи статистики: випадкова величина, середнє, мода, медіана, дисперсія та std · Python AI Cursor Modify Materials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<style>
+:root {
+  --bg: #0f1412;
+  --panel: #18211c;
+  --panel-2: #1e2a24;
+  --ink: #e8f0e7;
+  --mute: #9aafa0;
+  --line: #2f4137;
+  --accent: #7dffb3;
+  --accent-ink: #062416;
+  --warm: #ffb86b;
+  --blue: #7ec8ff;
+  --rose: #ff8fab;
+  --font: "Manrope", "Segoe UI", sans-serif;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rail-w: 300px;
+}
+* { box-sizing: border-box; }
+
+/* --- overflow containment: keep block radius visible on mobile --- */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.shell,
+.stage {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+.mobile-bar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  left: 0;
+  right: 0;
+}
+.banner,
+.block,
+.nav,
+.foot {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.block-body {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* display:block on <table> expands parents; keep real table + scroll on body */
+.block-body table {
+  display: table !important;
+  width: 100% !important;
+  max-width: 100%;
+  table-layout: auto;
+}
+.viz,
+.viz-grid,
+.diagram,
+.chart-wrap,
+.cards,
+.flow,
+.pre,
+pre {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.diagram svg {
+  overflow: hidden;
+}
+
+/* --- force block width within stage --- */
+.stage > .banner,
+.stage > .block {
+  width: 100%;
+  max-width: 100%;
+}
+
+
+html { scroll-behavior: smooth; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.55;
+  background:
+    radial-gradient(900px 420px at 10% -10%, rgba(125,255,179,.12), transparent 60%),
+    radial-gradient(700px 380px at 100% 0%, rgba(126,200,255,.10), transparent 55%),
+    var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+
+.shell { display: block; min-height: 100dvh; width: 100%; padding-top: 58px; }
+.mobile-bar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  background: rgba(15,20,18,.92); backdrop-filter: blur(10px);
+  color: var(--ink); padding: .65rem .8rem; align-items: center; gap: .65rem;
+  border-bottom: 1px solid var(--line);
+}
+.burger {
+  width: 44px; height: 44px; border: 1px solid var(--accent); background: transparent;
+  color: var(--accent); display: inline-flex; flex-direction: column; justify-content: center;
+  align-items: center; gap: 5px; cursor: pointer; flex: 0 0 auto; padding: 0;
+}
+.burger span { display: block; width: 18px; height: 2px; background: currentColor; }
+.mobile-bar .title {
+  font-family: var(--display); font-size: .95rem; line-height: 1.2; margin: 0;
+  flex: 1; min-width: 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.mobile-bar .menu-link, .rail .menu-link {
+  border: 1px solid var(--accent); color: var(--accent-ink); background: var(--accent);
+  text-decoration: none; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; padding: .45rem .55rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.rail .menu-link { margin: 0 0 .75rem; }
+.lh-nb-toggle {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font: 800 .82rem var(--font);
+  letter-spacing: .04em;
+  padding: .45rem .95rem;
+  min-height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.lh-nb-toggle.is-pressed {
+  background: rgba(125, 255, 179, 0.18);
+  color: var(--accent);
+  border-color: rgba(125, 255, 179, 0.55);
+}
+.rail .lh-nb-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 .85rem;
+  box-sizing: border-box;
+}
+.mobile-bar .lh-nb-toggle {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.rail-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 45; }
+.rail {
+  position: fixed; top: 0; left: 0; bottom: 0; width: min(86vw, 320px);
+  height: 100dvh; z-index: 50; transform: translateX(-105%);
+  transition: transform .22s ease; box-shadow: 8px 0 24px rgba(0,0,0,.45);
+  background: #101713; color: var(--ink); padding: 1rem .9rem 2rem; overflow: auto;
+  border-right: 1px solid var(--line);
+}
+body.toc-open .rail { transform: translateX(0); }
+body.toc-open .rail-backdrop { display: block; }
+body.toc-open { overflow: hidden; }
+.rail .mark {
+  display: inline-block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-ink); background: var(--accent); padding: .22rem .45rem; font-weight: 700;
+}
+.rail h1 {
+  font-family: var(--display); font-size: 1.15rem; line-height: 1.25;
+  margin: .65rem 0 .35rem; color: #fff; font-weight: 700;
+}
+.rail .meta { color: var(--mute); font-size: .8rem; margin-bottom: .85rem; }
+.rail .label {
+  font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .45rem;
+}
+.toc { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.toc li { margin: 0 0 .3rem; }
+.toc a {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem;
+  color: #b7c7bc; text-decoration: none; font-size: .86rem; padding: .45rem .2rem;
+  border-left: 2px solid transparent;
+}
+.toc a::before {
+  content: counter(thesis, decimal-leading-zero); color: var(--accent);
+  font-family: var(--mono); font-size: .72rem; padding-top: .15rem;
+}
+.toc a:hover, .toc a:focus { color: #fff; border-left-color: var(--accent); }
+
+.stage { padding: .9rem .75rem 2.4rem; width: 100%; max-width: 100%; }
+.banner {
+  border: 1px solid var(--line); background: linear-gradient(160deg, var(--panel), var(--panel-2));
+  padding: 1.15rem 1rem; margin-bottom: 1rem; border-radius: 18px;
+}
+.banner .kicker {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--warm);
+  font-weight: 700; margin: 0 0 .35rem;
+}
+.banner h2 {
+  font-family: var(--display); font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  margin: 0 0 .55rem; line-height: 1.15; color: #fff;
+}
+.banner .lead { color: #c9d8cd; margin: 0 0 .85rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .35rem;
+  border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  border-radius: 999px; padding: .28rem .65rem; font-size: .78rem; color: var(--mute);
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.goals { margin: 0; padding-left: 1.15rem; color: #d5e3d8; }
+.goals li { margin: .25rem 0; }
+
+.block {
+  border: 1px solid var(--line); background: rgba(24,33,28,.88);
+  border-radius: 18px; margin: 0 0 1rem; overflow: hidden;
+}
+.block-head {
+  display: flex; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  align-items: flex-start; padding: .9rem 1rem .55rem;
+  border-bottom: 1px solid var(--line); background: rgba(255,255,255,.02);
+}
+.block-head h3 {
+  margin: 0; font-family: var(--display); font-size: 1.15rem; color: #fff; line-height: 1.25;
+}
+.kind {
+  font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  border-radius: 999px; padding: .22rem .5rem; border: 1px solid var(--line);
+}
+.kind.main { color: var(--blue); border-color: rgba(126,200,255,.35); }
+.kind.task { color: var(--warm); border-color: rgba(255,184,107,.4); }
+.kind.deep { color: var(--rose); border-color: rgba(255,143,171,.4); }
+.clock { font-family: var(--mono); font-size: .75rem; color: var(--mute); }
+
+.block-timer {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--mono); font-size: .75rem; color: var(--mute);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .18rem .55rem .18rem .35rem;
+  background: rgba(15,20,18,.55); user-select: none; cursor: pointer;
+}
+.block-timer input.timer-check {
+  width: 1rem; height: 1rem; accent-color: var(--accent); cursor: pointer; margin: 0;
+}
+.block-timer .clock { border: 0; padding: 0; background: transparent; }
+.block-timer .timer-live {
+  color: var(--accent); font-weight: 700; min-width: 3.2rem; text-align: right;
+}
+.block-timer.is-running {
+  border-color: rgba(125,255,179,.55);
+  box-shadow: 0 0 0 1px rgba(125,255,179,.18);
+}
+.block-timer.is-done {
+  border-color: rgba(255,184,107,.55);
+}
+.block-timer.is-done .timer-live { color: var(--warm); }
+
+.block-body { padding: .85rem 1rem 1.1rem; }
+.block-body p, .block-body li { color: #d3e0d6; }
+.block-body ul, .block-body ol { padding-left: 1.15rem; }
+.block-body table {
+  width: 100%; border-collapse: collapse; font-size: .9rem; margin: .6rem 0 1rem;
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.block-body th, .block-body td {
+  border: 1px solid var(--line); padding: .45rem .55rem; text-align: left; vertical-align: top;
+}
+.block-body th { background: rgba(125,255,179,.08); color: var(--accent); }
+.block-body code, .inline-code {
+  font-family: var(--mono); font-size: .84em; color: var(--accent);
+  background: rgba(125,255,179,.08); padding: .08rem .28rem; border-radius: 5px;
+}
+.pre {
+  display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  background: #0b100e; border: 1px solid var(--line); border-radius: 12px;
+  padding: .85rem .9rem; margin: .7rem 0 1rem; color: #d9f5e4;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.45;
+  max-width: 100%; white-space: pre;
+}
+.callout {
+  border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  background: rgba(125,255,179,.06); padding: .7rem .85rem; border-radius: 10px; margin: .7rem 0;
+}
+.callout.tip { border-left-color: var(--blue); background: rgba(126,200,255,.07); }
+.callout.task {
+  border-left-color: var(--warm); background: rgba(255,184,107,.08);
+}
+.viz {
+  margin: .85rem 0 1.05rem; padding: .85rem; border-radius: 14px;
+  border: 1px solid var(--line); background: rgba(0,0,0,.22);
+}
+.viz h4 {
+  margin: 0 0 .65rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mute); font-weight: 700;
+}
+.viz-grid {
+  display: grid; gap: .85rem;
+  grid-template-columns: 1fr;
+}
+.chart-wrap { position: relative; width: 100%; min-height: 260px; }
+.chart-wrap.tall { min-height: 320px; }
+.diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.diagram svg text { paint-order: stroke fill; pointer-events: none; }
+.flow {
+  display: grid; gap: .45rem; grid-template-columns: 1fr;
+}
+.flow-step {
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .75rem;
+  background: rgba(255,255,255,.03);
+}
+.flow-step b { color: var(--accent); display: block; margin-bottom: .2rem; }
+.flow-arrow {
+  text-align: center; color: var(--mute); font-family: var(--mono); font-size: .85rem;
+}
+.cards {
+  display: grid; gap: .65rem; grid-template-columns: 1fr;
+}
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: .75rem .8rem;
+  background: rgba(255,255,255,.03);
+}
+.card h5 { margin: 0 0 .35rem; color: #fff; font-size: .95rem; }
+.card p { margin: 0; color: var(--mute); font-size: .88rem; }
+.legend {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .55rem;
+}
+.legend span {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .78rem; color: var(--mute);
+}
+.swatch { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.nav {
+  display: flex; flex-wrap: wrap; gap: .55rem; margin: 1.1rem 0 .4rem;
+}
+.nav a {
+  text-decoration: none; border: 1px solid var(--line); color: var(--ink);
+  padding: .55rem .75rem; border-radius: 999px; background: rgba(255,255,255,.03);
+}
+.foot { color: var(--mute); font-size: .82rem; margin-top: .4rem; }
+
+.term {
+  border-bottom: 1px dotted rgba(125,255,179,.7);
+  cursor: help;
+  color: inherit;
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+.term-hint {
+  margin: .55rem 0 0;
+  font-size: .82rem;
+  color: var(--mute);
+}
+.term-hint b { color: var(--accent); font-weight: 700; }
+#term-tip {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(340px, calc(100vw - 24px));
+  padding: .65rem .75rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #101713;
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+  pointer-events: none;
+}
+
+
+/* --- mobile-adaptive visuals (pairs 1–6) --- */
+.chart-wrap { min-height: 200px; max-width: 100%; }
+.chart-wrap.tall { min-height: 240px; }
+.viz { max-width: 100%; overflow: hidden; }
+.diagram svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+.diagram svg text {
+  font-size: 12px;
+}
+.viz-grid { grid-template-columns: 1fr; }
+.cards.two, .cards.three { grid-template-columns: 1fr; }
+.flow { grid-template-columns: 1fr; }
+.flow-arrow { display: block; text-align: center; }
+.matrix {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: .35rem;
+  font-size: .78rem;
+  max-width: 100%;
+}
+.matrix .cell {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .55rem .45rem;
+  background: rgba(255,255,255,.03);
+  text-align: center;
+}
+.matrix .head { color: var(--mute); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+.matrix .tp { border-color: rgba(125,255,179,.45); color: var(--accent); }
+.matrix .tn { border-color: rgba(126,200,255,.45); color: var(--blue); }
+.matrix .fp { border-color: rgba(255,184,107,.5); color: var(--warm); }
+.matrix .fn { border-color: rgba(255,143,171,.5); color: var(--rose); }
+@media (max-width: 899px) {
+  .banner .lead { font-size: .95rem; }
+  .block-head h3 { font-size: 1.05rem; }
+  .block-body { padding: .75rem .8rem 1rem; }
+  .pill { font-size: .72rem; }
+  .matrix { font-size: .72rem; }
+  .matrix .cell { padding: .45rem .3rem; }
+  .pre, pre code { font-size: .75rem; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .cards.two { grid-template-columns: 1fr 1fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+}
+
+
+/* --- embed + mobile layout polish --- */
+body.embed .mobile-bar { display: none !important; }
+body.embed .shell { padding-top: 0 !important; }
+@media (max-width: 899px) {
+  .shell { padding-top: 64px; }
+  /* Journal iframe hides the pair chrome; keep TOC burger on phones. */
+  body.embed .mobile-bar { display: flex !important; }
+  body.embed .shell { padding-top: 64px !important; }
+  .stage { padding: .65rem .55rem 1.8rem; }
+  .banner { padding: .9rem .75rem; border-radius: 14px; }
+  .banner h2 { font-size: clamp(1.2rem, 5.5vw, 1.55rem); }
+  .banner .lead { font-size: .92rem; }
+  .block { border-radius: 14px; margin-bottom: .85rem; }
+  .block-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .45rem;
+    padding: .75rem .75rem .5rem;
+  }
+  .block-head h3 {
+    font-size: clamp(1rem, 4.4vw, 1.12rem);
+    line-height: 1.3;
+  }
+  .block-head > div {
+    width: 100%;
+  }
+  .block-timer, .kind, .clock {
+    font-size: .7rem;
+  }
+  .block-timer {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  .block-body { padding: .7rem .75rem .95rem; }
+  .callout { padding: .6rem .7rem; font-size: .9rem; }
+  .timing-strip { gap: .3rem; }
+  .pill { font-size: .7rem; padding: .22rem .5rem; max-width: 100%; white-space: normal; }
+  .toc a, .rail h1 { overflow-wrap: anywhere; word-break: break-word; }
+  .viz-grid.two, .viz-grid.equal, .cards.two, .cards.three, .flow {
+    grid-template-columns: 1fr;
+  }
+  .mobile-bar {
+    min-height: 56px;
+    padding: .55rem .7rem;
+    align-items: center;
+    gap: .55rem;
+  }
+  .mobile-bar .title {
+    font-size: .84rem;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .burger {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+}
+
+@media (min-width: 900px) {
+  /* Fixed sidebar: sticky breaks under overflow-x:hidden on html/body */
+  .shell {
+    display: block;
+    padding-top: 0;
+    padding-left: var(--rail-w);
+    min-height: 100dvh;
+  }
+  .mobile-bar { display: none; }
+  .rail {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: none !important;
+    width: var(--rail-w);
+    max-width: var(--rail-w);
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: none;
+    z-index: 40;
+  }
+  .rail-backdrop, #toc-close { display: none !important; }
+  .stage {
+    max-width: min(1360px, 100%);
+    width: 100%;
+    padding: 1.4rem 1.8rem 3rem;
+    min-width: 0;
+    margin: 0;
+  }
+  .viz-grid.two { grid-template-columns: 1.1fr .9fr; }
+  .viz-grid.equal { grid-template-columns: 1fr 1fr; }
+  .flow { grid-template-columns: repeat(4, 1fr); align-items: stretch; }
+  .flow-arrow { display: none; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .cards.two { grid-template-columns: 1fr 1fr; }
+}
+
+#term-tip .tip-en {
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: .35rem;
+}
+#term-tip .tip-ua {
+  color: #e8f0e7;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+
+/* --- auto-hide mobile bar on scroll --- */
+@media (max-width: 900px) {
+  .mobile-bar {
+    transition: transform 0.22s ease, opacity 0.18s ease;
+  }
+  body.nav-hidden .mobile-bar {
+    transform: translateY(-110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  body.nav-hidden.embed .shell,
+  body.nav-hidden .shell {
+    padding-top: 0 !important;
+  }
+}
+
+
+/* --- wide desktop stage --- */
+.toc a {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+.rail h1 {
+  overflow-wrap: anywhere;
+}
+.pill {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
+}
+@media (max-width: 899px) {
+  .viz-grid.two,
+  .viz-grid.equal,
+  .cards.two,
+  .cards.three,
+  .flow {
+    grid-template-columns: 1fr;
+  }
+  .rail h1 { font-size: 1.05rem; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+  .cards.three { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1400px) {
+  :root { --rail-w: 320px; }
+  .stage {
+    max-width: min(1520px, 100%);
+    padding: 1.55rem 2.25rem 3.4rem;
+  }
+}
+
+<!-- teacher-block-css:start -->
+[hidden] { display: none !important; }
+.teacher-deep-dive {
+  border: 1px solid #60a5fa;
+  border-left: 5px solid #3b82f6;
+  background: linear-gradient(145deg, rgba(30, 64, 175, .22), rgba(15, 23, 42, .94));
+  box-shadow: 0 14px 34px rgba(37, 99, 235, .13);
+}
+.teacher-deep-dive .block-head {
+  border-bottom-color: rgba(96, 165, 250, .4);
+  background: rgba(37, 99, 235, .14);
+}
+.teacher-deep-dive .block-head h3 { color: #dbeafe; }
+.teacher-deep-dive .teacher-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #60a5fa;
+  border-radius: 999px;
+  padding: .22rem .55rem;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, .2);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.teacher-deep-dive a { color: #93c5fd; }
+.teacher-deep-dive code {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, .15);
+}
+.teacher-deep-dive:focus-within {
+  outline: 3px solid rgba(96, 165, 250, .35);
+  outline-offset: 3px;
+}
+<!-- teacher-block-css:end -->
+</style>
+</head>
+<body>
+
+<script>
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    var embedded = q.get('embed') === '1' || window.self !== window.top;
+    if (embedded) document.body.classList.add('embed');
+  } catch (e) {
+    try { if (window.self !== window.top) document.body.classList.add('embed'); } catch (_) {}
+  }
+})();
+</script>
+
+<div class="mobile-bar">
+  <button class="burger" id="toc-open" type="button" aria-label="Відкрити зміст" aria-expanded="false" aria-controls="pair-toc">
+    <span></span><span></span><span></span>
+  </button>
+  <p class="title">Основи статистики: випадкова величина, середнє, мода, медіана, дисперсія та std</p>
+  <button type="button" class="lh-nb-toggle" aria-pressed="false" title="Показати код у комірках">Ноутбук</button>
+  </div>
+<div class="rail-backdrop" id="toc-backdrop"></div>
+<div class="shell">
+  <aside class="rail" id="pair-toc">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:.55rem">
+      <button class="burger" id="toc-close" type="button" aria-label="Закрити меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <h1>Основи статистики: випадкова величина, середнє, мода, медіана, дисперсія та std</h1>
+    <div class="meta">Пара 5/50 · 80 хв · старт 18:30 · Python AI Cursor Modify Materials · матеріали для студентів</div>
+    <button type="button" class="lh-nb-toggle" aria-pressed="false" title="Показати код у комірках">Ноутбук</button>
+    <div class="label">Зміст</div>
+    <ol class="toc"><li><a href="#agenda">План і цілі</a></li><li><a href="#random-variable">Випадкова величина: що саме ми вимірюємо</a></li><!-- deep-dive-toc:start:5:1 --><li><a href="#extra-5-1">Додатково: вибірка — не генеральна сукупність, seed фіксує лише генератор</a></li><li data-teacher-toc hidden><a href="#teacher-5-1">Для викладача: sample ≠ population і leakage до split</a></li><!-- deep-dive-toc:end:5:1 --><li><a href="#itstep-task-1">Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень</a></li><li><a href="#checkpoint">Checkpoint</a></li><li><a href="#central-tendency">Середнє, мода і медіана: три різні “центри” вибірки</a></li><!-- deep-dive-toc:start:5:2 --><li><a href="#extra-5-2">Додатково: один чек 9999 зрушує mean, median лишається на місці</a></li><li data-teacher-toc hidden><a href="#teacher-5-2">Для викладача: mean vs median як вибір imputer / scaler</a></li><!-- deep-dive-toc:end:5:2 --><li><a href="#itstep-task-2">Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD</a></li><li><a href="#spread-metrics">Дисперсія та стандартне відхилення: наскільки вибірка розкидана</a></li><!-- deep-dive-toc:start:5:3 --><li><a href="#extra-5-3">Додатково: np.std за замовчуванням ділить на n, pandas — на n−1</a></li><li data-teacher-toc hidden><a href="#teacher-5-3">Для викладача: ddof=0 у StandardScaler vs pandas describe</a></li><!-- deep-dive-toc:end:5:3 --><li><a href="#practice-5-spread-metrics">Мінізадача: три std на одному масиві</a></li><li><a href="#skew-outliers">Асиметрія, викиди, IQR/MAD</a></li><!-- deep-dive-toc:start:5:4 --><li><a href="#extra-5-4">Додатково: «вуса» box-plot — це 1.5·IQR, не min і max</a></li><li data-teacher-toc hidden><a href="#teacher-5-4">Для викладача: Tukey fence vs IsolationForest і RobustScaler</a></li><!-- deep-dive-toc:end:5:4 --><li><a href="#practice-5-skew-outliers">Мінізадача: знайдіть точки за огорожею 1.5·IQR</a></li><li><a href="#stats-workflow">Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком</a></li><!-- deep-dive-toc:start:5:5 --><li><a href="#extra-5-5">Додатково: порядок EDA — схема, центр, розкид, форма, лише потім scaler</a></li><li data-teacher-toc hidden><a href="#teacher-5-5">Для викладача: Pipeline(imputer, scaler) і fit лише на train</a></li><!-- deep-dive-toc:end:5:5 --><li><a href="#practice-5-stats-workflow">Мінізадача: картка колонки amount з n і пропусками</a></li><li><a href="#itstep-practical">Обовʼязкові практичні · ITSTEP Практичне завдання 2.3 (статистика)</a></li><li><a href="#extra-kb-stats">Додатково: mean / median / std і ddof</a></li><li><a href="#si-thread">Support Intelligence і відповідальний AI</a></li><li><a href="#practice-levels">Рівні практики</a></li><li><a href="#repro-bar">Відтворюваність</a></li><li><a href="#practice-bar">Очікуваний результат і зверніть увагу</a></li><li><a href="#homework-stretch">Домашнє / stretch</a></li><li><a href="#deep-study">Додатково: глибоке вивчення · робастні статистики</a></li><!-- data-ingest-toc:start:5 --><li><a href="#data-ingest-5">Повний корпус data/ · пара 5</a></li><li><a href="#data-gap-5">Gap-pack data/ · пара 5</a></li><li><a href="#data-web-5">Web-джерела · пара 5</a></li><li data-teacher-toc hidden><a href="#data-ingest-teacher-5">Викладач · повний data/ пакет пари 5</a></li><!-- data-ingest-toc:end:5 --><li><a href="#exit-ticket">Exit ticket</a></li></ol>
+  </aside>
+  <main class="stage">
+    <header class="banner" id="agenda">
+  <p class="kicker">Python AI Cursor Modify Materials · презентація</p>
+  <h2>Основи статистики: випадкова величина, середнє, мода, медіана, дисперсія та std</h2>
+  <p class="lead">На цій парі ми закладаємо <b>мову статистики</b> для подальшого аналізу даних: як читати випадкову величину в таблиці, чим відрізняються <b>mean</b>, <b>mode</b>, <b>median</b> і що нам кажуть <b>variance</b> та <b>standard deviation</b>.</p>
+  <div class="timing-strip"><span class="pill"><b>8 хв</b> Випадкова величина: що саме ми вимірюємо</span><span class="pill"><b>7 хв</b> Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень</span><span class="pill"><b>3 хв</b> Checkpoint</span><span class="pill"><b>8 хв</b> Середнє, мода і медіана: три різні “центри” вибірки</span><span class="pill"><b>7 хв</b> Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD</span><span class="pill"><b>8 хв</b> Дисперсія та стандартне відхилення: наскільки вибірка розкидана</span><span class="pill"><b>7 хв</b> Мінізадача: три std на одному масиві</span><span class="pill"><b>8 хв</b> Асиметрія, викиди, IQR/MAD</span><span class="pill"><b>7 хв</b> Мінізадача: знайдіть точки за огорожею 1.5·IQR</span><span class="pill"><b>6 хв</b> Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком</span><span class="pill"><b>7 хв</b> Мінізадача: картка колонки amount з n і пропусками</span><span class="pill"><b>4 хв</b> Exit ticket</span></div>
+  <ul class="goals"><li>Пояснити, як колонка з числами стає <b>випадковою величиною</b> у задачі аналізу даних</li><li>Розрізняти <b>середнє</b>, <b>моду</b>, <b>медіану</b> і знати, коли яка метрика корисніша</li><li>Інтерпретувати <b>дисперсію</b> та <b>середньоквадратичне відхилення</b> як міри розкиду</li><li>Виконати обовʼязкові статистичні практичні 1–2 та самостійні аналоги 1.1–2.1</li></ul><div class="callout tip" id="before-start"><b>Перед початком</b><ul><li>Різниця list і таблиці рядків</li><li>Що таке ознака і ціль</li><li>Jupyter: порядок комірок і kernel</li></ul></div><div class="callout tip" id="after-pair"><b>Після пари ви можете</b><ul><li>Пояснити mean vs median на скошеному розподілі</li><li>Порахувати std</li><li>Сказати, чому одне число не описує чергу</li></ul></div>
+  <p class="term-hint"><b>Підказка:</b> терміни з пунктирним підкресленням — наведіть курсор (або тапніть на телефоні), щоб побачити коротке пояснення. Повний словник курсу: <a href="SLOVNYK_TERMINOLOGII.html">словник (HTML)</a>.</p>
+</header>
+<article class="block" id="random-variable"><div class="block-head"><h3>Випадкова величина: що саме ми вимірюємо</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">18:30–18:38 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p><b>Випадкова величина</b> — це числова характеристика результату спостереження. У data science роль випадкової величини часто грає <code>amount</code>, <code>rating</code>, <code>height</code>, <code>revenue</code> або будь-яка інша числова колонка.</p>
+<table>
+  <thead><tr><th>Ситуація</th><th>Випадкова величина</th><th>Типово цікавить</th></tr></thead>
+  <tbody>
+    <tr><td>Інтернет-магазин</td><td><code>amount</code> — сума замовлення</td><td>центр, розкид, викиди</td></tr>
+    <tr><td>Опитування</td><td><code>rating</code> — оцінка 1..5</td><td>мода, медіана, частоти</td></tr>
+    <tr><td>Антропометрія</td><td><code>height</code> — зріст</td><td>перцентилі, z-оцінки</td></tr>
+  </tbody>
+</table>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({"amount": [420, 510, 399, 830, 470]})
+x = df["amount"]
+print("n =", x.size)
+print("min/max =", x.min(), x.max())
+print("sample mean =", round(x.mean(), 2))</code></pre>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · одна колонка = одна випадкова величина</h4><div class="chart-wrap"><canvas id="chart-random-variable-bars"></canvas></div></div>
+  <div class="viz"><h4>Що читаємо одразу</h4><div class="cards"><div class="card"><h5><code>n</code></h5><p>Скільки спостережень маємо у вибірці.</p></div><div class="card"><h5>Одиниці виміру</h5><p>Гривні, бали, сантиметри, хвилини.</p></div><div class="card"><h5>Межі</h5><p>Чи можливі відʼємні значення, пропуски, викиди.</p></div></div></div>
+</div>
+<div class="callout tip"><b>Сеньйорська звичка</b><p>Перед розрахунком метрик уточніть сенс колонки: що вимірюється, в яких одиницях і чи однорідні всі спостереження.</p></div>
+<!-- theory-deeper:start:5:random-variable --><p>Індикатор «тікет є P1» — випадкова величина Бернуллі: X ∈ {0, 1}, P(X=1)=p. Оцінка p̂ = 9/80 = 0.1125 на поточній вибірці. Очікування E[X]=p, дисперсія p(1-p) ≈ 0.10. Це не «середній пріоритет», а частота події, яку ви хочете ловити.</p><p>Неперервна величина <code>amount</code> має носій (support): для чека логічно [0, +∞). Відʼємне значення — або помилка знака, або інша величина (кредит). Поки носій не названо, mean з пʼяти чисел ще не інтерпретований: невідомо, які значення взагалі можливі.</p><div class="callout tip"><b>Зверніть увагу</b><p>Спочатку назвіть носій і одиницю (грн, хв, {0,1}), потім рахуйте центр. Інакше метрика висить у повітрі.</p></div><!-- theory-deeper:end:5:random-variable --><!-- CURSOR-ENRICHMENT:random-variable:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Випадкова величина: що саме ми вимірюємо» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Випадкова величина задає числовий результат експерименту; вибірка є лише спостереженою частиною популяції.</p><p>`np.random.default_rng(seed=42)` робить генерацію повторюваною, але не усуває похибку вибірки.</p><p>Фокус «вибірка, популяція і seed» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Випадкова величина: що саме ми вимірюємо&#x27;
+assert concept_contract
+import numpy as np
+rng = np.random.default_rng(seed=42)
+sample = rng.integers(1, 7, size=5)
+print(sample.tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Випадкова величина: що саме ми вимірюємо» очікується таке: Для NumPy Generator з seed 42 отримуємо відтворювану пʼятірку кидків. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте одну відтворювану вибірку генеральною сукупністю.</li><li>Для «Випадкова величина: що саме ми вимірюємо» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «вибірка, популяція і seed».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Що саме фіксує seed, а що він не гарантує? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Випадкова величина: що саме ми вимірюємо».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:random-variable:END -->
+</div></article><!-- deep-dive:start:5:1 --><article class="block extra-deep-dive" id="extra-5-1" data-topic-id="pair-5-random-variable"><div class="block-head"><h3>Додатково: вибірка — не генеральна сукупність, seed фіксує лише генератор</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Колонка <code>amount</code> у CSV — це <b>вибірка</b> спостережень випадкової величини, не «усі замовлення світу». Метрики, які ви рахуєте, описують цю вибірку. <code>np.random.default_rng(42)</code> робить симуляцію відтворюваною, але не робить вибірку генеральною сукупністю.</p><pre><code class="language-python">import numpy as np
+rng = np.random.default_rng(42)
+sample = rng.normal(loc=500, scale=80, size=30)
+print(sample.mean())
+print(rng.normal(500, 80, 30).mean())  # інша вибірка, той самий процес</code></pre><ul><li>Дискретна величина (рейтинг 1..5) і неперервна (сума чека) читаються по-різному: моді є сенс у першій, гістограма бінів — у другій.</li><li>Одиниці виміру — частина визначення RV: 500 без «грн» не інтерпретується.</li><li>Два запуски без seed — два різні середні; це не «баг pandas».</li></ul><div class="callout tip"><b>Зверніть увагу</b><p>n=5 добре для демо формул і погано для висновку «типовий чек магазину». Спочатку n і одиниці, потім mean.</p></div><p>Вибірка відповідає на питання про <i>ці</i> n спостережень, не про генеральну сукупність. seed фіксує генератор, не робить n=30 «достатнім». Інший seed дасть іншу гістограму — це дисперсія оцінки, не «зламаний код».</p><p>Зверніть увагу: sample з таблиці квитків — це все ще не i.i.d. з усіх майбутніх тікетів. Зсув каналу (зʼявився chat) змінює популяцію, навіть якщо random_state=42 відтворюваний.</p><!-- CURSOR-ENRICHMENT:extra-5-1:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: вибірка — не генеральна сукупність, seed фіксує лише генератор» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Випадкова величина задає числовий результат експерименту; вибірка є лише спостереженою частиною популяції.</p><p>`np.random.default_rng(seed=42)` робить генерацію повторюваною, але не усуває похибку вибірки.</p><p>Фокус «вибірка, популяція і seed» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: вибірка — не генеральна сукупність, seed фіксує лише генератор&#x27;
+assert edge_case_contract
+import numpy as np
+rng = np.random.default_rng(seed=42)
+sample = rng.integers(1, 7, size=5)
+print(sample.tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: вибірка — не генеральна сукупність, seed фіксує лише генератор» очікується таке: Для NumPy Generator з seed 42 отримуємо відтворювану пʼятірку кидків. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте одну відтворювану вибірку генеральною сукупністю.</li><li>Для «Поглиблення: вибірка — не генеральна сукупність, seed фіксує лише генератор» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «вибірка, популяція і seed».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Що саме фіксує seed, а що він не гарантує? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: вибірка — не генеральна сукупність, seed фіксує лише генератор».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-5-1:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-5-1" data-topic-id="pair-5-random-variable" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: sample ≠ population і leakage до split</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: estimator на вибірці — випадкова величина. <code>mean(sample)</code> ≠ μ, навіть якщо generator відомий. Seed фіксує RNG, не зменшує bias вибірки.</p><p>sklearn-adjacent: будь-яка статистика, порахована на повному кадрі до <code>train_test_split</code> (mean для impute, min-max для scaler, навіть «подивились describe і викинули викиди») — leakage. Fit трансформерів лише на train, <code>transform</code> на test.</p><p>Генератор NumPy 2.x: <code>default_rng</code> (BitGenerator), не глобальний <code>np.random.seed</code>. Останній впливає на legacy API і погано сумісний із паралельним кодом.</p><p>Статистичний інваріант: оцінка параметра має sampling distribution. np.random.default_rng(42) відтворює послідовність у межах версії Generator; не змішуйте legacy np.random.seed глобальний стан із Generator у новому коді.</p><p>Leakage до split: підглянути розподіл усієї колонки (включно з майбутнім test) і вже тоді «випадково» семплувати — порушує роль hold-out. Спочатку відкладіть test, потім sample лише train для EDA.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://numpy.org/doc/stable/reference/random/generator.html" target="_blank" rel="noreferrer">NumPy Generator</a></li><li><a href="https://scikit-learn.org/stable/common_pitfalls.html" target="_blank" rel="noreferrer">sklearn common pitfalls: data leakage</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-5-1:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: sample ≠ population і leakage до split» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Випадкова величина задає числовий результат експерименту; вибірка є лише спостереженою частиною популяції.</p><p>`np.random.default_rng(seed=42)` робить генерацію повторюваною, але не усуває похибку вибірки.</p><p>Фокус «вибірка, популяція і seed» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: sample ≠ population і leakage до split&#x27;
+assert invariant_contract
+import numpy as np
+rng = np.random.default_rng(seed=42)
+sample = rng.integers(1, 7, size=5)
+print(sample.tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: sample ≠ population і leakage до split» очікується таке: Для NumPy Generator з seed 42 отримуємо відтворювану пʼятірку кидків. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте одну відтворювану вибірку генеральною сукупністю.</li><li>Для «Технічна межа: sample ≠ population і leakage до split» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «вибірка, популяція і seed».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Що саме фіксує seed, а що він не гарантує? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: sample ≠ population і leakage до split».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-5-1:END -->
+</div></article><!-- deep-dive:end:5:1 -->
+
+
+<article class="block" id="itstep-task-1"><div class="block-head"><h3>Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP · база</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">18:38–18:45 · 7 хв</span><span class="timer-live" hidden>07:00</span></label><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="база"><b>База · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>1 · офіційне завдання.</b> Проаналізуйте дані транзакцій інтернет-магазину та візуалізуйте розподіл сум замовлень.</p>
+<ul>
+  <li>Завантажте CSV у таблицю й покажіть <code>head()</code> та <code>info()</code>.</li>
+  <li>Порахуйте пропуски по стовпцях.</li>
+  <li>Для <code>amount</code> обчисліть: кількість, середнє, медіану, мінімум, максимум, квартилі та перцентилі.</li>
+  <li>Побудуйте гістограму <code>amount</code> і boxplot.</li>
+  <li>Видаліть пропуски в <code>amount</code> і повторіть зведення.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 1.</b><pre><code class="language-python">import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("transactions.csv")
+clean = df.dropna(subset=["amount"])
+print(df.head())
+print(df.isna().sum())
+print(clean["amount"].describe(percentiles=[0.25, 0.5, 0.75, 0.9, 0.95]))
+clean["amount"].plot(kind="hist", bins=12, title="Amount distribution")
+plt.show()</code></pre></div>
+<p><b>1.1 · зробіть за аналогією.</b> Візьміть інший CSV мінімум на 24 рядки з тією ж колонкою <code>amount</code> і повторіть той самий цикл, але додайте ще порівняння <b>до / після очищення</b> у двох окремих таблицях метрик.</p>
+<!-- CURSOR-ENRICHMENT:itstep-task-1:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Для числової колонки замовлень обчисліть mean, median, std і кількість валідних значень.</p><p>Результати мають використовувати одну й ту саму політику пропусків.</p><p>Фокус «центр і розкид сум замовлень» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень&#x27;
+assert practice_contract
+import numpy as np
+amounts = np.array([100., 120., 80., 200.])
+summary = {&#x27;mean&#x27;: amounts.mean(), &#x27;median&#x27;: np.median(amounts), &#x27;std&#x27;: amounts.std(ddof=1)}
+print({key: round(value, 2) for key, value in summary.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень» очікується таке: Отримано mean `125.0`, median `110.0` і вибіркове std приблизно `52.6`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не змішуйте ddof=0 і ddof=1 та не включайте код пропуску в числовий масив.</li><li>Для «Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «центр і розкид сум замовлень».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Яка метрика центру менше зміниться після додавання великого замовлення? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Завдання 1 + 1.1 · Транзакції інтернет-магазину: центр і розкид суми замовлень».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:itstep-task-1:END -->
+</div></article>
+<article class="block" id="checkpoint"><div class="block-head"><h3>Checkpoint</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="3" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 3 хв" /><span class="clock">18:45–18:48 · 3 хв</span><span class="timer-live" hidden>03:00</span></label></div></div><div class="block-body"><p>Три короткі питання. Відповідайте вголос або в нотатках — без ноутбука з розвʼязком.</p><ol><li>Коли median кращий за mean?</li><li>Що таке дисперсія словами?</li><li>Чому середній час відповіді бреше при P1-викидах?</li></ol><div class="callout tip"><b>Коротко</b><p>Якщо два з трьох «пливуть» — поверніться до попереднього блоку, не починайте практику «на удачу».</p></div><!-- CURSOR-ENRICHMENT:checkpoint:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Checkpoint» має точний навчальний контракт: Спрогнозуйте форму, dtype або числовий результат до запуску.</p><p>Випадкова величина задає числовий результат експерименту; вибірка є лише спостереженою частиною популяції.</p><p>`np.random.default_rng(seed=42)` робить генерацію повторюваною, але не усуває похибку вибірки.</p><p>Фокус «вибірка, популяція і seed» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">checkpoint_contract = &#x27;Checkpoint&#x27;
+assert checkpoint_contract
+import numpy as np
+rng = np.random.default_rng(seed=42)
+sample = rng.integers(1, 7, size=5)
+print(sample.tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Checkpoint» очікується таке: Для NumPy Generator з seed 42 отримуємо відтворювану пʼятірку кидків. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте одну відтворювану вибірку генеральною сукупністю.</li><li>Для «Checkpoint» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «вибірка, популяція і seed».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Що саме фіксує seed, а що він не гарантує? Який результат можна обчислити вручну для самоперевірки? Відповідь має прямо стосуватися «Checkpoint».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:checkpoint:END -->
+</div></article>
+<article class="block" id="central-tendency"><div class="block-head"><h3>Середнє, мода і медіана: три різні “центри” вибірки</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">18:48–18:56 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p><b>Mean</b> чутливе до великих значень, <b>median</b> стійкіша до викидів, а <b>mode</b> показує найчастіше значення. В реальному EDA ми часто дивимось на всі три разом, а не обираємо одну “магічну” метрику.</p>
+<pre><code class="language-python">import pandas as pd
+
+x = pd.Series([420, 470, 470, 510, 830])
+print("mean   =", round(x.mean(), 2))
+print("median =", x.median())
+print("mode   =", x.mode().tolist())</code></pre>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · як метрики реагують на викид</h4><div class="chart-wrap"><canvas id="chart-center-metrics"></canvas></div></div>
+  <div class="viz"><h4>Памʼятка</h4><div class="cards"><div class="card"><h5>Середнє</h5><p>Добре працює, коли дані більш-менш симетричні й без сильних викидів.</p></div><div class="card"><h5>Медіана</h5><p>Краща для skewed-розподілів, цін, зарплат, чеків, часу очікування.</p></div><div class="card"><h5>Мода</h5><p>Особливо корисна для дискретних оцінок, рейтингів, категоріальних кодів.</p></div></div></div>
+</div>
+<div class="callout tip"><b>Зверніть увагу</b><p>Одне число <code>mean</code> ще не означає “типовий” елемент. Якщо у вибірці є викиди, більш чесну картину може дати саме <code>median</code>.</p></div>
+<!-- theory-deeper:start:5:central-tendency --><p>Середнє кодів пріоритету (P1=1, P2=2, P3=3) на пʼяти тікетах [1, 3, 3, 2, 3] дорівнює 2.4. Це не «типовий P2+». Мода = 3 (P3), медіана = 3. Середнє ординальної мітки вигадує інтервал; для черги корисні частки класів: P1 = 1/5 = 0.20, не 2.4.</p><p>Інший механізм — середнє середніх. Три дні з чеками [100, 100] , [100, 900] , [100] дають денні mean 100, 500, 100 і «середнє днів» 233. Середнє всіх пʼяти чеків = 280. Ваги різні, бо дні мають різне n. Для SLA по днях і по тікетах це два різні центри.</p><pre><code class="language-python">codes = [1, 3, 3, 2, 3]
+print(sum(codes) / len(codes), sorted(codes)[2])  # 2.4 vs median 3</code></pre><div class="callout tip"><b>Часта пастка</b><p>Mean має сенс, коли одиниця додається. Коди класів і «середнє днів» без ваг n — різні питання, не взаємозамінні цифри.</p></div><!-- theory-deeper:end:5:central-tendency --><!-- CURSOR-ENRICHMENT:central-tendency:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Середнє, мода і медіана: три різні “центри” вибірки» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Середнє використовує величину кожного значення, медіана — порядок, мода — частоту.</p><p>Для скошених сум замовлень медіана часто стійкіша до одного великого викиду.</p><p>Фокус «mean, median і mode» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Середнє, мода і медіана: три різні “центри” вибірки&#x27;
+assert concept_contract
+import numpy as np
+amounts = np.array([10, 10, 12, 14, 1000], dtype=float)
+print(amounts.mean(), np.median(amounts))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Середнє, мода і медіана: три різні “центри” вибірки» очікується таке: Середнє дорівнює `209.2`, медіана — `12.0`; викид сильно зрушив лише перше. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не вибирайте «кращий центр» без форми розподілу й сенсу задачі.</li><li>Для «Середнє, мода і медіана: три різні “центри” вибірки» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «mean, median і mode».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який центр краще описує типовий чек у цьому прикладі й чому? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Середнє, мода і медіана: три різні “центри” вибірки».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:central-tendency:END -->
+</div></article><!-- deep-dive:start:5:2 --><article class="block extra-deep-dive" id="extra-5-2" data-topic-id="pair-5-central-tendency"><div class="block-head"><h3>Додатково: один чек 9999 зрушує mean, median лишається на місці</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Mean додає всі значення порівну — великий викид тягне центр. Median — 50-й перцентиль, тому один екстремум змінює її лише якщо перетинає середину впорядкованого ряду. Mode потрібна, коли величина дискретна (рейтинг 1..5), і може бути кілька мод.</p><pre><code class="language-python">import pandas as pd
+x = pd.Series([420, 470, 470, 510, 530])
+y = pd.concat([x, pd.Series([9999])])
+print(x.mean(), x.median(), x.mode().tolist())
+print(y.mean(), y.median(), y.mode().tolist())</code></pre><ul><li>Для зарплат, чеків, часу очікування звіряйте mean із median: розрив — сигнал асиметрії або викиду.</li><li>Mode на неперервних float майже завжди унікальна й малоінформативна.</li><li>Не кажіть «середнє = типове»: типове частіше ближче до median / mode.</li></ul><div class="callout tip"><b>Часта пастка</b><p>Викинули 9999 «бо псує середнє» без питання, чи це VIP-замовлення. Спочатку median+IQR, потім рішення, чи рядок помилка.</p></div><p>Середнє мінімізує MSE до константи; медіана мінімізує MAE. Тому один чек 9999 зрушує mean і майже не чіпає median — це різні loss, не «медіана магічно стійкіша».</p><p>Зверніть увагу: для ординальних рейтингів 1..5 mean може вийти 3.7, якого немає на шкалі. Медіана лишається допустимою відповіддю анкети; mean — ні, якщо далі треба показати «зірки».</p><!-- CURSOR-ENRICHMENT:extra-5-2:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: один чек 9999 зрушує mean, median лишається на місці» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Середнє використовує величину кожного значення, медіана — порядок, мода — частоту.</p><p>Для скошених сум замовлень медіана часто стійкіша до одного великого викиду.</p><p>Фокус «mean, median і mode» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: один чек 9999 зрушує mean, median лишається на місці&#x27;
+assert edge_case_contract
+import numpy as np
+amounts = np.array([10, 10, 12, 14, 1000], dtype=float)
+print(amounts.mean(), np.median(amounts))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: один чек 9999 зрушує mean, median лишається на місці» очікується таке: Середнє дорівнює `209.2`, медіана — `12.0`; викид сильно зрушив лише перше. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не вибирайте «кращий центр» без форми розподілу й сенсу задачі.</li><li>Для «Поглиблення: один чек 9999 зрушує mean, median лишається на місці» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «mean, median і mode».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який центр краще описує типовий чек у цьому прикладі й чому? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: один чек 9999 зрушує mean, median лишається на місці».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-5-2:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-5-2" data-topic-id="pair-5-central-tendency" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: mean vs median як вибір imputer / scaler</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: mean мінімізує MSE відносно константи; median мінімізує L1. Тому <code>SimpleImputer(strategy="mean")</code> оптимальний під квадратичну втрату й крихкий до хвостів; <code>strategy="median"</code> узгоджений із robust-лінією.</p><p>sklearn: <code>StandardScaler</code> центрує mean і ділить на std — ті самі викиди, що зрушили mean, зрушать і масштаб. <code>RobustScaler</code> бере median і IQR. Вибір центру на цій парі є вибором препроцесора на модулі 3.</p><p><code>Series.mode()</code> повертає Series, не скаляр — мультимодальність не втрачається. Не робіть <code>float(mode())</code> без перевірки довжини.</p><p>DummyRegressor(strategy='mean') vs strategy='median' — пряма ілюстрація MSE vs MAE baseline. SimpleImputer(strategy='mean') на skewed amount тягне імпутацію до хвоста; median узгоджується з MAE-стійкістю.</p><p>RobustScaler центрує по медіані й ділить на IQR, не на std. Вибір imputer/scaler — це вибір, яку норму помилки ви вважаєте типовою, не «яка функція коротша».</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noreferrer">scipy.stats.median / tmean</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html" target="_blank" rel="noreferrer">sklearn RobustScaler</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-5-2:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: mean vs median як вибір imputer / scaler» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Середнє використовує величину кожного значення, медіана — порядок, мода — частоту.</p><p>Для скошених сум замовлень медіана часто стійкіша до одного великого викиду.</p><p>Фокус «mean, median і mode» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: mean vs median як вибір imputer / scaler&#x27;
+assert invariant_contract
+import numpy as np
+amounts = np.array([10, 10, 12, 14, 1000], dtype=float)
+print(amounts.mean(), np.median(amounts))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: mean vs median як вибір imputer / scaler» очікується таке: Середнє дорівнює `209.2`, медіана — `12.0`; викид сильно зрушив лише перше. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не вибирайте «кращий центр» без форми розподілу й сенсу задачі.</li><li>Для «Технічна межа: mean vs median як вибір imputer / scaler» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «mean, median і mode».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Який центр краще описує типовий чек у цьому прикладі й чому? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: mean vs median як вибір imputer / scaler».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-5-2:END -->
+</div></article><!-- deep-dive:end:5:2 -->
+
+
+<article class="block" id="itstep-task-2"><div class="block-head"><h3>Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика ITSTEP</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">18:56–19:03 · 7 хв</span><span class="timer-live" hidden>07:00</span></label><span class="clock">в межах практикуму</span></div></div><div class="block-body"><div class="callout tip" data-task-level="практика"><b>Практика · у вікні 80 хв</b><p><b>Responsible AI.</b> Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div>
+<p><b>2 · офіційне завдання.</b> Змоделюйте вибірку розмірів замовлень, додайте кілька аномально великих значень і проведіть базовий статистичний аналіз.</p>
+<ul>
+  <li>Створіть одновимірний масив додатних чисел і додайте викиди.</li>
+  <li>Перетворіть масив у таблицю з одним стовпцем.</li>
+  <li>Порахуйте <code>mean</code>, <code>median</code>, <code>std</code>, <code>IQR</code>, <code>MAD</code>, асиметрію та ексцес.</li>
+  <li>Побудуйте гістограму та boxplot.</li>
+  <li>Порахуйте частку спостережень поза «вусами» boxplot.</li>
+</ul>
+<div class="callout tip"><b>Орієнтир до 2.</b><pre><code class="language-python">import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(42)
+base = rng.normal(loc=8, scale=2, size=80).clip(1, None)
+arr = np.concatenate([base, [22, 25, 31]])
+s = pd.Series(arr, name="order_size")
+q1, q3 = s.quantile([0.25, 0.75])
+iqr = q3 - q1
+mad = (s - s.median()).abs().median()
+print("mean:", round(s.mean(), 2), "median:", round(s.median(), 2))
+print("std:", round(s.std(ddof=1), 2), "IQR:", round(iqr, 2), "MAD:", round(mad, 2))</code></pre></div>
+<p><b>2.1 · зробіть за аналогією.</b> Згенеруйте вже <b>120+</b> спостережень і додайте не 3, а 5 викидів; повторіть ті самі метрики й коротко поясніть, які з них найсильніше змінилися через аномалії.</p>
+<!-- CURSOR-ENRICHMENT:itstep-task-2:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Порівняйте класичні mean/std зі стійкішими median/IQR/MAD на тому самому масиві.</p><p>MAD тут означає медіану абсолютних відхилень від медіани.</p><p>Фокус «mean, median, std, IQR і MAD на викидах» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD&#x27;
+assert practice_contract
+import numpy as np
+values = np.array([10., 11., 12., 13., 100.])
+median = np.median(values); q1, q3 = np.percentile(values, [25, 75])
+summary = {&#x27;mean&#x27;: values.mean(), &#x27;median&#x27;: median, &#x27;std&#x27;: values.std(ddof=1), &#x27;iqr&#x27;: q3-q1, &#x27;mad&#x27;: np.median(np.abs(values-median))}
+print({key: round(value, 2) for key, value in summary.items()})</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD» очікується таке: Mean і std різко реагують на 100; median=`12`, IQR=`2`, MAD=`1` лишаються стійкими. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не називайте mean absolute deviation медіанним MAD без уточнення формули.</li><li>Для «Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «mean, median, std, IQR і MAD на викидах».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які три підсумки тут найстійкіші до значення 100? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Завдання 2 + 2.1 · Розміри замовлень з викидами: mean, median, std, IQR, MAD».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:itstep-task-2:END -->
+</div></article>
+<article class="block" id="spread-metrics"><div class="block-head"><h3>Дисперсія та стандартне відхилення: наскільки вибірка розкидана</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">19:03–19:11 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body">
+<p><b>Variance</b> показує середній квадрат відхилення від середнього, а <b>std</b> повертає міру розкиду в тих самих одиницях, що й вихідні дані. Саме тому <code>std</code> зручніше читати: ті самі одиниці, що й дані.</p>
+<pre><code class="language-python">import pandas as pd
+
+x = pd.Series([420, 470, 470, 510, 830], dtype="float64")
+print("variance =", round(x.var(ddof=1), 2))
+print("std      =", round(x.std(ddof=1), 2))
+print("distance from mean:")
+print((x - x.mean()).round(2).tolist())</code></pre>
+<div class="viz-grid equal">
+  <div class="viz"><h4>Графік · маленький vs великий розкид</h4><div class="chart-wrap"><canvas id="chart-std-compare"></canvas></div></div>
+  <div class="viz"><h4>Інтерпретація</h4><div class="cards"><div class="card"><h5>Низький std</h5><p>Значення щільно зібрані біля центру.</p></div><div class="card"><h5>Високий std</h5><p>Значення сильно відходять від центру.</p></div><div class="card"><h5>Обережно</h5><p><code>variance</code> і <code>std</code> теж реагують на викиди.</p></div></div></div>
+</div>
+<div class="callout tip"><b>Місток до наступної пари</b><p>Коли ми починаємо дивитись на форму всієї вибірки, зʼявляється тема <b>розподілів</b>: чи схожі дані на рівномірні, нормальні або Пуассона.</p></div>
+<!-- theory-deeper:start:5:spread-metrics --><p>Вибіркова дисперсія s² = Σ(x − x̄)² / (n − 1). Для хвилин [12, 14, 13] маємо x̄=13, відхилення −1, +1, 0, сума квадратів 2, s² = 2/2 = 1, s = 1 хв. Одиниця std збігається з одиницею x — тому «розкид ±1 хв» читається, а variance = 1 хв² уже ні.</p><p>Правило «68% у x̄±s» працює лише як груба нормальна підказка. Нерівність Чебишова тримається завжди: за межами x̄±k s лежить не більше 1/k² маси. При k=2 це 25%, тобто щонайменше 75% спостережень у середньому ± 2s — навіть якщо гістограма коса.</p><div class="callout tip"><b>Коротко</b><p>Std у хвилинах порівнюйте з SLA (60 хв). Variance лишайте для формул, не для речення «черга розкидана на 144».</p></div><!-- theory-deeper:end:5:spread-metrics --><!-- CURSOR-ENRICHMENT:spread-metrics:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Дисперсія та стандартне відхилення: наскільки вибірка розкидана» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Дисперсія усереднює квадрати відхилень, стандартне відхилення повертає масштаб початкової змінної.</p><p>`np.std` має `ddof=0`, а `np.std(..., ddof=1)` і pandas Series.std — `ddof=1`; підписуйте кожне означення.</p><p>Фокус «дисперсія, std і ddof» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Дисперсія та стандартне відхилення: наскільки вибірка розкидана&#x27;
+assert concept_contract
+import numpy as np
+import pandas as pd
+values = np.array([10., 11., 12., 13., 100.])
+standard_deviations = {&#x27;numpy_population_ddof0&#x27;: values.std(ddof=0), &#x27;numpy_sample_ddof1&#x27;: values.std(ddof=1), &#x27;pandas_sample_ddof1&#x27;: pd.Series(values).std()}
+q1, q3 = np.percentile(values, [25, 75]); iqr = q3 - q1
+print({name: round(value, 3) for name, value in standard_deviations.items()}, &#x27;iqr&#x27;, round(iqr, 3))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Дисперсія та стандартне відхилення: наскільки вибірка розкидана» очікується таке: Три підписані std дорівнюють приблизно `35.414`, `39.594`, `39.594`; pandas і NumPy з `ddof=1` збігаються, IQR=`2.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не змішуйте результати з різним `ddof` в одній таблиці без підпису.</li><li>Для «Дисперсія та стандартне відхилення: наскільки вибірка розкидана» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «дисперсія, std і ddof».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які два sample-оцінювачі збігаються та чому population-оцінка менша? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Дисперсія та стандартне відхилення: наскільки вибірка розкидана».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:spread-metrics:END -->
+</div></article><!-- deep-dive:start:5:3 --><article class="block extra-deep-dive" id="extra-5-3" data-topic-id="pair-5-spread-metrics"><div class="block-head"><h3>Додатково: np.std за замовчуванням ділить на n, pandas — на n−1</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Дисперсія й std вимірюють розкид навколо <b>mean</b>, тому теж їдуть за викидом. Різниця, яку легко пропустити: <code>numpy.std</code> має <code>ddof=0</code> (знаменник n), <code>Series.std</code> — <code>ddof=1</code> (n−1, вибіркова). На маленькому n числа розʼїдуться.</p><pre><code class="language-python">import numpy as np
+import pandas as pd
+x = np.array([420.0, 470, 470, 510, 830])
+print(np.std(x), np.std(x, ddof=1))
+print(pd.Series(x).std())  # як ddof=1</code></pre><ul><li>Std у тих самих одиницях, що й дані; variance — у квадраті (грн²), її важче читати вголос.</li><li>IQR (Q3−Q1) і MAD не використовують mean — стійкіші, коли є хвіст.</li><li>Нульовий std означає «усі значення однакові», не «дані ідеальні».</li></ul><div class="callout tip"><b>Зверніть увагу</b><p>Порівнюєте «своє std» з таблицею з pandas describe — звірте ddof, інакше «помилка в один знак після коми» буде артефактом знаменника.</p></div><p>pandas.Series.std за замовчуванням ddof=1; numpy.std — ddof=0; формула «поділити на n−1» оцінює дисперсію генеральної сукупності з вибірки. На n=5 різниця вже помітна; на n=10⁵ — косметика.</p><p>Зверніть увагу: IQR не ділить ні на n, ні на n−1. Тому порівняння «std впав, IQR ні» після викиду — очікувана поведінка різних мір розкиду.</p><!-- CURSOR-ENRICHMENT:extra-5-3:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: np.std за замовчуванням ділить на n, pandas — на n−1» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Дисперсія усереднює квадрати відхилень, стандартне відхилення повертає масштаб початкової змінної.</p><p>`np.std` має `ddof=0`, а `np.std(..., ddof=1)` і pandas Series.std — `ddof=1`; підписуйте кожне означення.</p><p>Фокус «дисперсія, std і ddof» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: np.std за замовчуванням ділить на n, pandas — на n−1&#x27;
+assert edge_case_contract
+import numpy as np
+import pandas as pd
+values = np.array([10., 11., 12., 13., 100.])
+standard_deviations = {&#x27;numpy_population_ddof0&#x27;: values.std(ddof=0), &#x27;numpy_sample_ddof1&#x27;: values.std(ddof=1), &#x27;pandas_sample_ddof1&#x27;: pd.Series(values).std()}
+q1, q3 = np.percentile(values, [25, 75]); iqr = q3 - q1
+print({name: round(value, 3) for name, value in standard_deviations.items()}, &#x27;iqr&#x27;, round(iqr, 3))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: np.std за замовчуванням ділить на n, pandas — на n−1» очікується таке: Три підписані std дорівнюють приблизно `35.414`, `39.594`, `39.594`; pandas і NumPy з `ddof=1` збігаються, IQR=`2.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не змішуйте результати з різним `ddof` в одній таблиці без підпису.</li><li>Для «Поглиблення: np.std за замовчуванням ділить на n, pandas — на n−1» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «дисперсія, std і ddof».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які два sample-оцінювачі збігаються та чому population-оцінка менша? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: np.std за замовчуванням ділить на n, pandas — на n−1».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-5-3:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-5-3" data-topic-id="pair-5-spread-metrics" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: ddof=0 у StandardScaler vs pandas describe</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант: <code>sklearn.preprocessing.StandardScaler</code> рахує <code>np.std(ddof=0)</code> на train. <code>DataFrame.describe()</code> показує <code>ddof=1</code>. На n=5 розбіжність видима; на n=10⁵ — ні. Для демо на парі беріть короткий ряд, щоб різниця була педагогічною.</p><p>NumPy 2.x лишає default <code>ddof=0</code>. Не «виправляйте» numpy під pandas глобально — фіксуйте ddof у виклику. <code>scipy.stats.tstd</code> — sample std.</p><p>Коли mean уже зруйнований викидом, std теж. Тоді IQR/MAD і <code>RobustScaler</code>, не «більший StandardScaler». Variance як фіча моделі рідко корисна без масштабу.</p><p>StandardScaler: var_ = E[(x−mean)^2] по train (ddof=0), плюс ε в знаменнику. Не звіряйте scaler.scale_ з df.describe()['std'] — вони свідомо розходяться.</p><p>np.std(..., ddof=1) узгоджується з pandas. У звіті завжди пишіть, який ddof, інакше «три std» виглядають як три баги.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://numpy.org/doc/stable/reference/generated/numpy.std.html" target="_blank" rel="noreferrer">numpy.std</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html" target="_blank" rel="noreferrer">StandardScaler notes on std</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-5-3:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: ddof=0 у StandardScaler vs pandas describe» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Дисперсія усереднює квадрати відхилень, стандартне відхилення повертає масштаб початкової змінної.</p><p>`np.std` має `ddof=0`, а `np.std(..., ddof=1)` і pandas Series.std — `ddof=1`; підписуйте кожне означення.</p><p>Фокус «дисперсія, std і ddof» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: ddof=0 у StandardScaler vs pandas describe&#x27;
+assert invariant_contract
+import numpy as np
+import pandas as pd
+values = np.array([10., 11., 12., 13., 100.])
+standard_deviations = {&#x27;numpy_population_ddof0&#x27;: values.std(ddof=0), &#x27;numpy_sample_ddof1&#x27;: values.std(ddof=1), &#x27;pandas_sample_ddof1&#x27;: pd.Series(values).std()}
+q1, q3 = np.percentile(values, [25, 75]); iqr = q3 - q1
+print({name: round(value, 3) for name, value in standard_deviations.items()}, &#x27;iqr&#x27;, round(iqr, 3))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: ddof=0 у StandardScaler vs pandas describe» очікується таке: Три підписані std дорівнюють приблизно `35.414`, `39.594`, `39.594`; pandas і NumPy з `ddof=1` збігаються, IQR=`2.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не змішуйте результати з різним `ddof` в одній таблиці без підпису.</li><li>Для «Технічна межа: ddof=0 у StandardScaler vs pandas describe» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «дисперсія, std і ddof».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які два sample-оцінювачі збігаються та чому population-оцінка менша? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: ddof=0 у StandardScaler vs pandas describe».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-5-3:END -->
+</div></article><!-- deep-dive:end:5:3 -->
+
+
+<article class="block" id="practice-5-spread-metrics"><div class="block-head"><h3>Мінізадача: три std на одному масиві</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">19:11–19:18 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Для ряду з викидом надрукуйте <code>np.std</code>, <code>np.std(..., ddof=1)</code>, <code>pd.Series.std()</code> і IQR.</p><p>Аналог (необовʼязково). Приберіть викид і покажіть, як впали std і IQR (IQR впаде слабше, якщо викид був за Q3+1.5·IQR).</p><div class="callout tip"><b>Орієнтир</b><p>pandas.std збігається з np.std(ddof=1). np.std без ddof менший.</p></div><div class="callout task"><b>Ваше рішення</b><p>Чотири числа + короткий коментар, який знаменник ви зафіксували.</p></div><p>Ще один аналог (необовʼязково). На масиві з 4 чисел покажіть відношення <code>np.std(x, ddof=0) / np.std(x, ddof=1)</code> і перевірте, що це √((n-1)/n).</p><!-- CURSOR-ENRICHMENT:practice-5-spread-metrics:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: три std на одному масиві» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Дисперсія усереднює квадрати відхилень, стандартне відхилення повертає масштаб початкової змінної.</p><p>`np.std` має `ddof=0`, а `np.std(..., ddof=1)` і pandas Series.std — `ddof=1`; підписуйте кожне означення.</p><p>Фокус «дисперсія, std і ddof» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: три std на одному масиві&#x27;
+assert practice_contract
+import numpy as np
+import pandas as pd
+values = np.array([10., 11., 12., 13., 100.])
+standard_deviations = {&#x27;numpy_population_ddof0&#x27;: values.std(ddof=0), &#x27;numpy_sample_ddof1&#x27;: values.std(ddof=1), &#x27;pandas_sample_ddof1&#x27;: pd.Series(values).std()}
+q1, q3 = np.percentile(values, [25, 75]); iqr = q3 - q1
+print({name: round(value, 3) for name, value in standard_deviations.items()}, &#x27;iqr&#x27;, round(iqr, 3))</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: три std на одному масиві» очікується таке: Три підписані std дорівнюють приблизно `35.414`, `39.594`, `39.594`; pandas і NumPy з `ddof=1` збігаються, IQR=`2.0`. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не змішуйте результати з різним `ddof` в одній таблиці без підпису.</li><li>Для «Мінізадача: три std на одному масиві» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «дисперсія, std і ddof».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які два sample-оцінювачі збігаються та чому population-оцінка менша? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: три std на одному масиві».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-5-spread-metrics:END -->
+</div></article>
+<article class="block" id="skew-outliers"><div class="block-head"><h3>Асиметрія, викиди, IQR/MAD</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="8" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 8 хв" /><span class="clock">19:18–19:26 · 8 хв</span><span class="timer-live" hidden>08:00</span></label></div></div><div class="block-body"><p><b>Асиметрія і викиди</b> змінюють інтерпретацію mean/std.</p>
+<ul>
+  <li>Правостороння асиметрія (суми замовлень) → mean &gt; median.</li>
+  <li>IQR і MAD стійкіші до викидів, ніж std.</li>
+  <li>Перед «очищенням» викидів спитайте: помилка вимірювання чи рідкісна, але важлива подія?</li>
+</ul>
+<pre class="pre">import numpy as np
+x = np.array([10, 12, 11, 13, 12, 200], dtype=float)
+print("mean", x.mean(), "median", np.median(x))
+q1, q3 = np.percentile(x, [25, 75])
+print("IQR", q3 - q1)</pre>
+
+<!-- viz:skew-box -->
+<div class="viz-grid equal">
+  <div class="viz diagram">
+    <h4>Правостороння асиметрія</h4>
+    <svg viewBox="0 0 360 180" role="img" aria-label="Skewed distribution">
+      <path d="M30 150 C 60 150, 70 40, 110 40 S 160 120, 220 130 S 300 140, 340 145"
+            fill="none" stroke="#7dffb3" stroke-width="3"/>
+      <line x1="95" y1="30" x2="95" y2="155" stroke="#7ec8ff" stroke-dasharray="4 3"/>
+      <line x1="150" y1="30" x2="150" y2="155" stroke="#ffb86b" stroke-dasharray="4 3"/>
+      <text x="70" y="22" fill="#7ec8ff" font-size="11">median</text>
+      <text x="140" y="22" fill="#ffb86b" font-size="11">mean</text>
+      <text x="30" y="172" fill="#9aafa0" font-size="11">хвіст тягне mean праворуч</text>
+    </svg>
+  </div>
+  <div class="viz diagram">
+    <h4>Boxplot (схема)</h4>
+    <svg viewBox="0 0 360 180" role="img" aria-label="Boxplot schematic">
+      <line x1="40" y1="90" x2="300" y2="90" stroke="#2f4137"/>
+      <line x1="70" y1="90" x2="250" y2="90" stroke="#7dffb3" stroke-width="3"/>
+      <rect x="120" y="60" width="90" height="60" rx="8" fill="#1e2a24" stroke="#7ec8ff" stroke-width="2"/>
+      <line x1="165" y1="60" x2="165" y2="120" stroke="#ffb86b" stroke-width="2"/>
+      <circle cx="290" cy="90" r="5" fill="#ff8fab"/>
+      <text x="110" y="150" fill="#9aafa0" font-size="11">Q1 · median · Q3 · outlier</text>
+    </svg>
+  </div>
+</div>
+<div class="viz"><h4>Графік · mean vs median на «брудній» вибірці</h4>
+  <div class="chart-wrap"><canvas id="chart-mean-median"></canvas></div>
+</div>
+
+<!-- theory-deeper:start:5:skew-outliers --><p>Коефіцієнт асиметрії Пірсона: 3(mean − median) / std. На хвилинах [10, 12, 11, 13, 12, 200] mean ≈ 43, median = 12, std великий через 200. Тоді 3(43−12)/std ≈ +1.3: правий хвіст, mean правіше median. Формула не «малює» box-plot, а стискає той самий факт у одне число зі знаком.</p><p>MAD = median(|x − median|). Для ряду без 200 MAD лишається близько 1; std стрибає. Якщо T-1004 (outage, 200 хв) — справжня подія, не збій логу, MAD опише «звичайну» чергу, а 200 залишиться окремим кейсом в P1, не автоматичним drop.</p><div class="callout tip"><b>Зверніть увагу</b><p>Знак (mean − median) уже підказує бік хвоста. Видалення точки — окреме предметне рішення, не наслідок формули.</p></div><!-- theory-deeper:end:5:skew-outliers --><!-- CURSOR-ENRICHMENT:skew-outliers:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Асиметрія, викиди, IQR/MAD» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>IQR дорівнює Q3−Q1; правило Тьюкі позначає точки поза `[Q1−1.5·IQR, Q3+1.5·IQR]`.</p><p>Позначення викиду є сигналом для перевірки, а не автоматичною командою видалити рядок.</p><p>Фокус «IQR/MAD та викиди» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Асиметрія, викиди, IQR/MAD&#x27;
+assert concept_contract
+import numpy as np
+values = np.array([10, 11, 12, 13, 100])
+q1, q3 = np.percentile(values, [25, 75])
+mask = (values &lt; q1 - 1.5 * (q3 - q1)) | (values &gt; q3 + 1.5 * (q3 - q1))
+print(values[mask].tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Асиметрія, викиди, IQR/MAD» очікується таке: Правило позначає `[100]` як точку поза огорожею. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не стверджуйте, що вуса box-plot завжди дорівнюють min і max.</li><li>Для «Асиметрія, викиди, IQR/MAD» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «IQR/MAD та викиди».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які предметні причини можуть зробити 100 валідним значенням? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Асиметрія, викиди, IQR/MAD».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:skew-outliers:END -->
+</div></article><!-- deep-dive:start:5:4 --><article class="block extra-deep-dive" id="extra-5-4" data-topic-id="pair-5-skew-outliers"><div class="block-head"><h3>Додатково: «вуса» box-plot — це 1.5·IQR, не min і max</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Правосторонній хвіст (чеки, час відповіді) дає mean &gt; median. Правило Тьюкі: точка за межами <code>[Q1 − 1.5·IQR, Q3 + 1.5·IQR]</code> — <b>кандидат</b> у викиди, не автоматичне видалення. MAD (медіана |x − median|) стійкіший за std, бо не дивиться на mean.</p><pre><code class="language-python">import numpy as np
+x = np.array([10.0, 12, 11, 13, 12, 200])
+q1, q3 = np.percentile(x, [25, 75])
+iqr = q3 - q1
+lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+print(lo, hi, x[(x &lt; lo) | (x &gt; hi)])</code></pre><ul><li>z &gt; 3 на n=20 майже завжди спрацює на єдиному хвості — правило для приблизно нормальних великих вибірок.</li><li>Викид у Support Intelligence може бути інцидентом P1, не «сміттям».</li><li>Спочатку гістограма + box-plot, потім рішення про рядок.</li></ul><div class="callout tip"><b>Часта пастка</b><p>Видалити 200 і перерахувати mean — легко. Запитання «чи це помилка введення чи рідкісна, але валідна подія?» має бути раніше за dropna.</p></div><p>Огорожа Tukey 1.5·IQR — це правило для box-plot, не тест гіпотези «викид шкідливий». Точка за вусом може бути валідним P1-чеком 980, який треба лишити, або зламаним сенсором, який треба відрізати. Правило лише позначає хвіст.</p><p>Зверніть увагу: на сильно скошених даних (Poisson лічильники) «за огорожею» опиниться занадто багато точок. Тоді IQR-фільтр зʼїсть справжній розподіл, а не аномалії.</p><!-- CURSOR-ENRICHMENT:extra-5-4:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: «вуса» box-plot — це 1.5·IQR, не min і max» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>IQR дорівнює Q3−Q1; правило Тьюкі позначає точки поза `[Q1−1.5·IQR, Q3+1.5·IQR]`.</p><p>Позначення викиду є сигналом для перевірки, а не автоматичною командою видалити рядок.</p><p>Фокус «IQR/MAD та викиди» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: «вуса» box-plot — це 1.5·IQR, не min і max&#x27;
+assert edge_case_contract
+import numpy as np
+values = np.array([10, 11, 12, 13, 100])
+q1, q3 = np.percentile(values, [25, 75])
+mask = (values &lt; q1 - 1.5 * (q3 - q1)) | (values &gt; q3 + 1.5 * (q3 - q1))
+print(values[mask].tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: «вуса» box-plot — це 1.5·IQR, не min і max» очікується таке: Правило позначає `[100]` як точку поза огорожею. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не стверджуйте, що вуса box-plot завжди дорівнюють min і max.</li><li>Для «Поглиблення: «вуса» box-plot — це 1.5·IQR, не min і max» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «IQR/MAD та викиди».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які предметні причини можуть зробити 100 валідним значенням? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: «вуса» box-plot — це 1.5·IQR, не min і max».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-5-4:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-5-4" data-topic-id="pair-5-skew-outliers" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Tukey fence vs IsolationForest і RobustScaler</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант Tukey fence залежить лише від квартилів, не від mean/std. Він евристика для симетричних унімодальних даних; на суміші двох кластерів «викиди» можуть бути другим режимом. MAD зі шкалою 1.4826 — узгодженість з σ нормального закону, не універсальна константа для чеків.</p><p>sklearn: <code>RobustScaler</code> використовує median/IQR саме щоб викид не задавав масштаб. <code>IsolationForest</code> / <code>LocalOutlierFactor</code> — інший індуктивний баєс, не заміна EDA на цій парі. Не drop-рядки до split: правило, підігнане на test, — leakage.</p><p>SciPy: <code>scipy.stats.skew</code> bias-corrected за замовчуванням; знак &gt; 0 ≈ правий хвіст. Звіряйте зі знаком (mean − median).</p><p>Tukey fence — евристика EDA. IsolationForest і LOF — інші моделі з fit на train. Видаляти точки за 1.5·IQR на всьому CSV до split — leakage критерію аномалії з test.</p><p>RobustScaler використовує IQR як scale, але не дропає флайери. clip по квантилях train — окремий трансформер (або FunctionTransformer), не частина boxplot.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.skew.html" target="_blank" rel="noreferrer">scipy.stats.skew</a></li><li><a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html" target="_blank" rel="noreferrer">sklearn RobustScaler</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-5-4:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: Tukey fence vs IsolationForest і RobustScaler» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>IQR дорівнює Q3−Q1; правило Тьюкі позначає точки поза `[Q1−1.5·IQR, Q3+1.5·IQR]`.</p><p>Позначення викиду є сигналом для перевірки, а не автоматичною командою видалити рядок.</p><p>Фокус «IQR/MAD та викиди» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: Tukey fence vs IsolationForest і RobustScaler&#x27;
+assert invariant_contract
+import numpy as np
+values = np.array([10, 11, 12, 13, 100])
+q1, q3 = np.percentile(values, [25, 75])
+mask = (values &lt; q1 - 1.5 * (q3 - q1)) | (values &gt; q3 + 1.5 * (q3 - q1))
+print(values[mask].tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: Tukey fence vs IsolationForest і RobustScaler» очікується таке: Правило позначає `[100]` як точку поза огорожею. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не стверджуйте, що вуса box-plot завжди дорівнюють min і max.</li><li>Для «Технічна межа: Tukey fence vs IsolationForest і RobustScaler» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «IQR/MAD та викиди».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які предметні причини можуть зробити 100 валідним значенням? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: Tukey fence vs IsolationForest і RobustScaler».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-5-4:END -->
+</div></article><!-- deep-dive:end:5:4 -->
+
+
+<article class="block" id="practice-5-skew-outliers"><div class="block-head"><h3>Мінізадача: знайдіть точки за огорожею 1.5·IQR</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">19:26–19:33 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Масив додатних чисел з двома великими значеннями. Порахуйте Q1, Q3, IQR, межі, список викидів, mean vs median.</p><p>Аналог (необовʼязково). Порахуйте MAD і порівняйте, чи ті самі точки далекі від median.</p><div class="callout tip"><b>Орієнтир</b><p>Великі значення мають потрапити за hi. Median лишається серед «звичайних» чисел.</p></div><div class="callout task"><b>Ваше рішення</b><p>Print меж і масиву викидів. Рядки не видаляйте — лише позначте.</p></div><p>Ще один аналог (необовʼязково). Згенеруйте exponential вибірку size=200 і порахуйте частку точок за 1.5·IQR. Чи близька вона до «кількох флайерів» нормального закону?</p><!-- CURSOR-ENRICHMENT:practice-5-skew-outliers:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: знайдіть точки за огорожею 1.5·IQR» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>IQR дорівнює Q3−Q1; правило Тьюкі позначає точки поза `[Q1−1.5·IQR, Q3+1.5·IQR]`.</p><p>Позначення викиду є сигналом для перевірки, а не автоматичною командою видалити рядок.</p><p>Фокус «IQR/MAD та викиди» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: знайдіть точки за огорожею 1.5·IQR&#x27;
+assert practice_contract
+import numpy as np
+values = np.array([10, 11, 12, 13, 100])
+q1, q3 = np.percentile(values, [25, 75])
+mask = (values &lt; q1 - 1.5 * (q3 - q1)) | (values &gt; q3 + 1.5 * (q3 - q1))
+print(values[mask].tolist())</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: знайдіть точки за огорожею 1.5·IQR» очікується таке: Правило позначає `[100]` як точку поза огорожею. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не стверджуйте, що вуса box-plot завжди дорівнюють min і max.</li><li>Для «Мінізадача: знайдіть точки за огорожею 1.5·IQR» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «IQR/MAD та викиди».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які предметні причини можуть зробити 100 валідним значенням? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: знайдіть точки за огорожею 1.5·IQR».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-5-skew-outliers:END -->
+</div></article>
+<article class="block" id="stats-workflow"><div class="block-head"><h3>Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">теорія</span><label class="block-timer" data-minutes="6" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 6 хв" /><span class="clock">19:33–19:39 · 6 хв</span><span class="timer-live" hidden>06:00</span></label></div></div><div class="block-body">
+<p>Мінімальний робочий цикл для статистики на парі: <b>load → inspect → clean → summarize → visualize → interpret</b>. Важливо не тільки порахувати метрики, а й перевірити, чи узгоджуються вони з формою гістограми або boxplot.</p>
+<pre><code class="language-python">import pandas as pd
+
+df = pd.read_csv("transactions.csv")
+amount = df["amount"]
+
+print(df.head())
+print(df.info())
+print(df.isna().sum())
+print(amount.describe(percentiles=[0.25, 0.5, 0.75]))
+print("median:", amount.median())
+print("mode:", amount.mode().tolist())</code></pre>
+<div class="flow">
+  <div class="flow-step"><b>1. Load</b><span>CSV або згенерована таблиця.</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>2. Check</b><span><code>head()</code>, <code>info()</code>, пропуски, dtype.</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>3. Summarize</b><span><code>mean</code>, <code>median</code>, <code>mode</code>, <code>var</code>, <code>std</code>.</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><b>4. Plot</b><span>Гістограма і boxplot підтверджують висновок.</span></div>
+</div>
+<div class="callout tip"><b>Не довіряйте одній метриці</b><p>Сильний розрив між <code>mean</code> і <code>median</code> часто сигналізує про асиметрію або викиди. Саме тому статистика і візуалізація йдуть парою.</p></div>
+<div class="callout tip" data-kb="kb-pair-callout"><b>Коротко</b><p>Називайте ddof. Медіана бʼє середнє на викидах. <code>mode()</code> залиште категоріям, не цінам з копійками.</p></div><!-- theory-deeper:start:5:stats-workflow --><p>StandardScaler робить z = (x − mean) / std. Якщо в колонці хвилин є 980 при решті ~14, std роздувається, і всі «звичайні» тікети злипаються біля z≈0, а викид стає єдиною видимою віссю. RobustScaler бере median і IQR: той самий 980 не зʼїдає шкалу.</p><p>Правило-перемикач перед scaler: якщо |mean − median| / IQR &gt; 0.5, спочатку лог або robust, не z-score. На серії [12, 15, 14, 13, 980] IQR малий, різниця mean і median велика — умова справджується. Графік (hist/box) лише підтверджує те, що вже сказали три числа.</p><div class="callout tip"><b>Часта пастка</b><p>Scaler не «лікує» пропуски. isna() до будь-якого масштабу, інакше NaN розмножиться в усі z.</p></div><!-- theory-deeper:end:5:stats-workflow --><!-- CURSOR-ENRICHMENT:stats-workflow:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком» має точний навчальний контракт: Зіставте поняття з формою даних, операцією та очікуваним результатом.</p><p>Починайте EDA зі схеми, n, пропусків і діапазону; потім обчислюйте центр, розкид і форму.</p><p>Рішення про імпутацію або scaler приймайте після split і втілюйте в pipeline, що fit лише на train.</p><p>Фокус «відтворювана картка колонки» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">concept_contract = &#x27;Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком&#x27;
+assert concept_contract
+import pandas as pd
+amount = pd.Series([10.0, None, 30.0], name=&#x27;amount&#x27;)
+card = {&#x27;n&#x27;: len(amount), &#x27;missing&#x27;: int(amount.isna().sum()), &#x27;min&#x27;: amount.min(), &#x27;max&#x27;: amount.max()}
+print(card)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком» очікується таке: Картка показує `n=3`, один пропуск і валідний діапазон 10…30. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не обчислюйте статистики препроцесингу на майбутній test-вибірці.</li><li>Для «Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «відтворювана картка колонки».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які поля картки треба перевірити до середнього? Який спостережуваний результат підтверджує це поняття? Відповідь має прямо стосуватися «Практичний workflow: зчитати колонку, порахувати центр і розкид, звірити графіком».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:stats-workflow:END -->
+</div></article><!-- deep-dive:start:5:5 --><article class="block extra-deep-dive" id="extra-5-5" data-topic-id="pair-5-stats-workflow"><div class="block-head"><h3>Додатково: порядок EDA — схема, центр, розкид, форма, лише потім scaler</h3><span class="kind deep">додатковий матеріал</span></div><div class="block-body"><p>Робочий ланцюжок на числовій колонці: <code>head/info/isna</code> → mean/median/mode → std/IQR → гістограма/box → рішення (імпутація, лог, robust). Стрибок одразу в «нормалізацію для ML» ховає пропуски й викиди всередину масштабу.</p><pre><code class="language-python">import pandas as pd
+x = pd.Series([12, 15, 14, 13, None, 980], name="amount")
+print(x.isna().sum(), x.mean(), x.median())
+clean = x.dropna()
+print(clean.quantile([0.25, 0.5, 0.75]).to_dict())</code></pre><ul><li>Якщо median ≪ mean — далі IQR і box, не StandardScaler.</li><li>Якщо багато NA — рішення impute vs drop <b>до</b> графіка розподілу.</li><li>Метрики після dropna описують уже іншу вибірку: завжди пишіть n.</li></ul><div class="callout tip"><b>Зверніть увагу</b><p>Одне число mean без n, одиниць і median — ще не аналіз. Звіт: n, пропуски, mean, median, IQR.</p></div><p>Порядок EDA захищає від leakage: схема (info) → центр/розкид на train → форма (hist) → лише тоді scaler.fit(train). Якщо scaler побачив test, «гарний» scatter уже не є іспитом.</p><p>Зверніть увагу: картка колонки amount з n і часткою NA — це MAP контексту, не заміна гістограми. n=20 з двома NA означає, що std на 18 точках, не на 20.</p><!-- CURSOR-ENRICHMENT:extra-5-5:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Поглиблення: порядок EDA — схема, центр, розкид, форма, лише потім scaler» має точний навчальний контракт: Запустіть граничний випадок і порівняйте його з основним результатом.</p><p>Починайте EDA зі схеми, n, пропусків і діапазону; потім обчислюйте центр, розкид і форму.</p><p>Рішення про імпутацію або scaler приймайте після split і втілюйте в pipeline, що fit лише на train.</p><p>Фокус «відтворювана картка колонки» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">edge_case_contract = &#x27;Поглиблення: порядок EDA — схема, центр, розкид, форма, лише потім scaler&#x27;
+assert edge_case_contract
+import pandas as pd
+amount = pd.Series([10.0, None, 30.0], name=&#x27;amount&#x27;)
+card = {&#x27;n&#x27;: len(amount), &#x27;missing&#x27;: int(amount.isna().sum()), &#x27;min&#x27;: amount.min(), &#x27;max&#x27;: amount.max()}
+print(card)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Поглиблення: порядок EDA — схема, центр, розкид, форма, лише потім scaler» очікується таке: Картка показує `n=3`, один пропуск і валідний діапазон 10…30. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не обчислюйте статистики препроцесингу на майбутній test-вибірці.</li><li>Для «Поглиблення: порядок EDA — схема, центр, розкид, форма, лише потім scaler» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «відтворювана картка колонки».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які поля картки треба перевірити до середнього? Яке припущення ламає цей граничний випадок? Відповідь має прямо стосуватися «Поглиблення: порядок EDA — схема, центр, розкид, форма, лише потім scaler».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:extra-5-5:END -->
+</div></article><article class="block teacher-deep-dive" id="teacher-5-5" data-topic-id="pair-5-stats-workflow" data-project-feature="python-ai-modify-teacher-blocks" hidden><div class="block-head"><h3>Для викладача: Pipeline(imputer, scaler) і fit лише на train</h3><span class="teacher-badge">Для викладача</span></div><div class="block-body"><p>Інваріант препроцесингу: параметри (median, IQR, mean, std) оцінюються на train і заморожуються. <code>sklearn.pipeline.Pipeline([ ("impute", SimpleImputer(strategy="median")), ("scale", RobustScaler())])</code> — виконуваний запис workflow цієї пари.</p><p>Вибір гілки: симетричні дані без хвоста → mean + StandardScaler; чеки/час → median + RobustScaler або log1p + scaler. Не змішуйте describe() на full frame зі scaler.fit на train — числа розійдуться, і це має бути свідомо.</p><p>pandas 3 CoW: проміжні <code>clean = df.dropna().copy()</code> більше не обовʼязкові для безпеки мутацій, але <code>.copy()</code> лишається корисним як документація «це вже інша таблиця».</p><p>sklearn.pipeline.Pipeline([('imputer', ...), ('scaler', ...), ('model', ...)]) гарантує fit препроцесора всередині CV-фолда. Ручний scaler.fit(X) до train_test_split — канонічний антипатерн MEASURE.</p><p>FunctionTransformer для clip/log має бути всередині Pipeline, інакше квантилі clip знову порахують по test.</p><div class="teacher-sources"><h4>Джерела</h4><ul><li><a href="https://scikit-learn.org/stable/modules/compose.html" target="_blank" rel="noreferrer">sklearn Pipeline</a></li><li><a href="https://scikit-learn.org/stable/modules/preprocessing.html" target="_blank" rel="noreferrer">sklearn preprocessing</a></li></ul></div><!-- CURSOR-ENRICHMENT:teacher-5-5:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Технічна межа: Pipeline(imputer, scaler) і fit лише на train» має точний навчальний контракт: Перевірте технічний інваріант через shape, dtype, індекс або стан Axes.</p><p>Починайте EDA зі схеми, n, пропусків і діапазону; потім обчислюйте центр, розкид і форму.</p><p>Рішення про імпутацію або scaler приймайте після split і втілюйте в pipeline, що fit лише на train.</p><p>Фокус «відтворювана картка колонки» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">invariant_contract = &#x27;Технічна межа: Pipeline(imputer, scaler) і fit лише на train&#x27;
+assert invariant_contract
+import pandas as pd
+amount = pd.Series([10.0, None, 30.0], name=&#x27;amount&#x27;)
+card = {&#x27;n&#x27;: len(amount), &#x27;missing&#x27;: int(amount.isna().sum()), &#x27;min&#x27;: amount.min(), &#x27;max&#x27;: amount.max()}
+print(card)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Технічна межа: Pipeline(imputer, scaler) і fit лише на train» очікується таке: Картка показує `n=3`, один пропуск і валідний діапазон 10…30. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не обчислюйте статистики препроцесингу на майбутній test-вибірці.</li><li>Для «Технічна межа: Pipeline(imputer, scaler) і fit лише на train» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «відтворювана картка колонки».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які поля картки треба перевірити до середнього? Яка явна перевірка виявить порушення технічної межі? Відповідь має прямо стосуватися «Технічна межа: Pipeline(imputer, scaler) і fit лише на train».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:teacher-5-5:END -->
+</div></article><!-- deep-dive:end:5:5 -->
+
+
+<article class="block" id="practice-5-stats-workflow"><div class="block-head"><h3>Мінізадача: картка колонки amount з n і пропусками</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">практика</span><label class="block-timer" data-minutes="7" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 7 хв" /><span class="clock">19:39–19:46 · 7 хв</span><span class="timer-live" hidden>07:00</span></label></div></div><div class="block-body"><p>Обовʼязково. Для ряду сум замовлень з одним пропуском і одним викидом надрукуйте n, NA, mean, median, std, IQR. Не малюйте ще графік — лише числа.</p><p>Аналог (необовʼязково). Повторіть метрики після <code>dropna</code> і запишіть, що n змінилось.</p><div class="callout tip"><b>Орієнтир</b><p>Картка з 6 числами. Після dropna n зменшується на 1, mean може стрибнути сильніше за median.</p></div><div class="callout task"><b>Ваше рішення</b><p>Один print-словник або таблиця з 6 полями. Коментар: яку гілку scaler обрали б.</p></div><p>Ще один аналог (необовʼязково). Запишіть три кроки для колонки amount у Pipeline і місце, де split уже має існувати. Без коду моделі — лише імена кроків.</p><!-- CURSOR-ENRICHMENT:practice-5-stats-workflow:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Мінізадача: картка колонки amount з n і пропусками» має точний навчальний контракт: Виконайте операцію з назви завдання та перевірте результат assertion-ом або підписаною візуалізацією.</p><p>Починайте EDA зі схеми, n, пропусків і діапазону; потім обчислюйте центр, розкид і форму.</p><p>Рішення про імпутацію або scaler приймайте після split і втілюйте в pipeline, що fit лише на train.</p><p>Фокус «відтворювана картка колонки» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">practice_contract = &#x27;Мінізадача: картка колонки amount з n і пропусками&#x27;
+assert practice_contract
+import pandas as pd
+amount = pd.Series([10.0, None, 30.0], name=&#x27;amount&#x27;)
+card = {&#x27;n&#x27;: len(amount), &#x27;missing&#x27;: int(amount.isna().sum()), &#x27;min&#x27;: amount.min(), &#x27;max&#x27;: amount.max()}
+print(card)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Мінізадача: картка колонки amount з n і пропусками» очікується таке: Картка показує `n=3`, один пропуск і валідний діапазон 10…30. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не обчислюйте статистики препроцесингу на майбутній test-вибірці.</li><li>Для «Мінізадача: картка колонки amount з n і пропусками» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «відтворювана картка колонки».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які поля картки треба перевірити до середнього? Яка перевірка доводить виконання саме цієї операції? Відповідь має прямо стосуватися «Мінізадача: картка колонки amount з n і пропусками».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:practice-5-stats-workflow:END -->
+</div></article>
+<article class="block" id="itstep-practical"><div class="block-head"><h3>Обовʼязкові практичні · ITSTEP Практичне завдання 2.3 (статистика)</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind task">обовʼязково</span></div></div><div class="block-body">
+<p><b>Creating AI Applications Using Python — Practical Assignments</b></p>
+<p>У кожному блоці: <b>X</b> — офіційне завдання ITSTEP, <b>X.1</b> — ваш аналог на ту саму навичку, але з більшим обсягом даних. На цій парі беремо <b>stats tasks 1–2</b> як timed practice, а додаткові поглиблення — без таймера.</p>
+<div class="callout task"><b>Критерій здачі.</b> Є читабельні таблиці метрик, пояснення отриманих чисел, а гістограма / boxplot не суперечать висновкам у тексті.</div>
+</div></article>
+<article class="block" id="extra-kb-stats"><div class="block-head"><h3>Додатково: mean / median / std і ddof</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Спочатку «що вимірюємо», потім формула std. Медіана стійкіша до викидів, ніж середнє; <code>mode()</code> на float часто безглузда.</p>
+<pre><code class="language-python">import numpy as np
+x = np.array([10, 12, 11, 13, 80], dtype=float)
+print("mean", x.mean(), "median", np.median(x))
+print("std ddof=0", x.std(), "std ddof=1", x.std(ddof=1))</code></pre>
+<p>NumPy за замовчуванням <code>ddof=0</code>; для вибіркової оцінки на парі ставте <code>ddof=1</code> і називайте, яку формулу взяли.</p>
+<div class="callout tip"><b>Зверніть увагу</b><ul><li>мовчки мішати ddof=0 і ddof=1;</li><li>режим на неперервних float;</li><li>стрибати в sklearn, поки немає однієї таблиці показників.</li></ul></div><div class="callout"><b>Джерела</b><ul><li>OpenIntro / Think Stats — робастні міри центру (глибше в блоці в кінці пари).</li><li>На цій парі чотири офіційні задачі зі статистики.</li></ul></div><div class="extra-more" data-kb="extra-more">
+<p>Mean — центр мас; median — «середина списку»; mode — найчастіше значення (на неперервному float майже завжди унікальне й безглузде). NumPy <code>std()</code> за замовчуванням ділить на <i>n</i> (<code>ddof=0</code>, генеральна сукупність). Для вибірки на цій парі ставте <code>ddof=1</code> і підписуйте формулу.</p>
+<pre><code class="language-python">import numpy as np
+x = np.array([10, 12, 11, 13, 80], dtype=float)
+print("mean", x.mean(), "median", np.median(x))
+print("розмах", x.max() - x.min())
+q1, q3 = np.percentile(x, 25), np.percentile(x, 75)
+print("IQR", q3 - q1)</code></pre>
+<p>Один викид 80 тягне mean і std угору; median та IQR майже стоять. Це і є причина дивитися обидві міри, а не «одне число зі звіту».</p>
+<div class="callout"><b>Джерела</b><ul><li>Спочатку «що вимірюємо», потім формула std.</li><li>SciPy statistical functions tutorial.</li><li>Практичне 2.4 — чотири офіційні задачі (не шість).</li></ul></div>
+</div></div></article>
+<article class="block" id="si-thread"><div class="block-head"><h3>Support Intelligence і відповідальний AI</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div><p>Рівні практики на цій парі: <b>База</b> — мінімальний прохідний артефакт; <b>Практика</b> — основне ITSTEP / куроване завдання; <b>Stretch</b> — IQR для hours_to_close, якщо додасте колонку.. Кроки — у блоці «Домашнє / stretch».</p></div></article>
+<article class="block" id="practice-levels"><div class="block-head"><h3>Рівні практики</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p><b>База.</b> Для [1, 2, 2, 100] запишіть mean і median без калькулятора «на око» і перевірте кодом. Доказ: mean &gt; median; коментар про викид 100.</p><p><b>Практика.</b> Обовʼязкові блоки ITSTEP / куровані завдання — нижче в презентації. Зафіксуйте seed=42, якщо є модель. Support Intelligence: Побудуйте data dictionary для tickets.csv: типи, пропуски, дублікати, колонки з PII. Файл: <code>project/support_intelligence/m02_eda.py</code>.</p><p><b>Stretch.</b> IQR для hours_to_close, якщо додасте колонку.. Кроки (що зробити / що здати / коли готово) — у блоці «Домашнє / stretch». Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><div class="callout tip"><b>Responsible AI</b><p>Чи є дисбаланс груп клієнтів у даних? Чи можна пояснити рядок датасету власнику даних?</p></div></div></article>
+<article class="block" id="repro-bar"><div class="block-head"><h3>Відтворюваність</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><ul><li>Python 3.10+</li><li>seed / random_state = 42, якщо є модель</li><li>CPU, без обовʼязкового GPU</li><li>Немає API-ключів у файлах</li><li>Дані: локальний <code>tickets.csv</code></li><li>Команда модуля: <code>python3 m02_eda.py</code> з <code>project/support_intelligence/</code></li><li>Fallback: мок / numpy, якщо немає sklearn чи torch — дивіться README проєкту</li></ul></div></article>
+<article class="block" id="practice-bar"><div class="block-head"><h3>Очікуваний результат і зверніть увагу</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><div class="callout tip"><b>Очікуваний результат</b><p>mean &gt; median; коментар про викид 100.</p></div><div class="callout tip"><b>Зверніть увагу</b><ul><li>Звітувати лише середнє часу SLA.</li><li>Плутати std популяції й вибірки.</li></ul></div></div></article>
+<article class="block" id="homework-stretch"><div class="block-head"><h3>Домашнє / stretch</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал</span></div></div><div class="block-body"><p>Необовʼязково для заліку пари, але якщо час дозволяє — бажано ознайомитись.</p><p><b>Тема.</b> IQR для hours_to_close, якщо додасте колонку.</p><p><b>Що зробити</b></p><ol><li>Додайте або використайте колонку часу закриття (наприклад <code>hours_to_close</code>). Якщо її немає — згенеруйте 20 чисел.</li><li>Порахуйте Q1, Q3 і IQR.</li><li>Позначте значення за межами <code>[Q1 - 1.5*IQR, Q3 + 1.5*IQR]</code>.</li><li>Надрукуйте, скільки викидів і чи будете їх різати перед моделлю.</li></ol><p><b>Що здати.</b> Скрипт <code>stretch_pair05.py</code> з print Q1/Q3/IQR і кількістю викидів.</p><p><b>Готово, коли.</b> IQR пораховано з даних, викиди полічені, є рішення «різати / не різати».</p><p><b>Завдання ITSTEP з міткою Stretch.</b> Відкрийте блок у презентації з міткою Stretch / take-home. Спочатку повторіть офіційне завдання за зразком коду на слайді. Потім зробіть аналог X.1 самостійно (у роздатку немає готового файлу). Збережіть свій скрипт і один рядок: який print ви очікуєте і що побачили.</p></div></article>
+<article class="block" id="deep-study"><div class="block-head"><h3>Додатково: глибоке вивчення · робастні статистики</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind deep">додатковий матеріал · ~30 хв</span></div></div><div class="block-body"><p>Блок <b>поза вікном</b> (~30 хв): надійні міри центру і розкиду.</p>
+
+<h4 style="color:#fff;font-family:var(--display)">1. Чому median / IQR / MAD</h4>
+<p>У фінансах, e-commerce і логах часто важкі хвости. Mean і std тоді описують «середнє по лікарні», а не типового клієнта.</p>
+<pre class="pre">import numpy as np
+def mad(a: np.ndarray) -&gt; float:
+    med = np.median(a)
+    return float(np.median(np.abs(a - med)))
+
+rng = np.random.default_rng(0)
+base = rng.lognormal(mean=3.0, sigma=0.4, size=500)
+print("MAD", round(mad(base), 3))</pre>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">2. Boxplot як швидкий EDA</h4>
+<ul>
+  <li>«Вуса» зазвичай Q1−1.5·IQR / Q3+1.5·IQR — евристика, не закон природи.</li>
+  <li>Багато точок за вусами ≠ автоматично «видалити».</li>
+</ul>
+
+<h4 style="color:#fff;font-family:var(--display);margin-top:1rem">3. Після завдань 1–2</h4>
+<p>Перевірте: чи підписані графіки, чи є зведення до/після dropna, чи пояснили різницю mean vs median на своїх даних.</p>
+
+<div class="callout"><b>Джерела</b>
+<ul>
+  <li>OpenIntro Statistics / Think Stats — розділи про summary statistics і outliers.</li>
+  <li>SciPy docs — <code>scipy.stats</code> (skew, kurtosis, median_abs_deviation): <a href="https://docs.scipy.org/doc/scipy/reference/stats.html" target="_blank" rel="noopener">docs.scipy.org</a></li>
+  <li>NumPy docs — percentiles / quantile.</li>
+</ul>
+</div><div class="extra-more" data-kb="extra-more">
+<p>Робастні міри: медіана і IQR менше реагують на один екстремальний чек, ніж mean і variance. MAD (median absolute deviation) — ще один спосіб описати розкид без квадратів відхилень.</p>
+<div class="callout"><b>Джерела</b><ul><li>SciPy statistical functions tutorial.</li><li>OpenIntro / Think Stats — робастний центр (уже в глибокому блоці пари).</li></ul></div>
+</div></div></article>
+<!-- data-ingest:start:5 --><article class="block extra-deep-dive" id="data-ingest-5" data-topic-id="data-ingest-5">
+<div class="block-head"><h3>Повний корпус data/ · пара 5</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+<p>Повний розбір локального <code>data/</code> для цієї пари: <b>546</b> джерел
+(<code>article=40, book=7, lms=24, related=5, video=470</code>), portable-файлів у пакеті: <b>0</b>.</p>
+<p>Пакет пари в курсі: <code>materials_from_data/by_pair/pair_05/</code></p>
+<ul>
+<li><code>SOURCES.md</code> — повний ранжований список</li>
+<li><code>excerpts/</code> — уривки топ-джерел</li>
+<li><code>portable/</code> — скопійовані .py / .ipynb / .csv</li>
+<li>Глобальний аудит: <code>materials_from_data/FULL_AUDIT.md</code></li>
+<li>Відео-індекс: <code>materials_from_data/VIDEO_BY_PAIR.md</code></li>
+</ul>
+<div class="callout tip"><b>video · [Udemy] Python for Data Science &amp; Machine Learning from A-Z [01.2021, ENG] · 4. Statistics</b><pre>g, when we were discussing the formal definition of variability, we discussed the dispersion of a dataset. So using the mean median and mode, we discussed the we studied the central tendency of our data. We how much we&#x27;re going to study the you can say the central tendency was calculated using those three M&#x27;s, the mean median and mode. So after calculating the central location of our dataset, we need to understand the spread of our dataset, how much the data is spread out. So for that purpose, we use variance. So the mean we can say that the variance is the measure of spread around the mean ho</pre><p><code>data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/4_statistics_for_data_science_4_measure_of_variability_continued.txt</code></p></div>
+<div class="callout tip"><b>video · [Udemy] Python for Data Science &amp; Machine Learning from A-Z [01.2021, ENG] · 4. Statistics</b><pre>the dispersion of data, the techniques we use, covariance, standard deviation and the coefficient of variation and also mean median remote central tendency. And this allows the dispersion of our data. So now we&#x27;re going to study the relationship between different variables for that fact. First, we&#x27;re going to study about covariance. So covariance is a measure that tells us the relationship between two variables and it tells us by positive, negative and zero values. So if the covariance value is positive, we say that the two variables have a direct relationship with one another, which means tha</pre><p><code>data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/4_statistics_for_data_science_5_measures_of_variable_relationship.txt</code></p></div>
+<div class="callout tip"><b>video · [Udemy] Python for Data Science &amp; Machine Learning from A-Z [01.2021, ENG] · 4. Statistics</b><pre>population. And the size of each sample should be at least 30 or greater than 30. So we then calculate this and sample means and then plot their distribution and study the distribution to understand this concept and to go through the entire procedure. Let&#x27;s look at an example so we already know that the population is a set of all values of measurement from your experimenting in space. So in this example, our experiment in space is the world and the population is the life expectancy data from all countries and the population size is then. So then we have to sample the data from here and the sam</pre><p><code>data/kb_extracts/videos/lectures/udemy_python_for_data_science_machine_learning_from_a_z_01_2/4_statistics_for_data_science_8_sampling_distribution.txt</code></p></div>
+<div class="callout tip"><b>article · w03_statistics_tutorial.txt</b><pre>Descriptive Stat Stat Frequency Tables Stat Histograms Stat Bar Graphs Stat Pie Charts Stat Box Plots Stat Average Stat Mean Stat Median Stat Mode Stat Variation Stat Range Stat Quartiles and Percentiles Stat Interquartile Range Stat Standard Deviation
+Inferential Statistics Stat Inference Stat Normal Distrib. Stat Standard Normal Distrib. Stat Students T-Distrib. Stat Estimation Stat Population Proportion Estimation Stat Population Mean Estimation Stat Hyp. Testing Stat Hyp. Testing Proportion Stat Hyp. Testing Mean
+Stat Reference Stat Z-Table Stat T-Table Stat Hyp. Testing Proportion (Left T</pre><p><code>data/kb_extracts/articles/w03_statistics_tutorial.txt</code></p></div>
+<div class="callout tip"><b>article · w03_basics_of_regression.html</b><pre>pts
+Cases, Variables, Types of variables
+Matrix and Frequency Table
+Graphs and shapes of Distributions
+Mode, Median and Mean
+Range, Interquartile Range and Box Plot
+Variance and Standard Deviation
+Z-score or Standardized Score
+Contingency Table, Scatterplot, Pearson’s r
+Basics of Regression
+Elementary Probability
+Random Variables and Probability Distributions
+Normal Distribution, Binomial Distribution &amp; Poisson Distribution
+Basics of Regression
+Regression Basics
+Regression analysis allows you to infer that there is a relationship between two or more variables. These relationships are seldom ex</pre><p><code>data/kb_extracts/articles/w03_basics_of_regression.html</code></p></div>
+<div class="callout warn"><b>Зверніть увагу</b>
+<ul>
+<li>Офіційні ITSTEP-завдання пари — обовʼязок; корпус data/ — поглиблення поза 80 хв.</li>
+<li>Відео mp4 дивіться з оригінального шляху в <code>data/</code>; у курсі — транскрипт/уривок.</li>
+</ul></div>
+</div></article><article class="block teacher-deep-dive" id="data-ingest-teacher-5" data-topic-id="data-ingest-5" data-project-feature="python-ai-modify-teacher-blocks" hidden>
+<div class="block-head"><h3>Викладач · повний data/ пакет пари 5</h3>
+<span class="teacher-badge">Для викладача</span></div>
+<div class="block-body">
+<p>Каталог: <code>materials_from_data/by_pair/pair_05/</code> · matches=546 · portable=0.</p>
+<ul>
+<li>Оберіть 1 portable або 1 excerpt як optional lab.</li>
+<li>Не розгортайте весь список у вікні 80 хв.</li>
+<li>Повний аудит корпусу: <code>DATA_CORPUS_FULL.md</code>.</li>
+</ul>
+</div></article><!-- data-ingest:end:5 --><!-- data-gap:start:5 --><article class="block extra-deep-dive" id="data-gap-5">
+<div class="block-head"><h3>Gap-pack data/ · пара 5</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+
+<p>Додаткові матеріали з LMS/drive, яких ще не вистачало в базовому ingest:</p>
+<p>Папка: <code>materials_from_data/by_pair/pair_05/gap/</code></p>
+<div class="cards two">
+<div class="card"><h5>LMS zip</h5><ul><li><code>w02_Домашнє завдання 2.2.zip</code></li><li><code>w02_Домашнє завдання 2.3.zip</code></li><li><code>w02_Домашнє завдання 2.4.zip</code></li><li><code>w02_Практичне завдання 2.2.zip</code></li><li><code>w02_Практичне завдання 2.3.zip</code></li><li><code>w02_Практичне завдання 2.4.zip</code></li></ul></div>
+<div class="card"><h5>Reading URL</h5><ul><li><a href="https://drive.google.com/file/d/1NwEOSIKHesWsr52bdL1xuOcC4PwsWa05/view?usp=sharing" target="_blank" rel="noreferrer">Essentials of Python for Artificial Intelligence and Machine Learning</a></li><li><a href="https://drive.google.com/file/d/1VxQ4DPpcsCIhK-I2iE0CBH03U9w2Hu1e/view?usp=sharing" target="_blank" rel="noreferrer">Generative AI with LangChain_ Build large language model (LLM) apps with Python, ChatGPT a</a></li><li><a href="https://drive.google.com/file/d/1JjFY1_RtyZpF9qONz12U8BtxI7DdF71b/view?usp=sharing" target="_blank" rel="noreferrer">Learning OpenCV 5 Computer Vision with Python - Fourth Edition</a></li><li><a href="https://drive.google.com/file/d/1yybX-CggVoIzidd5NhRBfLJgpdC9DjB1/view?usp=sharing" target="_blank" rel="noreferrer">Neural Network Computer Vision with OpenCV 5_ Build computer vision solutions using Python</a></li><li><a href="https://www.w3schools.com/python/pandas/default.asp" target="_blank" rel="noreferrer">Pandas Tutorial</a></li><li><a href="https://drive.google.com/file/d/1onoQBH7-WQFwFqjonhkh19J4MvPfqjS3/view?usp=sharing" target="_blank" rel="noreferrer">Python for Scientific Computing and Artificial Intelligence</a></li><li><a href="https://www.datacamp.com/tutorial/pandas" target="_blank" rel="noreferrer">Python pandas tutorial_ The ultimate guide for beginners</a></li><li><a href="https://drive.google.com/drive/folders/1t5TY27oCYM39JImzbJLu7eQgPY6O8Fno?usp=sharing" target="_blank" rel="noreferrer">[Packtpub.com _ Matthew Rever] Computer Vision Projects with Python 3 [2018, ENG]</a></li></ul></div>
+</div>
+<p>EDA PNG: <code>002 multivariate1.png</code>, <code>002 multivariate2.png</code>, <code>002 multivariate3.png</code>, <code>002 univariate1.png</code>, <code>002 univariate2.png</code>, <code>002 univariate3.png</code></p>
+<p>Глобально: <code>materials_from_data/gap_pack/</code> · PDF: <code>PDF_INDEX.md</code> · links: <code>PROGRAMY_LINKS.md</code></p>
+</div></article><!-- data-gap:end:5 --><!-- data-web:start:5 --><article class="block extra-deep-dive" id="data-web-5">
+<div class="block-head"><h3>Web-джерела · пара 5</h3>
+<span class="kind deep">додатковий матеріал</span></div>
+<div class="block-body">
+<p>Свіжі витяги з офіційної документації / primary sources (curl; Playwright MCP у сесії недоступний).</p>
+<p>Локально: <code>materials_from_data/by_pair/pair_05/web/</code> · каталог: <code>materials_from_data/web_fetch/</code></p>
+<ul><li><a href="https://numpy.org/doc/stable/user/" target="_blank" rel="noreferrer">NumPy User Guide</a> · <code>materials_from_data/web_fetch/numpy-user-guide.txt</code> · 128 слів</li><li><a href="https://pandas.pydata.org/docs/user_guide/" target="_blank" rel="noreferrer">pandas User Guide</a> · <code>materials_from_data/web_fetch/pandas-user-guide.txt</code> · 974 слів</li><li><a href="https://matplotlib.org/stable/users/explain/axes/index.html" target="_blank" rel="noreferrer">Axes and subplots</a> · <code>materials_from_data/web_fetch/matplotlib-axes-guide.txt</code> · 243 слів</li><li><a href="https://seaborn.pydata.org/tutorial/distributions.html" target="_blank" rel="noreferrer">Visualizing distributions of data</a> · <code>materials_from_data/web_fetch/seaborn-distributions-tutorial.txt</code> · 3102 слів</li><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a> · <code>materials_from_data/web_fetch/numpy-statistics-reference.txt</code> · 399 слів</li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a> · <code>materials_from_data/web_fetch/scipy-statistics-tutorial.txt</code> · 311 слів</li></ul>
+<div class="callout tip"><b>Зверніть увагу</b><p>Це поглиблення поза 80 хв. Офіційні ITSTEP-завдання лишаються пріоритетом.</p></div>
+</div></article><!-- data-web:end:5 --><article class="block" id="exit-ticket"><div class="block-head"><h3>Exit ticket</h3><div style="display:flex;gap:.35rem;flex-wrap:wrap;align-items:center"><span class="kind main">перевірка</span><label class="block-timer" data-minutes="4" title="Увімкнути таймер блоку"><input type="checkbox" class="timer-check" aria-label="Таймер 4 хв" /><span class="clock">19:46–19:50 · 4 хв</span><span class="timer-live" hidden>04:00</span></label></div></div><div class="block-body"><p>Для [1, 2, 2, 100] запишіть mean і median без калькулятора «на око» і перевірте кодом.</p><div class="callout task"><b>Ваше рішення</b><p>Один артефакт: текст, мінікод або схема файлів. Не «зрозумів тему» без доказу.</p></div><!-- CURSOR-ENRICHMENT:exit-ticket:START -->
+<section class="cursor-enrichment" data-cursor-enrichment="1"><h4>Розширення</h4><p>«Exit ticket» має точний навчальний контракт: Зафіксуйте один вхід, одну операцію та один перевірений результат.</p><p>Починайте EDA зі схеми, n, пропусків і діапазону; потім обчислюйте центр, розкид і форму.</p><p>Рішення про імпутацію або scaler приймайте після split і втілюйте в pipeline, що fit лише на train.</p><p>Фокус «відтворювана картка колонки» завершується перевіркою даних або графіка, а не загальним переказом.</p><pre><code class="language-python">exit_contract = &#x27;Exit ticket&#x27;
+assert exit_contract
+import pandas as pd
+amount = pd.Series([10.0, None, 30.0], name=&#x27;amount&#x27;)
+card = {&#x27;n&#x27;: len(amount), &#x27;missing&#x27;: int(amount.isna().sum()), &#x27;min&#x27;: amount.min(), &#x27;max&#x27;: amount.max()}
+print(card)</code></pre><div class="callout tip"><b>Очікуваний результат</b><p>У контракті «Exit ticket» очікується таке: Картка показує `n=3`, один пропуск і валідний діапазон 10…30. Результат відтворюється після чистого запуску.</p></div><div class="callout warn"><b>Зверніть увагу</b><ul><li>Не обчислюйте статистики препроцесингу на майбутній test-вибірці.</li><li>Для «Exit ticket» не підмінюйте операцію сусідньою темою; перевірка має стосуватися «відтворювана картка колонки».</li></ul></div><div class="callout check"><b>Самоперевірка</b><p>Які поля картки треба перевірити до середнього? Який доказ відтворює головний результат після чистого запуску? Відповідь має прямо стосуватися «Exit ticket».</p></div><details class="codex-sources"><summary>Перевірені джерела</summary><ul><li><a href="https://numpy.org/doc/stable/reference/routines.statistics.html" target="_blank" rel="noreferrer">Statistics</a></li><li><a href="https://docs.scipy.org/doc/scipy/tutorial/stats.html" target="_blank" rel="noreferrer">Statistics (scipy.stats)</a></li></ul></details></section>
+<!-- CURSOR-ENRICHMENT:exit-ticket:END -->
+</div></article>
+  </main>
+</div>
+<script>
+(function () {
+  const body = document.body;
+  const openBtn = document.getElementById('toc-open');
+  const closeBtn = document.getElementById('toc-close');
+  const backdrop = document.getElementById('toc-backdrop');
+  function setOpen(v) {
+    body.classList.toggle('toc-open', v);
+    if (openBtn) openBtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  openBtn && openBtn.addEventListener('click', () => setOpen(true));
+  closeBtn && closeBtn.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.querySelectorAll('.toc a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+})();
+</script>
+
+<script>
+(function () {
+  const pads = (n) => String(n).padStart(2, "0");
+  const fmt = (sec) => {
+    const s = Math.max(0, Math.floor(sec));
+    return pads(Math.floor(s / 60)) + ":" + pads(s % 60);
+  };
+
+  let active = null; // { el, left, tick }
+
+  function stopActive(reset) {
+    if (!active) return;
+    clearInterval(active.tick);
+    const el = active.el;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    el.classList.remove("is-running");
+    if (reset) {
+      el.classList.remove("is-done");
+      if (check) check.checked = false;
+      if (live) {
+        live.hidden = true;
+        live.textContent = fmt(Number(el.dataset.minutes || 0) * 60);
+      }
+    }
+    active = null;
+  }
+
+  function start(el) {
+    stopActive(true);
+    const minutes = Number(el.dataset.minutes || 0);
+    if (!minutes || minutes <= 0) return;
+    const live = el.querySelector(".timer-live");
+    const check = el.querySelector(".timer-check");
+    let left = minutes * 60;
+    el.classList.add("is-running");
+    el.classList.remove("is-done");
+    if (check) check.checked = true;
+    if (live) {
+      live.hidden = false;
+      live.textContent = fmt(left);
+    }
+    const tick = setInterval(() => {
+      left -= 1;
+      if (live) live.textContent = fmt(left);
+      if (left <= 0) {
+        clearInterval(tick);
+        el.classList.remove("is-running");
+        el.classList.add("is-done");
+        if (live) live.textContent = "00:00";
+        active = null;
+        try { if (navigator.vibrate) navigator.vibrate(80); } catch (_) {}
+      }
+    }, 1000);
+    active = { el, left, tick };
+  }
+
+  document.querySelectorAll(".block-timer").forEach((el) => {
+    const check = el.querySelector(".timer-check");
+    const minutes = Number(el.dataset.minutes || 0);
+    const live = el.querySelector(".timer-live");
+    if (live) live.textContent = fmt(minutes * 60);
+
+    const onToggle = () => {
+      if (!check) return;
+      if (check.checked) start(el);
+      else {
+        if (active && active.el === el) stopActive(true);
+        else {
+          el.classList.remove("is-running", "is-done");
+          if (live) {
+            live.hidden = true;
+            live.textContent = fmt(minutes * 60);
+          }
+        }
+      }
+    };
+    check && check.addEventListener("change", onToggle);
+    // click on label text also works via checkbox; prevent double-handling on live span
+  });
+})();
+</script>
+
+<script src="term-glossary.js" defer></script>
+<script src="pair-notebook.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+  Chart.defaults.color = mute;
+  Chart.defaults.borderColor = grid;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+
+  const bars = document.getElementById('chart-random-variable-bars');
+  if (bars) {
+    new Chart(bars, {
+      type: 'bar',
+      data: {
+        labels: ['Замовлення 1', '2', '3', '4', '5', '6', '7'],
+        datasets: [{
+          label: 'amount, грн',
+          data: [420, 510, 399, 470, 455, 830, 490],
+          backgroundColor: '#7dffb3'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { ticks: { color: mute }, grid: { color: grid }, title: { display: true, text: 'грн', color: mute } }
+        }
+      }
+    });
+  }
+
+  const centers = document.getElementById('chart-center-metrics');
+  if (centers) {
+    new Chart(centers, {
+      type: 'bar',
+      data: {
+        labels: ['Без викиду', 'З викидом'],
+        datasets: [
+          { label: 'mean', data: [466, 1228], backgroundColor: '#7ec8ff' },
+          { label: 'median', data: [460, 465], backgroundColor: '#7dffb3' },
+          { label: 'mode', data: [450, 450], backgroundColor: '#ffb86b' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: ink } } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { ticks: { color: mute }, grid: { color: grid }, title: { display: true, text: 'умовні одиниці', color: mute } }
+        }
+      }
+    });
+  }
+
+  const spread = document.getElementById('chart-std-compare');
+  if (spread) {
+    new Chart(spread, {
+      type: 'line',
+      data: {
+        labels: ['x1', 'x2', 'x3', 'x4', 'x5', 'x6'],
+        datasets: [
+          {
+            label: 'Низький розкид',
+            data: [48, 50, 52, 51, 49, 50],
+            borderColor: '#7dffb3',
+            backgroundColor: 'rgba(125,255,179,.18)',
+            tension: 0.35
+          },
+          {
+            label: 'Високий розкид',
+            data: [18, 34, 51, 67, 86, 104],
+            borderColor: '#ff8fab',
+            backgroundColor: 'rgba(255,143,171,.16)',
+            tension: 0.35
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: ink } } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { ticks: { color: mute }, grid: { color: grid } }
+        }
+      }
+    });
+  }
+});
+</script>
+
+<script>
+/* viz-chart-mean-median */
+document.addEventListener('DOMContentLoaded', function () {
+  const ink = '#e8f0e7';
+  const mute = '#9aafa0';
+  const grid = 'rgba(47,65,55,.55)';
+
+  const mm = document.getElementById('chart-mean-median');
+  if (mm && window.Chart) {
+    new Chart(mm, {
+      type: 'bar',
+      data: {
+        labels: ['чиста вибірка', 'з викидом 200'],
+        datasets: [
+          { label: 'mean', data: [12, 43], backgroundColor: '#ffb86b' },
+          { label: 'median', data: [12, 12], backgroundColor: '#7ec8ff' }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: ink, boxWidth: 12 } } },
+        scales: {
+          x: { ticks: { color: mute }, grid: { display: false } },
+          y: { ticks: { color: mute }, grid: { color: grid } }
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+<script>
+/* hide mobile chrome on scroll down / show on scroll up */
+(function () {
+  if (window.matchMedia && !window.matchMedia("(max-width: 900px)").matches) return;
+  var bar = document.querySelector(".mobile-bar");
+  if (!bar) return;
+  var lastY = window.scrollY || 0;
+  var hidden = false;
+  function setHidden(next) {
+    if (hidden === next) return;
+    hidden = next;
+    document.body.classList.toggle("nav-hidden", next);
+  }
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY || 0;
+    var d = y - lastY;
+    if (y < 24) setHidden(false);
+    else if (d > 10) setHidden(true);
+    else if (d < -10) setHidden(false);
+    lastY = y;
+  }, { passive: true });
+})();
+</script>
+
+<!-- teacher-block-runtime:start -->
+<script>
+(function () {
+  "use strict";
+
+  const blocks = Array.from(
+    document.querySelectorAll(
+      '[data-project-feature="python-ai-modify-teacher-blocks"]'
+    )
+  );
+  const tocEntries = Array.from(document.querySelectorAll("[data-teacher-toc]"));
+
+  blocks.forEach((block) => {
+    block.hidden = true;
+  });
+  tocEntries.forEach((entry) => {
+    entry.hidden = true;
+  });
+
+  function applyFlag(enabled) {
+    blocks.forEach((block) => {
+      block.hidden = !enabled;
+    });
+    tocEntries.forEach((entry) => {
+      entry.hidden = !enabled;
+    });
+  }
+
+  function isJournalOrigin() {
+    const loc = window.location || {};
+    const protocol = loc.protocol || "";
+    const hostname = loc.hostname || "";
+    const port = String(loc.port || "");
+    const pathname = loc.pathname || "";
+    if (protocol === "file:") return false;
+    if (port === "63342" || port === "63343") return false;
+    if (hostname === "127.0.0.1" || hostname === "localhost") {
+      return port === "3004" || pathname.indexOf("/api/courses/") !== -1;
+    }
+    if (hostname && /\.pythonanywhere\.com$/i.test(hostname)) return true;
+    return pathname.indexOf("/api/courses/") !== -1;
+  }
+
+  if (!isJournalOrigin()) return;
+
+  const candidates = ["/project-flags.js"];
+
+  function loadCandidate(index) {
+    if (index >= candidates.length) return;
+
+    const script = document.createElement("script");
+    script.src = `${candidates[index]}?v=${Date.now()}`;
+    script.async = true;
+    script.onload = function () {
+      const enabled =
+        window.LESSON_HELPER_FLAGS?.pythonAiAdditionalTeacherBlocks;
+      if (typeof enabled === "boolean") {
+        applyFlag(enabled);
+        return;
+      }
+      loadCandidate(index + 1);
+    };
+    script.onerror = function () {
+      loadCandidate(index + 1);
+    };
+    document.head.appendChild(script);
+  }
+
+  loadCandidate(0);
+})();
+</script>
+<!-- teacher-block-runtime:end -->
+</body>
+</html>

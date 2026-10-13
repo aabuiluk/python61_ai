@@ -1,0 +1,78 @@
+{
+  "module": 1,
+  "pair_index": 2,
+  "global_index": 2,
+  "title": "Датасети, ознаки та середовище Jupyter",
+  "duration_min": 90,
+  "objectives": [
+    "Описати табличний датасет: спостереження, ознаки, ціль",
+    "Розрізняти числові, категоріальні, текстові, datetime та image-ознаки",
+    "Працювати з комірками Jupyter: code/markdown, порядок виконання, kernel",
+    "Зібрати міні-датасет у Python і зберегти як CSV"
+  ],
+  "topics": [
+    "Поняття датасету",
+    "Ознаки і цільова змінна",
+    "Типи ознак",
+    "Jupyter Notebook / Lab"
+  ],
+  "timing": [
+    {
+      "id": "dataset",
+      "title": "Поняття датасету",
+      "time": "15 хв",
+      "kind": "main",
+      "slot": "20:00–20:15"
+    },
+    {
+      "id": "features",
+      "title": "Ознаки в датасеті та цільова ознака",
+      "time": "18 хв",
+      "kind": "main",
+      "slot": "20:15–20:33"
+    },
+    {
+      "id": "jupyter",
+      "title": "Знайомство з Jupyter Notebook та JupyterLab",
+      "time": "15 хв",
+      "kind": "main",
+      "slot": "20:33–20:48"
+    },
+    {
+      "id": "cells",
+      "title": "Ноутбуки, комірки та основні команди",
+      "time": "12 хв",
+      "kind": "main",
+      "slot": "20:48–21:00"
+    },
+    {
+      "id": "task-dataset",
+      "title": "Завдання 1. Зібрати міні-датасет",
+      "time": "12 хв",
+      "kind": "task",
+      "slot": "21:00–21:12"
+    },
+    {
+      "id": "task-jupyter",
+      "title": "Завдання 2. Ноутбук з перевіркою даних",
+      "time": "10 хв",
+      "kind": "task",
+      "slot": "21:12–21:22"
+    },
+    {
+      "id": "deep-schema",
+      "title": "Глибоко: data dictionary і схема",
+      "time": "8 хв",
+      "kind": "main",
+      "slot": "21:22–21:30"
+    },
+    {
+      "id": "teacher-notes",
+      "title": "Нотатки викладача / таймінг пари",
+      "time": "3 хв",
+      "kind": "main"
+    }
+  ],
+  "pair_start": "20:00",
+  "pair_end": "21:30"
+}

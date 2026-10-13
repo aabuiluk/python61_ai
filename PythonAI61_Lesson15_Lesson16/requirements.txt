@@ -1,0 +1,19 @@
+# Штучний інтелект із використанням Python · Materials · пари 15–16
+# torch у браузері (Pyodide) НЕ працює. Ставте локальний venv.
+#
+#   python3 -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#   python -c "import torch; print(torch.__version__)"
+#
+# Живі комірки в HTML:
+#   python pair_kernel.py              # http://127.0.0.1:8765
+#   тоді відкрийте Lesson15_00_presentation.html
+#
+# CPU-збірка з PyPI; GPU не потрібен. Диск ≈ 1 ГБ, RAM ≈ 200–300 МБ.
+# Докладніше: START.txt
+
+numpy>=1.26
+matplotlib>=3.8
+torch>=2.2

@@ -1,0 +1,30 @@
+SOURCE: data/kb_extracts/related/rel_scipy_stats.txt
+TITLE: rel_scipy_stats.txt
+SCORE: 3.4
+
+thesis tests
+Analysing one sample Descriptive statistics
+T-test and KS-test
+Tails of the distribution
+Special tests for normal distributions
+Comparing two samples Comparing means
+Kolmogorov-Smirnov test for two samples: ks_2samp
+Resampling and Monte Carlo Methods Introduction
+Resampling and Monte Carlo methods tutorials
+Hypothesis tests Bartlett’s test for equal variances
+Chi-square test
+Chi-square test of independence of variables in a contingency table
+Dunnett’s test
+Fisher’s exact test
+Fligner-Killeen test for equality of variance
+Friedman test for repeated samples
+Jarque-Bera goodness of fit test
+Kendall’s tau test
+Kurtosis test
+Levene test for equal variances
+Normal test
+Odds ratio for a contingency table
+Pearson’s Correlation
+Shapiro-Wilk test for normality
+Skewness test
+Spearman correlation coefficient

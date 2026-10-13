@@ -1,0 +1,13 @@
+SOURCE: data/kb_extracts/articles/w03_top_10_machine_learning_algorithms_for_beginners_supervised_and_more.txt
+TITLE: w03_top_10_machine_learning_algorithms_for_beginners_supervised_and_more.txt
+SCORE: 2.8
+
+s the relationship between one or more input variables (features) and a continuous target variable. It assumes a linear correlation between inputs and output and fits a line (in multiple dimensions, a hyperplane) that minimizes the sum of squared differences between predicted and actual values.
+Coefficients for each feature are estimated using methods such as ordinary least squares or gradient-based optimization.
+Example: Linear Regression can estimate house prices based on square footage, number of bedrooms, and location.
+Logistic Regression
+Logistic Regression is used for classification tasks with a categorical target variable. It estimates the probability of a specific outcome by applying the logistic (sigmoid) function to a linear combination of input features.
+The model learns feature weights by maximizing the likelihood function, thereby mapping continuous inputs to probabilities between 0 and 1.
+Example: Logistic Regression can classify emails as spam or not based on features such as word frequency and sender reputation.
+Decision Trees
+Decision Trees create a hierarchical structure where each internal node represents a decision based on a feature, and each leaf node…

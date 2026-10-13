@@ -1,0 +1,12 @@
+SOURCE: data/kb_extracts/articles/w03_statistics_as_the_foundation_of_data_science.txt
+TITLE: w03_statistics_as_the_foundation_of_data_science.txt
+SCORE: 5.3
+
+-
+Listen
+Share
+Press enter or click to view image in full size
+Photo by Tiger Lily from Pexels Talking about statistics means talking about the early history of human civilization in collecting data to find out information. Statistics is not a new discipline, it has been used for a long time. Initially, statistics were used for administrative purposes such as population data collection, simplification of the taxation system, and population organization for the armed forces. Then, Statistics began to be used in various fields, such as business, finance, industry, astronomy, science, linguistics, etc. This gave rise to combined disciplines, such as biostatistics, psychometrics, and econometrics. However, what exactly are statistics?
+Definition of Statistics
+Press enter or click to view image in full size
+Image by the author Kendal and Stuart (1977) explain that statistics is a branch of the scientific method that deals with the collection of data collected by counting or measuring the characteristics of the population. Meanwhile, according to Webster’s New Collegiate Dictionary, statistics is defined as a branch of mathematics concerned with the collection, analysis, interpretation…

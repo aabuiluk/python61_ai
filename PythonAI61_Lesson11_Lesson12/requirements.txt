@@ -1,0 +1,15 @@
+# Презентація HTML
+#   автономно: відкрийте LessonN_00_presentation.html (Pyodide в браузері)
+#   з цим venv: python pair_kernel.py   # http://127.0.0.1:8765
+#
+# Штучний інтелект із використанням Python · Materials · пари 11–12
+#   python3 -m venv .venv && source .venv/bin/activate
+#   python -m pip install -U pip
+#   python -m pip install -r requirements.txt
+#
+# California Housing завантажується через sklearn (потрібен інтернет при першому запуску).
+
+numpy>=1.26
+pandas>=2.1
+matplotlib>=3.8
+scikit-learn>=1.4
