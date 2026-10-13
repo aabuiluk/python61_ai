@@ -44,3 +44,5 @@ python Lesson32_05_wine_map.py
 | `PythonAI_Author_Lesson31_Lesson32` | 7. Навчання без учителя | SVD, PCA, зниження розмірності |
 
 У кожній папці починайте з `START.txt` або `README.txt`, якщо вони є.
+
+Пари 31–32 за один раз, з повторенням пар 28–30: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md) — маршрут на 90 + 90 хвилин, усі команди запускаються з кореня репозиторію.
