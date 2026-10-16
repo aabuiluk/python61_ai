@@ -1,0 +1,11 @@
+# Роздаток пар 33–34: кластеризація — K-Means і DBSCAN
+# Python 3.10–3.14
+# python -m venv .venv
+# .venv\Scripts\activate
+# python -m pip install -U pip
+# python -m pip install -r requirements.txt
+
+numpy>=1.26
+pandas>=2.0          # DataFrame з мітками кластерів
+scikit-learn>=1.4    # make_blobs, make_moons, KMeans, DBSCAN, silhouette, ARI
+matplotlib>=3.8      # scatter, лікоть, графік k-відстаней

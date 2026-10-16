@@ -42,7 +42,10 @@ python Lesson32_05_wine_map.py
 | `PythonAI_Author_Lesson27_Lesson28` | 6. NLP | корпуси, Word2Vec, GloVe |
 | `PythonAI_Author_Lesson29_Lesson30` | 6 | RNN, LSTM, Transformer, transfer learning |
 | `PythonAI_Author_Lesson31_Lesson32` | 7. Навчання без учителя | SVD, PCA, зниження розмірності |
+| `PythonAI_Author_Lesson33_Lesson34` | 7 | кластеризація: K-Means, DBSCAN, сегментація клієнтів |
 
 У кожній папці починайте з `START.txt` або `README.txt`, якщо вони є.
 
 Пари 31–32 за один раз, з повторенням пар 28–30: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md) — маршрут на 90 + 90 хвилин, усі команди запускаються з кореня репозиторію. Той самий маршрут ноутбуком з виводом і рисунками: [PythonAI_Author_Lesson31_Lesson32.ipynb](PythonAI_Author_Lesson31_Lesson32.ipynb).
+
+Пари 33–34 за один раз, з повторенням пар 31–32: [PythonAI_Author_Lesson33_Lesson34.md](PythonAI_Author_Lesson33_Lesson34.md) і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](PythonAI_Author_Lesson33_Lesson34.ipynb) — так само з кореня репозиторію.

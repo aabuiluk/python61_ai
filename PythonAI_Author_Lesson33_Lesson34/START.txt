@@ -1,0 +1,46 @@
+Роздаток пар 33–34. Модуль 7 «Навчання без учителя».
+Пара 33: кластеризація K-Means — make_blobs, KMeans, центри, inertia, ініціалізація, скільки кластерів.
+Пара 34: DBSCAN — eps, min_samples, шум −1, графік k-відстаней, півмісяці, порівняння з K-Means.
+Наскрізна задача: сегментація клієнтів ClientScope (практичне і домашнє 7.2 ITSTEP).
+Місток з пар 31–32: карта вин без кольорів — Lesson33_01_wine_without_colors.py.
+План заняття на 180 хвилин: Lesson33_34_plan_180.md
+
+1) Середовище (Python 3.10–3.14; інтернет потрібен лише для pip)
+   python -m venv .venv
+   .venv\Scripts\activate          (Windows)
+   source .venv/bin/activate        (macOS / Linux)
+   python -m pip install -U pip
+   python -m pip install -r requirements.txt
+
+2) Готова програма — сегменти клієнтів
+   python Lesson34_05_client_segments.py
+   python Lesson34_05_client_segments.py --new spend=640 visits=17
+   python Lesson34_05_client_segments.py --new spend=900 visits=10
+   python Lesson34_05_client_segments.py --k 3 --eps 0.3
+
+3) Пара 33 · крок за кроком
+   python Lesson33_01_wine_without_colors.py   місток з пар 31–32: K-Means на карті вин без кольорів (~3 с)
+   python Lesson33_02_blobs_raw.py             завдання 7.2.1: make_blobs, DataFrame, сирий scatter (~2 с)
+   python Lesson33_03_kmeans_fit.py            завдання 7.2.2: KMeans(4), cluster_kmeans, центри (~2 с)
+   python Lesson33_03_kmeans_fit.py 2 6        аналог 2.1: k = 2 і k = 6 на тих самих даних
+   python Lesson33_04_kmeans_by_hand.py        K-Means руками, 20 стартів, k-means++ (~3 с)
+   python Lesson33_05_choose_k.py              inertia, «лікоть», silhouette, межі K-Means (~3 с)
+
+4) Пара 34 · крок за кроком
+   python Lesson34_01_dbscan.py                завдання 7.2.3: DBSCAN(eps=0.8), cluster_dbscan, шум (~2 с)
+   python Lesson34_01_dbscan.py 0.3 2.0        аналог 3.1: інші eps
+   python Lesson34_02_choose_eps.py            графік k-відстаней, eps і масштаб (~2 с)
+   python Lesson34_03_moons.py                 півмісяці: K-Means проти DBSCAN, нові точки (~3 с)
+   python Lesson34_04_comparison.py            завдання 7.2.4: clustering_comparison.png (~2 с)
+
+5) Практичні завдання: Lesson33_tasks.md, Lesson34_tasks.md
+   Домашнє: Lesson33_homework.md, Lesson34_homework.md
+
+6) Презентації офлайн
+   Lesson33_00_presentation.html
+   Lesson34_00_presentation.html
+
+Усі графіки скрипти зберігають у results/. Вікна matplotlib не відкриваються.
+
+Локальне ядро кнопок «Запуск» у HTML (опційно):
+   python pair_kernel.py
