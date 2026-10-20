@@ -1,5 +1,17 @@
 # python61_ai
 
+## Пари 35–36 · від сегментів до рекомендацій · 240 хв
+
+40 хв повторення пар 33–34, 100 хв TF-IDF/cosine, 100 хв рекомендацій за оцінками читачів.
+10 завдань із підказками; усі приклади мають окремий Matplotlib-блок.
+
+- [Маршрут і пояснення](PythonAI_Author_Lesson35_Lesson36.md)
+- [Ноутбук із виконаними прикладами та графіками](PythonAI_Author_Lesson35_Lesson36.ipynb)
+- [Самодостатній HTML для завантаження й офлайн-перегляду](PythonAI_Author_Lesson35_Lesson36.html)
+- [Приклади](PythonAI_Author_Lesson35_Lesson36/examples), [завдання](PythonAI_Author_Lesson35_Lesson36/tasks), [власний requirements](PythonAI_Author_Lesson35_Lesson36/requirements.txt)
+
+Усі дані локальні. Нових бібліотек у спільному середовищі не потрібно.
+
 ## Пари 33–34 · версія 2 · 240 хвилин
 
 Місток із пар 31–32 — 40 хв, K-Means — 100 хв, DBSCAN — 100 хв.

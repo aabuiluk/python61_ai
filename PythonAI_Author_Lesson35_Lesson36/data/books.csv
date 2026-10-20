@@ -1,0 +1,13 @@
+﻿book_id,title,authors,description
+b01,Гобіт,Tolkien,fantasy dragon journey friendship
+b02,Володар перснів,Tolkien,fantasy ring journey friendship
+b03,Гаррі Поттер і філософський камінь,Rowling,fantasy magic school friendship
+b04,Гаррі Поттер і таємна кімната,Rowling,fantasy magic school mystery
+b05,Чарівник Земномор’я,LeGuin,fantasy wizard island journey
+b06,Гробниці Атуану,LeGuin,fantasy island tomb journey
+b07,Фундація,Asimov,science space empire future
+b08,"Я, робот",Asimov,science robot future ethics
+b09,Убивство у Східному експресі,Christie,detective train crime mystery
+b10,Смерть на Нілі,Christie,detective river crime mystery
+b11,Прикладне машинне навчання,Geron,python machine learning models
+b12,Навчальний довідник моделей,Workshop,python machine learning practice
