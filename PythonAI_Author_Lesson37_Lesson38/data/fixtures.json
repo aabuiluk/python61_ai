@@ -1,0 +1,27 @@
+{
+  "valid": {
+    "book_id": "b02",
+    "title": "Школа чарів",
+    "reason": "Спільні ознаки: fantasy і friendship."
+  },
+  "invented": {
+    "book_id": "b99",
+    "title": "Невидима книга",
+    "reason": "Найкращий світовий бестселер."
+  },
+  "wrong_title": {
+    "book_id": "b02",
+    "title": "Космічний маршрут",
+    "reason": "Схожа тематика."
+  },
+  "wrong_type": {
+    "book_id": 2,
+    "title": "Школа чарів",
+    "reason": "Схожа."
+  },
+  "empty_reason": {
+    "book_id": "b02",
+    "title": "Школа чарів",
+    "reason": ""
+  }
+}

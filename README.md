@@ -1,5 +1,18 @@
 # python61_ai
 
+## Пари 37–38 · Generative AI та Prompt Engineering · 240 хв
+
+40 хв повторення рекомендацій 35–36, 100 хв Generative AI, 100 хв роботи з промптами.
+10 завдань із підказками, окремі приклади й графічні пояснення.
+
+- [Маршрут і пояснення](PythonAI_Author_Lesson37_Lesson38.md)
+- [Ноутбук із виконаними прикладами та графіками](PythonAI_Author_Lesson37_Lesson38.ipynb)
+- [Автономний HTML для офлайн-перегляду](PythonAI_Author_Lesson37_Lesson38.html)
+- [Приклади](PythonAI_Author_Lesson37_Lesson38/examples), [завдання](PythonAI_Author_Lesson37_Lesson38/tasks), [залежності](PythonAI_Author_Lesson37_Lesson38/requirements.txt)
+
+Обов'язкові вправи без API й ключів. Ручні fixture-відповіді допомагають перевірити JSON
+та каталог; вони не є вимірюваннями живої LLM. Нових бібліотек не потрібно.
+
 ## Пари 35–36 · від сегментів до рекомендацій · 240 хв
 
 40 хв повторення пар 33–34, 100 хв TF-IDF/cosine, 100 хв рекомендацій за оцінками читачів.
