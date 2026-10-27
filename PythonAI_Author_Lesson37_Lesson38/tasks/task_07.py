@@ -27,3 +27,8 @@ prompt_context = recommend('b01', n=2)[['book_id', 'title', 'description']].to_j
 # %% Ваш код
 # Завдання 7: напишіть власний код за умовою та підказками.
 # Початкові змінні з контексту вже доступні.
+
+prompt = build_prompt(prompt_context,
+    'Обери одну книгу з кандидатів. Поясни вибір простою українською для початківця, без обіцянки покупки.',
+    'JSON із рядками book_id, title, reason; reason — 1–2 речення; без Markdown')
+print(prompt)

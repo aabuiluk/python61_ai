@@ -221,3 +221,9 @@ __marimo__/
 
 # Сценарій викладача до маршруту пар: лежить локально, до студентів не йде
 _plan_*
+/.idea/misc.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/python61_ai.iml
+/.idea/vcs.xml
+/.idea/workspace.xml

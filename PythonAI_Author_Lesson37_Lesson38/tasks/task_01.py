@@ -27,3 +27,9 @@ from workshop import (
 # %% Ваш код
 # Завдання 1: напишіть власний код за умовою та підказками.
 # Початкові змінні з контексту вже доступні.
+candidates = recommend('b03', n=3)
+print(candidates[['book_id', 'title', 'score']].to_string(index=False))
+
+candidates = recommend('b03', n=2)
+print(candidates[['book_id', 'title', 'description']].to_string(index=False))
+print(candidates[['book_id', 'title', 'description']].to_json(orient='records', force_ascii=False))

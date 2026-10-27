@@ -14,7 +14,7 @@
 
 Маршрут є у двох формах: цей текст і ноутбук [PythonAI_Author_Lesson31_Lesson32.ipynb](PythonAI_Author_Lesson31_Lesson32.ipynb), де під кожною командою вже є її вивід і всі рисунки. Ноутбук відкривайте з кореня репозиторію, ядро — `.venv`. Комірки міні-завдань у ньому порожні: їх запускаєте ви.
 
-Докладний варіант лише пар 31–32 на 180 хвилин: [Lesson31_32_plan_180.md](PythonAI_Author_Lesson31_Lesson32/Lesson31_32_plan_180.md).
+Докладний варіант лише пар 31–32 на 180 хвилин: [Lesson31_32_plan_180.md](../PythonAI_Author_Lesson31_Lesson32/Lesson31_32_plan_180.md).
 
 <a id="step-0"></a>
 ## Підготовка
@@ -78,7 +78,7 @@ python PythonAI_Author_Lesson27_Lesson28/Lesson28_02_similarity_pca.py
 
 **Що побачите (~10 с).** Таблицю сусідів і два рисунки. Для Word2Vec: `матриця (20, 100), дві компоненти пояснюють 20% дисперсії`, для GloVe — 43%.
 
-![20 слів на площині](PythonAI_Author_Lesson27_Lesson28/results/word2vec_visualization.png)
+![20 слів на площині](../PythonAI_Author_Lesson27_Lesson28/results/word2vec_visualization.png)
 
 Сто чисел на слово стали двома — це зробив PCA. Запамʼятайте число 20%: наприкінці заняття ви знатимете, що воно означає і чому таке мале.
 
@@ -508,9 +508,9 @@ PCA як крок перед класифікацією (`Pipeline`: scaler → 
 <a id="step-16"></a>
 ## Крок 16 · 1:05–1:20 · Практика
 
-[Lesson32_tasks.md](PythonAI_Author_Lesson31_Lesson32/Lesson32_tasks.md), завдання 2, пункти 1–3: вікно 2 × 2 зі `StandardScaler` і `MinMaxScaler`, найбільша різниця координат, таблиця.
+[Lesson32_tasks.md](../PythonAI_Author_Lesson31_Lesson32/Lesson32_tasks.md), завдання 2, пункти 1–3: вікно 2 × 2 зі `StandardScaler` і `MinMaxScaler`, найбільша різниця координат, таблиця.
 
-Якщо важко — [Lesson31_tasks.md](PythonAI_Author_Lesson31_Lesson32/Lesson31_tasks.md), завдання 2, пункти 1–3 на wine.
+Якщо важко — [Lesson31_tasks.md](../PythonAI_Author_Lesson31_Lesson32/Lesson31_tasks.md), завдання 2, пункти 1–3 на wine.
 
 Перед тим як показати результат, перевірте:
 - [ ] у `X` немає стовпця `target`;
@@ -534,6 +534,6 @@ PCA як крок перед класифікацією (`Pipeline`: scaler → 
 
 На парі 28 PCA була готовою кнопкою, яка зберегла 20% розкиду. Тепер ви знаєте, що це за кнопка і як порахувати втрату.
 
-**Домашнє:** [Lesson31_homework.md](PythonAI_Author_Lesson31_Lesson32/Lesson31_homework.md), [Lesson32_homework.md](PythonAI_Author_Lesson31_Lesson32/Lesson32_homework.md).
+**Домашнє:** [Lesson31_homework.md](../PythonAI_Author_Lesson31_Lesson32/Lesson31_homework.md), [Lesson32_homework.md](../PythonAI_Author_Lesson31_Lesson32/Lesson32_homework.md).
 
 **Наступна пара** — кластеризація K-Means: на цій самій карті алгоритм сам шукатиме групи, вже без кольорів-підказок.

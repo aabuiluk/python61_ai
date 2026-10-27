@@ -160,7 +160,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 1](PythonAI_Author_Lesson35_Lesson36/figures/example_01.png)
+![Графічне пояснення example 1](../PythonAI_Author_Lesson35_Lesson36/figures/example_01.png)
 
 ### Спробуйте самостійно
 
@@ -239,7 +239,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 2](PythonAI_Author_Lesson35_Lesson36/figures/example_02.png)
+![Графічне пояснення example 2](../PythonAI_Author_Lesson35_Lesson36/figures/example_02.png)
 
 ### Спробуйте самостійно
 
@@ -327,7 +327,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 3](PythonAI_Author_Lesson35_Lesson36/figures/example_03.png)
+![Графічне пояснення example 3](../PythonAI_Author_Lesson35_Lesson36/figures/example_03.png)
 
 ### Спробуйте самостійно
 
@@ -416,7 +416,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 4](PythonAI_Author_Lesson35_Lesson36/figures/example_04.png)
+![Графічне пояснення example 4](../PythonAI_Author_Lesson35_Lesson36/figures/example_04.png)
 
 ### Спробуйте самостійно
 
@@ -494,7 +494,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 5](PythonAI_Author_Lesson35_Lesson36/figures/example_05.png)
+![Графічне пояснення example 5](../PythonAI_Author_Lesson35_Lesson36/figures/example_05.png)
 
 ### Спробуйте самостійно
 
@@ -574,7 +574,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 6](PythonAI_Author_Lesson35_Lesson36/figures/example_06.png)
+![Графічне пояснення example 6](../PythonAI_Author_Lesson35_Lesson36/figures/example_06.png)
 
 ### Спробуйте самостійно
 
@@ -666,7 +666,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 7](PythonAI_Author_Lesson35_Lesson36/figures/example_07.png)
+![Графічне пояснення example 7](../PythonAI_Author_Lesson35_Lesson36/figures/example_07.png)
 
 ### Спробуйте самостійно
 
@@ -765,7 +765,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 8](PythonAI_Author_Lesson35_Lesson36/figures/example_08.png)
+![Графічне пояснення example 8](../PythonAI_Author_Lesson35_Lesson36/figures/example_08.png)
 
 ### Спробуйте самостійно
 
@@ -898,7 +898,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 9](PythonAI_Author_Lesson35_Lesson36/figures/example_09.png)
+![Графічне пояснення example 9](../PythonAI_Author_Lesson35_Lesson36/figures/example_09.png)
 
 ### Спробуйте самостійно
 
@@ -1009,7 +1009,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-![Графічне пояснення example 10](PythonAI_Author_Lesson35_Lesson36/figures/example_10.png)
+![Графічне пояснення example 10](../PythonAI_Author_Lesson35_Lesson36/figures/example_10.png)
 
 ### Спробуйте самостійно
 

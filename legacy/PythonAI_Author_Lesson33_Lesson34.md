@@ -14,7 +14,7 @@
 
 Маршрут є у двох формах: цей текст і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](PythonAI_Author_Lesson33_Lesson34.ipynb), де під кожною командою вже є її вивід і всі рисунки. Ноутбук відкривайте з кореня репозиторію, ядро — `.venv`. Комірки міні-завдань у ньому порожні: їх запускаєте ви.
 
-Докладний варіант лише пар 33–34 на 180 хвилин: [Lesson33_34_plan_180.md](PythonAI_Author_Lesson33_Lesson34/Lesson33_34_plan_180.md). Попередній маршрут, пари 31–32: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md).
+Докладний варіант лише пар 33–34 на 180 хвилин: [Lesson33_34_plan_180.md](../PythonAI_Author_Lesson33_Lesson34/Lesson33_34_plan_180.md). Попередній маршрут, пари 31–32: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md).
 
 <a id="step-0"></a>
 ## Підготовка
@@ -392,9 +392,9 @@ python PythonAI_Author_Lesson33_Lesson34/my_dbscan.py
 <a id="step-15"></a>
 ## Крок 15 · 1:03–1:20 · Практика
 
-[Lesson34_tasks.md](PythonAI_Author_Lesson33_Lesson34/Lesson34_tasks.md), завдання 3: DBSCAN на справжніх даних wine — графік k-відстаней, підбір eps, порівняння з K-Means.
+[Lesson34_tasks.md](../PythonAI_Author_Lesson33_Lesson34/Lesson34_tasks.md), завдання 3: DBSCAN на справжніх даних wine — графік k-відстаней, підбір eps, порівняння з K-Means.
 
-Якщо важко — [Lesson33_tasks.md](PythonAI_Author_Lesson33_Lesson34/Lesson33_tasks.md), завдання 3: скільки кластерів в ірисах.
+Якщо важко — [Lesson33_tasks.md](../PythonAI_Author_Lesson33_Lesson34/Lesson33_tasks.md), завдання 3: скільки кластерів в ірисах.
 
 Перед тим як показати результат, перевірте:
 - [ ] ознаки масштабовано перед K-Means і DBSCAN;
@@ -418,6 +418,6 @@ python PythonAI_Author_Lesson33_Lesson34/my_dbscan.py
 
 На парі 32 ви стиснули таблицю до карти, на парах 33–34 знайшли на карті групи без жодної підказки.
 
-**Домашнє:** [Lesson33_homework.md](PythonAI_Author_Lesson33_Lesson34/Lesson33_homework.md), [Lesson34_homework.md](PythonAI_Author_Lesson33_Lesson34/Lesson34_homework.md).
+**Домашнє:** [Lesson33_homework.md](../PythonAI_Author_Lesson33_Lesson34/Lesson33_homework.md), [Lesson34_homework.md](../PythonAI_Author_Lesson33_Lesson34/Lesson34_homework.md).
 
 **Наступна пара** — content-based рекомендації книг.

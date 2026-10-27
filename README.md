@@ -5,9 +5,9 @@
 40 хв повторення рекомендацій 35–36, 100 хв Generative AI, 100 хв роботи з промптами.
 10 завдань із підказками, окремі приклади й графічні пояснення.
 
-- [Маршрут і пояснення](PythonAI_Author_Lesson37_Lesson38.md)
-- [Ноутбук із виконаними прикладами та графіками](PythonAI_Author_Lesson37_Lesson38.ipynb)
-- [Автономний HTML для офлайн-перегляду](PythonAI_Author_Lesson37_Lesson38.html)
+- [Маршрут і пояснення](legacy/PythonAI_Author_Lesson37_Lesson38.md)
+- [Ноутбук із виконаними прикладами та графіками](legacy/PythonAI_Author_Lesson37_Lesson38.ipynb)
+- [Автономний HTML для офлайн-перегляду](legacy/PythonAI_Author_Lesson37_Lesson38.html)
 - [Приклади](PythonAI_Author_Lesson37_Lesson38/examples), [завдання](PythonAI_Author_Lesson37_Lesson38/tasks), [залежності](PythonAI_Author_Lesson37_Lesson38/requirements.txt)
 
 Обов'язкові вправи без API й ключів. Ручні fixture-відповіді допомагають перевірити JSON
@@ -18,9 +18,9 @@
 40 хв повторення пар 33–34, 100 хв TF-IDF/cosine, 100 хв рекомендацій за оцінками читачів.
 10 завдань із підказками; усі приклади мають окремий Matplotlib-блок.
 
-- [Маршрут і пояснення](PythonAI_Author_Lesson35_Lesson36.md)
-- [Ноутбук із виконаними прикладами та графіками](PythonAI_Author_Lesson35_Lesson36.ipynb)
-- [Самодостатній HTML для завантаження й офлайн-перегляду](PythonAI_Author_Lesson35_Lesson36.html)
+- [Маршрут і пояснення](legacy/PythonAI_Author_Lesson35_Lesson36.md)
+- [Ноутбук із виконаними прикладами та графіками](legacy/PythonAI_Author_Lesson35_Lesson36.ipynb)
+- [Самодостатній HTML для завантаження й офлайн-перегляду](legacy/PythonAI_Author_Lesson35_Lesson36.html)
 - [Приклади](PythonAI_Author_Lesson35_Lesson36/examples), [завдання](PythonAI_Author_Lesson35_Lesson36/tasks), [власний requirements](PythonAI_Author_Lesson35_Lesson36/requirements.txt)
 
 Усі дані локальні. Нових бібліотек у спільному середовищі не потрібно.
@@ -30,9 +30,9 @@
 Місток із пар 31–32 — 40 хв, K-Means — 100 хв, DBSCAN — 100 хв.
 Одна історія про магазин, 10 коротких завдань із покроковими підказками.
 
-- [Почати читання: Markdown](PythonAI_Author_Lesson33_Lesson34_v2.md)
-- [Виконувати код: ноутбук із виводом і графіками](PythonAI_Author_Lesson33_Lesson34_v2.ipynb)
-- [Офлайн HTML: завантажте файл і відкрийте у браузері](PythonAI_Author_Lesson33_Lesson34_v2.html)
+- [Почати читання: Markdown](legacy/PythonAI_Author_Lesson33_Lesson34_v2.md)
+- [Виконувати код: ноутбук із виводом і графіками](legacy/PythonAI_Author_Lesson33_Lesson34_v2.ipynb)
+- [Офлайн HTML: завантажте файл і відкрийте у браузері](legacy/PythonAI_Author_Lesson33_Lesson34_v2.html)
 
 Нових залежностей немає; використовуйте спільне середовище нижче.
 Попередня версія та її скрипти залишаються доступними.
@@ -83,9 +83,9 @@ python Lesson32_05_wine_map.py
 
 У кожній папці починайте з `START.txt` або `README.txt`, якщо вони є.
 
-Пари 31–32 за один раз, з повторенням пар 28–30: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md) — маршрут на 90 + 90 хвилин, усі команди запускаються з кореня репозиторію. Той самий маршрут ноутбуком з виводом і рисунками: [PythonAI_Author_Lesson31_Lesson32.ipynb](PythonAI_Author_Lesson31_Lesson32.ipynb).
+Пари 31–32 за один раз, з повторенням пар 28–30: [PythonAI_Author_Lesson31_Lesson32.md](legacy/PythonAI_Author_Lesson31_Lesson32.md) — маршрут на 90 + 90 хвилин, усі команди запускаються з кореня репозиторію. Той самий маршрут ноутбуком з виводом і рисунками: [PythonAI_Author_Lesson31_Lesson32.ipynb](legacy/PythonAI_Author_Lesson31_Lesson32.ipynb).
 
-Пари 33–34 за один раз, з повторенням пар 31–32: [PythonAI_Author_Lesson33_Lesson34.md](PythonAI_Author_Lesson33_Lesson34.md) і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](PythonAI_Author_Lesson33_Lesson34.ipynb) — так само з кореня репозиторію.
+Пари 33–34 за один раз, з повторенням пар 31–32: [PythonAI_Author_Lesson33_Lesson34.md](legacy/PythonAI_Author_Lesson33_Lesson34.md) і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](legacy/PythonAI_Author_Lesson33_Lesson34.ipynb) — так само з кореня репозиторію.
 
 
 Пари 39–40 з повторенням 37–38: [повний практикум](PythonAI_Author_Lesson39_Lesson40.html), [ноутбук](PythonAI_Author_Lesson39_Lesson40.ipynb), [усі файли](PythonAI_Author_Lesson39_Lesson40.zip). 30 + 100 + 100 хв; пояснення, приклади, окремі схеми, 10 самостійних завдань. Тільки безкоштовні інструменти; офлайн-варіант не потребує сервісів.

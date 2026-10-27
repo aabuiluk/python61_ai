@@ -27,3 +27,9 @@ from workshop import (
 # %% Ваш код
 # Завдання 3: напишіть власний код за умовою та підказками.
 # Початкові змінні з контексту вже доступні.
+jobs = pd.DataFrame([
+    {'input':'текст + фото', 'output':'текста', 'approach': 'multimodal'},
+    {'input':'текст', 'output':'жанр', 'approach': 'класифікатора або LLM'},
+    {'input':'текст', 'output':'рекомендація', 'approach': 'multimodal'},
+], columns=['input', 'output', 'approach'])
+print(jobs.to_string(index=False))

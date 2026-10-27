@@ -28,3 +28,8 @@ ratings = pd.DataFrame([[5, np.nan, 1], [5, 5, 1], [1, 2, 5]],
 # %% Ваш код
 # Завдання 2: напишіть власний код за умовою та підказками.
 # Початкові змінні з контексту вже доступні.
+common = ratings.loc[['Olia', 'Max']].dropna(axis=1)
+similarity = cosine_similarity(common.iloc[[0]], common.iloc[[1]])[0, 0]
+print('Спільні книги:', common.columns.tolist())
+print('Cosine на спільних оцінках:', round(float(similarity), 3))
+print('Ira оцінила b02:', ratings.loc['Ira', 'b02'])
