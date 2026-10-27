@@ -86,3 +86,6 @@ python Lesson32_05_wine_map.py
 Пари 31–32 за один раз, з повторенням пар 28–30: [PythonAI_Author_Lesson31_Lesson32.md](PythonAI_Author_Lesson31_Lesson32.md) — маршрут на 90 + 90 хвилин, усі команди запускаються з кореня репозиторію. Той самий маршрут ноутбуком з виводом і рисунками: [PythonAI_Author_Lesson31_Lesson32.ipynb](PythonAI_Author_Lesson31_Lesson32.ipynb).
 
 Пари 33–34 за один раз, з повторенням пар 31–32: [PythonAI_Author_Lesson33_Lesson34.md](PythonAI_Author_Lesson33_Lesson34.md) і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](PythonAI_Author_Lesson33_Lesson34.ipynb) — так само з кореня репозиторію.
+
+
+Пари 39–40 з повторенням 37–38: [повний практикум](PythonAI_Author_Lesson39_Lesson40.html), [ноутбук](PythonAI_Author_Lesson39_Lesson40.ipynb), [усі файли](PythonAI_Author_Lesson39_Lesson40.zip). 30 + 100 + 100 хв; пояснення, приклади, окремі схеми, 10 самостійних завдань. Тільки безкоштовні інструменти; офлайн-варіант не потребує сервісів.

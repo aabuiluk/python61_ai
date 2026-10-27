@@ -1,0 +1,20 @@
+[
+  {
+    "id": "b01",
+    "title": "Python старт",
+    "price": 320,
+    "topic": "python"
+  },
+  {
+    "id": "b02",
+    "title": "Практика Python",
+    "price": 450,
+    "topic": "python"
+  },
+  {
+    "id": "b03",
+    "title": "Основи даних",
+    "price": 390,
+    "topic": "data"
+  }
+]
