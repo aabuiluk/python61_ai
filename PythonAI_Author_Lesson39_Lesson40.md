@@ -17,11 +17,13 @@
 
 ## Що підготувати і куди заходити
 
-1. У журналі відкрийте авторський курс Python AI → пару 39 або 40 →
-   «Практикум 39–40 · усі студентські файли». Завантажте ZIP і розпакуйте його в робочу папку
-   python61_ai. Пряме посилання: [ZIP практикуму](https://codebook.pythonanywhere.com/api/courses/python_ai_author/pairs/39/files/workshop39_40.zip).
-   Попередні матеріали є в [репозиторії групи](https://github.com/aabuiluk/python61_ai).
-   Новий пакет можна використати самостійно: у ньому всі потрібні дані.
+1. Відкрийте [студентський репозиторій python61_ai](https://github.com/aabuiluk/python61_ai).
+   Для наявного клону виконайте `git pull`. Без Git: натисніть Code → Download ZIP,
+   розпакуйте архів і відкрийте його папку. У корені знайдіть
+   `PythonAI_Author_Lesson39_Lesson40.html`, `.md` або `.ipynb`.
+   Окремий архів `PythonAI_Author_Lesson39_Lesson40.zip` містить весь практикум.
+   Код, завдання та дані лежать у папці `PythonAI_Author_Lesson39_Lesson40/`.
+   Пакет самодостатній; викладацькі розв’язки зберігаються окремо в lesson_helper.
 2. Відкрийте термінал у корені python61_ai. Якщо середовище вже є, використовуйте його.
    Для нового середовища встановіть Python з [python.org](https://www.python.org/downloads/),
    виконайте `python -m venv .venv`, далі `.venv\Scripts\python -m pip install jupyterlab matplotlib`.
