@@ -1,17 +1,17 @@
-"""**Факт. Назва інструмента в тексті ще не означає, що інструмент був виконаний.**
+"""**Факт. Складну задачу зручніше розбити на результати, які можна перевірити окремо.**
 
-ReAct поєднує планування дії та отримання спостереження. У нашій простій реалізації
-чат пропонує JSON-запит, Python перевіряє дозволену назву дії й аргументи, виконує пошук,
-а отриманий результат ми вручну повертаємо в чат. Це один справжній цикл із людиною
-як диспетчером. Кілька реплік моделі «Action/Observation» без виконання — лише імітація.
+Chain of Thought (CoT) історично означає промпти з проміжними міркуваннями. У сучасному
+практикумі вимагайте короткий план, перевірювані обчислення та підсумок; повна прихована
+траса мислення не потрібна. Пояснення моделі саме по собі не доводить правильності.
 
-Дозволимо тільки lookup_book. Невідомий id дає None, а невідома дія — помилку. Жоден
-рядок із чату не виконуємо через eval або exec. Модель не має самостійного доступу до БД.
-Після результату пошуку фінальна відповідь має спиратися саме на повернений запис.
+Приклад: покупець має 800 грн. Дві книги по 320 коштують 640, залишок 160. Якщо розділити
+задачу на пошук ціни → множення → порівняння з бюджетом, можна перевірити кожен результат.
+Арифметику виконує Python. LLM може оформити коротке пояснення вже перевірених значень.
+Це корисніше за безумовну віру у фразу «думай крок за кроком».
 
-**Живий промпт прикладу:** «Доступна дія lookup_book(book_id). Потрібна ціна b01.
-Поверніть тільки {"action":"lookup_book","book_id":"b01"}. Не вигадуйте observation».
-Виконайте lookup у Python та наступною реплікою передайте фактичний результат.
+**Живий промпт прикладу:** «Дані: b01 = 320 грн; 2 примірники; бюджет 800 грн.
+Поверніть JSON з total, remaining, fits. Використовуйте тільки ці числа.
+Після JSON не додавайте тексту». Зіставте відповідь з обчисленням Python.
 """
 from pathlib import Path
 import sys
@@ -19,11 +19,9 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from workshop import *
 
 # %% Основний код
-request = {"action":"lookup_book", "book_id":"b01"}  # ручний запит
-if request["action"] != "lookup_book":
-    raise ValueError("Недозволена дія")
-observation = next((b for b in CATALOG if b["id"] == request["book_id"]), None)
-print(json.dumps({"observation":observation}, ensure_ascii=False))
+price, quantity, budget = 320, 2, 800
+total = price * quantity
+print({"total": total, "remaining": budget-total, "fits": total <= budget})
 
 # %% Схема
 import matplotlib.pyplot as plt
@@ -31,7 +29,7 @@ fig, ax = plt.subplots(figsize=(10, 2.3))
 ax.set_xlim(0, 4)
 ax.set_ylim(0, 1)
 ax.axis('off')
-labels = ['Request', 'Allowlist', 'Lookup', 'Observation']
+labels = ['Price', 'Quantity', 'Total', 'Budget check']
 for j, label in enumerate(labels):
     ax.text(j+0.5, 0.5, label, ha='center', va='center', fontsize=11,
             bbox=dict(boxstyle='round,pad=0.7', facecolor='#eaf1ff', edgecolor='#2459be'))

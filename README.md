@@ -88,4 +88,6 @@ python Lesson32_05_wine_map.py
 Пари 33–34 за один раз, з повторенням пар 31–32: [PythonAI_Author_Lesson33_Lesson34.md](legacy/PythonAI_Author_Lesson33_Lesson34.md) і ноутбук [PythonAI_Author_Lesson33_Lesson34.ipynb](legacy/PythonAI_Author_Lesson33_Lesson34.ipynb) — так само з кореня репозиторію.
 
 
-Пари 39–40 з повторенням 37–38: [повний практикум](PythonAI_Author_Lesson39_Lesson40.html), [ноутбук](PythonAI_Author_Lesson39_Lesson40.ipynb), [усі файли](PythonAI_Author_Lesson39_Lesson40.zip). 30 + 100 + 100 хв; пояснення, приклади, окремі схеми, 10 самостійних завдань. Тільки безкоштовні інструменти; офлайн-варіант не потребує сервісів.
+Пари 39–40 з повторенням 37–38: [повний практикум](PythonAI_Author_Lesson39_Lesson40.html), [ноутбук](PythonAI_Author_Lesson39_Lesson40.ipynb), [усі файли](PythonAI_Author_Lesson39_Lesson40.zip). 30 + 100 + 100 хв; пояснення, приклади, окремі схеми, 16 самостійних завдань. Тільки безкоштовні інструменти; офлайн-варіант не потребує сервісів.
+
+Повнота програми 39–40: [карта тем і завдань](PythonAI_Author_Lesson39_Lesson40/COVERAGE.md). [Повні промпти для Gemini або ChatGPT](PythonAI_Author_Lesson39_Lesson40/PROMPTS.md).
