@@ -1,0 +1,5 @@
+{
+  "instructions": "Отримай розклад через get_schedule, не вигадуй його.",
+  "input": "Коли відбуваються заняття Python?",
+  "max_output_tokens": 600
+}

@@ -1,3 +1,7 @@
+# Новий практикум 39–42 · реальний OpenAI API
+
+[Почати роботу](PythonAI_Author_Lesson39_Lesson42_API/README.md) · [HTML](PythonAI_Author_Lesson39_Lesson42_API/practice.html) · [ZIP](PythonAI_Author_Lesson39_Lesson42_API.zip). 180 хв; 11 практичних завдань, власні запити, .env.example. Готових розв’язків вправ у цьому пакеті немає.
+
 # python61_ai
 
 ## Пари 37–38 · Generative AI та Prompt Engineering · 240 хв

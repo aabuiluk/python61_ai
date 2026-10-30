@@ -1,0 +1,5 @@
+{
+  "instructions": "Коротко українською, без вигаданих гарантій.",
+  "input": "Поясни різницю між RAG і Function Calling у двох пунктах.",
+  "max_output_tokens": 600
+}

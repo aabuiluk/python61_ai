@@ -1,0 +1,5 @@
+{
+  "instructions": "Визнач тональність. Поверни лише Positive, Negative або Mixed.",
+  "input": "Добре пояснюють, але курс дорогий.",
+  "max_output_tokens": 600
+}
