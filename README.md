@@ -1,3 +1,9 @@
+<!-- package41-42-layout -->
+## Комплект 41–42: корінь і окрема папка
+
+У корені: [PythonAI_Author_Lesson41_Lesson42.ipynb](PythonAI_Author_Lesson41_Lesson42.ipynb), HTML, Markdown, ZIP.
+У папці [PythonAI_Author_Lesson41_Lesson42](PythonAI_Author_Lesson41_Lesson42/): ті самі основні файли, .env.example, api_client.py, requirements.txt, data/, requests/, [готові приклади](PythonAI_Author_Lesson41_Lesson42/examples/README.md) та окремі tasks/.
+
 # Пари 41–42 · RAG та AI-агент
 
 [Матеріали](PythonAI_Author_Lesson41_Lesson42.md) · [HTML](PythonAI_Author_Lesson41_Lesson42.html) · [Ноутбук](PythonAI_Author_Lesson41_Lesson42.ipynb) · [ZIP](PythonAI_Author_Lesson41_Lesson42.zip). Практичні завдання без готових реалізацій, .env.example та власні API-запити.
