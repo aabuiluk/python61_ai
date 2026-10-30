@@ -8,9 +8,6 @@
 
 [Матеріали](PythonAI_Author_Lesson41_Lesson42.md) · [HTML](PythonAI_Author_Lesson41_Lesson42.html) · [Ноутбук](PythonAI_Author_Lesson41_Lesson42.ipynb) · [ZIP](PythonAI_Author_Lesson41_Lesson42.zip). Практичні завдання без готових реалізацій, .env.example та власні API-запити.
 
-# Новий практикум 39–42 · реальний OpenAI API
-
-[Почати роботу](PythonAI_Author_Lesson39_Lesson42_API/README.md) · [HTML](PythonAI_Author_Lesson39_Lesson42_API/practice.html) · [ZIP](PythonAI_Author_Lesson39_Lesson42_API.zip). 180 хв; 11 практичних завдань, власні запити, .env.example. Готових розв’язків вправ у цьому пакеті немає.
 
 # python61_ai
 
