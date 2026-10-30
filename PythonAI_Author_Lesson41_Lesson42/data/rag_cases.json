@@ -1,0 +1,36 @@
+[
+  {
+    "question": "ціна Python",
+    "expected": [
+      "price"
+    ]
+  },
+  {
+    "question": "заняття щосуботи",
+    "expected": [
+      "schedule"
+    ]
+  },
+  {
+    "question": "повернення коштів",
+    "expected": [
+      "refund"
+    ]
+  },
+  {
+    "question": "домашні завдання дедлайн",
+    "expected": [
+      "homework"
+    ]
+  },
+  {
+    "question": "Broadcasting NumPy",
+    "expected": [
+      "broadcasting"
+    ]
+  },
+  {
+    "question": "невідомесловоабракадабра",
+    "expected": []
+  }
+]
