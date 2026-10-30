@@ -78,7 +78,7 @@ python PythonAI_Author_Lesson27_Lesson28/Lesson28_02_similarity_pca.py
 
 **Що побачите (~10 с).** Таблицю сусідів і два рисунки. Для Word2Vec: `матриця (20, 100), дві компоненти пояснюють 20% дисперсії`, для GloVe — 43%.
 
-![20 слів на площині](../PythonAI_Author_Lesson27_Lesson28/results/word2vec_visualization.png)
+![20 слів на площині](../../PythonAI_Author_Lesson27_Lesson28/results/word2vec_visualization.png)
 
 Сто чисел на слово стали двома — це зробив PCA. Запамʼятайте число 20%: наприкінці заняття ви знатимете, що воно означає і чому таке мале.
 
