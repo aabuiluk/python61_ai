@@ -15,7 +15,7 @@ def classify(message: str, examples: bool = False) -> dict:
                   '«Коли працює магазин?» → SCHEDULE; «Не відкривається кабінет» → SUPPORT.')
     result = client.responses.create(
         model=MODEL, instructions=guide,
-        input='Повідомлення клієнта: ' + message,
+        input='Поверни JSON з ключами category та reason. Повідомлення клієнта: ' + message,
         text={'format': {'type': 'json_object'}},
         max_output_tokens=150)
     data = json.loads(result.output_text)
