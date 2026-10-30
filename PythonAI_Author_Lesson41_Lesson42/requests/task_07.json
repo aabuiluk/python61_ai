@@ -1,0 +1,5 @@
+{
+  "instructions": "Поверни тільки JSON з answer (рядок) і sources (масив ID). Не використовуй інші джерела.",
+  "input": "Питання: що таке few-shot? Документ [prompt:0]: Few-shot додає приклади у поточний контекст.",
+  "max_output_tokens": 600
+}
