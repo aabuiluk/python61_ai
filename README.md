@@ -1,3 +1,8 @@
+<!-- ukraine-floating-basis -->
+# Методичка на основі HTML із плаваючим меню · Україна
+
+[Відкрити методичку](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.html#route-tasks) · [Ноутбук](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.ipynb) · [Готові приклади](PythonAI_Author_Lesson41_Lesson42/examples/README.md). 17 точок практики: коли виконувати, файл, API-команда та перевірка.
+
 # Пари 41–42 · RAG та AI-агент
 
 [Матеріали](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.md) · [HTML](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.html) · [Ноутбук](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.ipynb) · [ZIP](PythonAI_Author_Lesson41_Lesson42/PythonAI_Author_Lesson41_Lesson42.zip). Одна папка з повним комплектом: ноутбук, HTML, Markdown, ZIP, .env.example, data/, requests/, готові розібрані examples/ та самостійні tasks/.

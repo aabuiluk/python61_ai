@@ -1,19 +1,22 @@
-# Готові розібрані приклади
+# Готові приклади з наданої методички
 
-Це повні приклади на окремій історії бібліотеки. Самостійні задачі про онлайн-школу лежать у tasks/.
+Усі бізнес-сценарії — навчальні дані українських магазинів. Ціни у гривнях.
 
-Вставте власний токен у .env біля api_client.py. Після встановлення requirements.txt запускайте з папки практикуму:
+Запускайте з папки практикуму після встановлення requirements.txt і заповнення .env.
 
-## Документ → запит → реальна відповідь
+- `python examples/prompt_lab.py`
+- `python examples/classifier_live.py`
+- `python examples/review_pipeline.py`
+- `python examples/grounded_answer.py`
+- `python examples/rag_live.py`
+- `python examples/chunks_demo.py`
+- `python examples/search_demo.py`
+- `python examples/rag_guard.py`
+- `python examples/retrieval_metrics.py`
+- `python examples/agent_live.py`
+- `python examples/app.py`
+- `python examples/tool_validation.py`
+- `python examples/api_minimal.py`
+- `python examples/api_check.py`
 
-python examples/example_01_source_api.py
-
-## Готовий міні-RAG на іншому корпусі
-
-python examples/example_02_mini_rag_api.py
-
-## Реальний Function Calling у два запити
-
-python examples/example_03_function_call_api.py
-
-Усі три приклади викликають реальний OpenAI API. Перші два роблять по одному запиту, третій — два. Імпорт не надсилає запити.
+API-приклади роблять реальні оплачувані запити. Для локальної перевірки без мережі: chunks_demo.py, search_demo.py, retrieval_metrics.py. Повні розв’язки практичних задач — у викладацькій методичці.

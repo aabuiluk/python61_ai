@@ -1,0 +1,24 @@
+[
+  {
+    "question": "години роботи Львів",
+    "expected": [
+      "LVIV-HOURS"
+    ]
+  },
+  {
+    "question": "доставка Україною",
+    "expected": [
+      "DELIVERY"
+    ]
+  },
+  {
+    "question": "оплата карткою",
+    "expected": [
+      "PAYMENT"
+    ]
+  },
+  {
+    "question": "невідомесловоабракадабра",
+    "expected": []
+  }
+]
