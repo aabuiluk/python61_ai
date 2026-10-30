@@ -1,3 +1,14 @@
+<!-- root-install-local41-42 -->
+## Встановлення 41–42 з кореня репозиторію
+
+У корені python61_ai, у спільному .venv:
+
+```bash
+python -m pip install -r requirements-local.txt
+```
+
+Це встановлює OpenAI, обробку TXT/PDF/CSV, Streamlit/FastAPI та Jupyter. Звичайний кореневий requirements.txt також підключає цей комплект.
+
 <!-- ukraine-floating-basis -->
 # Методичка на основі HTML із плаваючим меню · Україна
 

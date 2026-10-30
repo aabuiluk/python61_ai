@@ -28,6 +28,7 @@ certifi
 gensim>=4.3; python_version < "3.14"   # на 3.14 не ставиться — пари 27–28 беруть word_vectors.py (numpy)
 
 # --- Jupyter (пари 1–2 і .ipynb)
+-r requirements-local.txt
 jupyterlab>=4.2
 notebook>=7.2
 ipykernel>=6.29

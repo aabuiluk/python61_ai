@@ -23,11 +23,15 @@
 - Практика: локальний Streamlit / Gradio або FastAPI → OpenAI API → локальний vector search / RAG → агентний цикл.
 - Запуск і демонстрація застосунку на localhost; Docker — додатково. GCP-деплой не є умовою виконання.
 
-## Встановлення
+## Встановлення з кореня python61_ai
 
+У спільному .venv з кореня репозиторію виконайте:
+
+```bash
 python -m pip install -r requirements-local.txt
+```
 
-Ключ — у .env біля api_client.py. OPENAI_EMBEDDING_MODEL=text-embedding-3-small. Дані й індекс залишаються локально, embeddings і генерація виконуються OpenAI API.
+Кореневий requirements.txt теж підключає ці залежності. Для команд запуску нижче перейдіть у PythonAI_Author_Lesson41_Lesson42. Ключ — у .env біля api_client.py. OPENAI_EMBEDDING_MODEL=text-embedding-3-small. Дані й індекс залишаються локально, embeddings і генерація виконуються OpenAI API.
 
 
 ## TXT, PDF і CSV → локальні документи

@@ -1,0 +1,6 @@
+# Install from the python61_ai repository root, in its shared .venv.
+-r PythonAI_Author_Lesson41_Lesson42/requirements.txt
+-r PythonAI_Author_Lesson41_Lesson42/requirements-local.txt
+jupyterlab>=4.2
+notebook>=7.2
+ipykernel>=6.29
