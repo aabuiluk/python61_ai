@@ -47,4 +47,3 @@ if __name__ == "__main__":
     answer, matches = rag_answer("Коли працює магазин?")
     print("Відповідь:", answer)
     print("Знайдені джерела:", matches)
-

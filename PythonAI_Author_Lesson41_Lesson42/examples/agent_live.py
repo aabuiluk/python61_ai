@@ -77,4 +77,3 @@ def run_agent(question: str, max_steps: int = 4) -> str:
 if __name__ == "__main__":
     print(run_agent("Скільки коштує настільна лампа?"))
     print(run_agent("Коли працює магазин?"))
-

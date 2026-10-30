@@ -14,4 +14,4 @@ def ask(request: AskRequest):
 
 # Запуск: uvicorn app:app --reload
 # Перевірка: відкрийте http://127.0.0.1:8000/docs
-# curl -X POST http://127.0.0.1:8000/ask -H "Content-Type: application/json" -d '{"question":"Яка ціна Python?"}' 
+# curl -X POST http://127.0.0.1:8000/ask -H "Content-Type: application/json" -d '{"question":"Яка ціна настільної лампи?"}'
