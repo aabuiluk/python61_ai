@@ -112,3 +112,6 @@ python Lesson32_05_wine_map.py
 Пари 39–40 з повторенням 37–38: [повний практикум](legacy/PythonAI_Author_Lesson39_Lesson40.html), [ноутбук](legacy/PythonAI_Author_Lesson39_Lesson40.ipynb), [усі файли](legacy/PythonAI_Author_Lesson39_Lesson40.zip). 30 + 100 + 100 хв; пояснення, приклади, окремі схеми, 16 самостійних завдань. Тільки безкоштовні інструменти; офлайн-варіант не потребує сервісів.
 
 Повнота програми 39–40: [карта тем і завдань](PythonAI_Author_Lesson39_Lesson40/COVERAGE.md). [Повні промпти для Gemini або ChatGPT](PythonAI_Author_Lesson39_Lesson40/PROMPTS.md).
+
+
+Пари 43–44 з переходом від 41–42: [HTML](PythonAI_Author_Lesson43_Lesson44.html), [ноутбук](PythonAI_Author_Lesson43_Lesson44.ipynb), [ZIP](PythonAI_Author_Lesson43_Lesson44.zip). 12 вправ, LangChain, LCEL, пам’ять, промпти для Gemini або ChatGPT.

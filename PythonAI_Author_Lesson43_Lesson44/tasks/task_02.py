@@ -1,0 +1,18 @@
+"""**Завдання 2.** Напишіть dispatch для search_knowledge. Приймайте тільки рядкове question і жодних
+зайвих аргументів. Перевірте відомий tool, невідомий delete_all та question=123.
+Покажіть стан steps і max_steps до наступного кроку.
+
+Підказки: 1. Перевірте типи та ключі. 2. Не використовуйте eval/exec. 3. steps < max_steps — умова продовження.
+
+Готово, якщо: Валідний пошук працює; два некоректні запити відхилено; умова ліміту кроків явна.
+
+Окремі файли: examples/example_02.py і tasks/task_02.py у папці пакета.
+Промпти для Gemini та ChatGPT — у PROMPTS.md.
+"""
+from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from workshop import *
+
+# %% Ваш код
+# Напишіть власний розв’язок.
