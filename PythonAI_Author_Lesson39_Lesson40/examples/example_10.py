@@ -12,10 +12,7 @@ Overlap повторює хвіст попередньої частини в н�
 
 Почніть із size=8, overlap=2 і вручну звірте останні два слова першого фрагмента.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from PythonAI_Author_Lesson39_Lesson40.workshop import chunks
 
 # %% Основний код
 text = "Книга допомагає вивчати Python через короткі вправи та приклади. Після кожного розділу є перевірка знань."

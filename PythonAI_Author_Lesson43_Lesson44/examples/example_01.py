@@ -12,10 +12,8 @@
 корпусі збережіть document_id, chunk_id і шлях до джерела. Для питання без факту потрібна
 відмова, а не довільний перший документ. Цей контракт переносимо в LangChain без змін.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
+from PythonAI_Author_Lesson43_Lesson44.workshop import retrieve
 
 # %% Основний код
 hits = retrieve("Доставка Україною",k=2)

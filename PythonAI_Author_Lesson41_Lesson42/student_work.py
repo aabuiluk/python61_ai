@@ -1,5 +1,5 @@
 """Ваші реалізації; імпорт цього файлу не надсилає API-запитів."""
-from api_client import send
+from PythonAI_Author_Lesson41_Lesson42.api_client import send
 
 
 def classify(texts, ask=send):

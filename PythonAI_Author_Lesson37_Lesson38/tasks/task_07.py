@@ -10,15 +10,11 @@
 
 Готово, якщо: prompt.txt існує; роль, контекст, дія, обмеження й формат сформульовані явно.
 """
-from pathlib import Path
-import sys
 
 # Працює і з кореня репозиторію, і з папки examples/tasks.
-PACKAGE = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(PACKAGE))
-from workshop import (
-    np, pd, plt, json, re, books, fixtures, platforms, cosine_similarity,
-    recommend, build_prompt, validate_response, evaluate_fixtures, diagram, OUTPUT_DIR,
+from PythonAI_Author_Lesson37_Lesson38.workshop import (
+    books, build_prompt, cosine_similarity, diagram, evaluate_fixtures, fixtures, json, np,
+    OUTPUT_DIR, pd, platforms, plt, re, recommend, validate_response,
 )
 
 # %% Початковий контекст

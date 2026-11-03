@@ -8,10 +8,6 @@ iam, quota, billing. 3. Це схема проєктування, а не ком
 
 Критерій: Шість пунктів перевірки, невідомі ресурси позначені чесно; IAM, квоти й білінг розмежовані; Cloud не активовано.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Ваш код
 # Напишіть власний код за умовою.

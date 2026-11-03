@@ -1,6 +1,6 @@
 ### Зараз виконайте завдання 1
 
-Відкрийте `tasks/task_01.py`. Це копія `examples/live_01.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_01.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_01.py`. Це копія `examples/live_01.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_01` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 1.** Перепишіть питання про самовивіз без слів «самовивіз» і «Львів». Порівняйте TF-IDF і embeddings. Потім додайте поріг: результати зі score нижче `threshold` не повертаються.
 

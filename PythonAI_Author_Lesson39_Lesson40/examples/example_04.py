@@ -13,10 +13,6 @@ Chain of Thought (CoT) історично означає промпти з пр�
 Поверніть JSON з total, remaining, fits. Використовуйте тільки ці числа.
 Після JSON не додавайте тексту». Зіставте відповідь з обчисленням Python.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Основний код
 price, quantity, budget = 320, 2, 800

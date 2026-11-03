@@ -2,12 +2,10 @@
 import json
 import os
 from pathlib import Path
-import sys
 import numpy as np
 
 PACKAGE=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(PACKAGE))
-from api_client import configuration,send
+from PythonAI_Author_Lesson41_Lesson42.api_client import configuration, send
 
 INDEX=PACKAGE/'results/local_index.json'
 
@@ -71,7 +69,7 @@ def rag(question,path=INDEX,ask=send):
 
 if __name__=='__main__':
     import argparse
-    from ingest import load_sources,chunk_documents
+    from PythonAI_Author_Lesson41_Lesson42.local_runtime.ingest import chunk_documents, load_sources
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['build','search','ask']);p.add_argument('question',nargs='?',default='Яка доставка Україною?')
     a=p.parse_args()
     if a.mode=='build':

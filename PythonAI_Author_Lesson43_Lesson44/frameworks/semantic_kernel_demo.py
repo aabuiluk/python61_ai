@@ -4,12 +4,9 @@ Semantic Kernel поки не встановлюється на Python 3.14. П�
 див. frameworks/README.md (розділ про .venv-312).
 """
 import asyncio
-from pathlib import Path
 import json
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import DOCS, retrieve, validate_answer
-from live_openai import MODEL, EMBEDDING_MODEL, require_key
+from PythonAI_Author_Lesson43_Lesson44.workshop import DOCS, retrieve, validate_answer
+from PythonAI_Author_Lesson43_Lesson44.live_openai import EMBEDDING_MODEL, MODEL, require_key
 
 require_key()  # читає OPENAI_API_KEY з .env; без ключа скрипт завершується
 

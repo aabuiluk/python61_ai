@@ -1,7 +1,7 @@
 # file: app.py
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
-from agent_live import run_agent
+from PythonAI_Author_Lesson41_Lesson42.examples.agent_live import run_agent
 
 app = FastAPI(title="Shop Knowledge Agent")
 

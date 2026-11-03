@@ -15,10 +15,7 @@ id, version, context, goal, format, prompt та acceptance. Додайте од�
 Для порівняння сервісів зберігайте service окремо від prompt_version. Не намагайтесь визначити
 «кращий сервіс» за одним текстом: оцінюйте всі кейси за тими самими правилами.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
 
 # %% Основний код
 library = {

@@ -1,5 +1,5 @@
 # file: grounded_answer.py
-from classifier_live import client, MODEL
+from PythonAI_Author_Lesson41_Lesson42.examples.classifier_live import client, MODEL
 source = '[RULE-1] Уроки проводяться щосуботи о 17:00 за Києвом.'
 question = 'Яка вартість навчання?'
 r = client.responses.create(

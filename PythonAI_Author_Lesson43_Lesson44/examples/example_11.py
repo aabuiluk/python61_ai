@@ -13,10 +13,7 @@
 втратити заперечення, тому вимагає перевірки та джерела. In-memory wrapper сам не задає
 бюджет і не видаляє старі повідомлення за вашим бізнес-правилом.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from langchain_core.messages import AIMessage, HumanMessage
 
 # %% Основний код
 history = [HumanMessage(content="Q1"),AIMessage(content="A1"),

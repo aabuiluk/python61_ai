@@ -1,6 +1,6 @@
 ### Зараз виконайте завдання 11
 
-Відкрийте `tasks/task_11.py`. Це копія `examples/live_11.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_11.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_11.py`. Це копія `examples/live_11.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_11` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 11.** Порівняйте ціну запиту з повною історією і з двома останніми повідомленнями. Надрукуйте `input_tokens` обох варіантів.
 

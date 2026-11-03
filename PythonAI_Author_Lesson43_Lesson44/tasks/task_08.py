@@ -8,11 +8,9 @@
 
 Подивіться examples/live_08.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import *
-from live_openai import *
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from PythonAI_Author_Lesson43_Lesson44.live_openai import live_model, require_key
 
 require_key()
 

@@ -12,10 +12,10 @@ dict → PromptValue → AIMessage → str. RunnableLambda адаптує зви
 Виклик invoke виконує вузли синхронно. batch приймає кілька входів; це не повторне навчання
 й не гарантія, що довільна функція потокобезпечна. Наша fixture-функція локальна й детермінована.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from langchain_core.messages import AIMessage
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda
 
 # %% Основний код
 prompt = ChatPromptTemplate.from_messages([("human","Питання: {question}")])

@@ -13,10 +13,9 @@ JsonOutputParser перетворює текст на Python-об’єкт; ви
 помилку й статус rejected, а потім, якщо потрібно, окремий обмежений repair. Для цього
 корпусу фактичну відповідність можемо додатково звірити з точним реченням джерела.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from langchain_core.messages import AIMessage
+from langchain_core.output_parsers import JsonOutputParser
+from PythonAI_Author_Lesson43_Lesson44.workshop import retrieve, validate_answer
 
 # %% Основний код
 parsed = JsonOutputParser().invoke(AIMessage(content='{"answer":"Доставка Україною коштує 90 грн.","sources":["delivery_ua"]}'))

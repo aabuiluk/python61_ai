@@ -1,6 +1,6 @@
 ### Зараз виконайте завдання 12
 
-Відкрийте `tasks/task_12.py`. Це копія `examples/live_12.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_12.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_12.py`. Це копія `examples/live_12.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_12` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 12.** Зберіть функцію `docflow(question)`, яка повертає один запис журналу: питання, answer, sources, valid і токени. Запустіть її на двох питаннях.
 

@@ -8,10 +8,6 @@ Editor має встановити 450 і delivery_days=None. Створіть m
 
 Критерій: Два дефекти з підставами, виправлена ціна 450, невідомий строк null, явне правило пам’яті та повторна перевірка.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Ваш код
 # Напишіть власний код за умовою.

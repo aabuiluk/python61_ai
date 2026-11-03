@@ -13,10 +13,7 @@ ADR — короткий запис рішення: контекст, вимог
 сесія B не бачить історії A. Запишіть ризик: оновлення API можуть вимагати міграції,
 а історія в RAM зникає після перезапуску. На 44 перевіримо саме ці наслідки.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
 
 # %% Основний код
 adr = {"context":"DocFlow: 3 локальні правила","decision":"langchain-core + existing retrieval",

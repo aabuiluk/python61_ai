@@ -17,10 +17,11 @@ RunnableWithMessageHistory читає та поповнює історію че�
 явний message history. Контроль історії агентів у сучасних графах може використовувати
 інші API й checkpointers; це окреме продовження, а не прихована властивість цього wrapper.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.messages import AIMessage
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnableLambda
+from langchain_core.runnables.history import RunnableWithMessageHistory
 
 # %% Основний код
 store = {}

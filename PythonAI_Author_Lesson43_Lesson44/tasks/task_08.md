@@ -1,6 +1,6 @@
 ### Зараз виконайте завдання 8
 
-Відкрийте `tasks/task_08.py`. Це копія `examples/live_08.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_08.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_08.py`. Це копія `examples/live_08.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_08` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 8.** Додайте ще два питання і запустіть їх одним `batch`. Надрукуйте відповіді та кількість викликів API.
 

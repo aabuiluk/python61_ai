@@ -18,10 +18,8 @@ task — актуальне питання. Історія допомагає з
 Сума інструкцій, даних, історії та резерву відповіді має вкладатися в ліміт конкретної моделі;
 рахунок слів нижче — тільки наочна евристика, не токенізація Gemini чи ChatGPT.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
+from PythonAI_Author_Lesson39_Lesson40.workshop import CATALOG
 
 # %% Основний код
 instructions = "Використовуйте актуальний каталог; стару ціну не переносіть."

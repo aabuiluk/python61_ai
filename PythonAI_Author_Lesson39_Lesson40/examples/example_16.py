@@ -14,10 +14,7 @@
 **Exit ticket:** коли потрібен інструмент, а не лише промпт? Чому точна цитата ще не доводить
 правильність відповіді? Де перечитати: блок 6 (дія), блок 12 (підтримка цитатою), блок 16 (оцінка).
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from PythonAI_Author_Lesson39_Lesson40.workshop import validate
 
 # %% Основний код
 fixtures = ['{"book_id":"b01","price":320}', '{"book_id":"b02","price":450}', '{"book_id":"b03","price":1}']

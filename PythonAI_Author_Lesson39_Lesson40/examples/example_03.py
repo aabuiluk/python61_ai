@@ -15,10 +15,6 @@
 positive — тільки позитив, negative — тільки негатив, mixed — обидва. Один запуск не доводить,
 що few-shot завжди кращий. Приклади мають охоплювати межові випадки, а не повторювати один клас.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Основний код
 review = "Доставка швидка, але обкладинка пошкоджена"

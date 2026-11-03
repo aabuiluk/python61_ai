@@ -1,7 +1,7 @@
 """Local Streamlit UI -> real OpenAI API -> local tools/RAG."""
 import streamlit as st
-from agent import run_agent
-from vectors import rag
+from PythonAI_Author_Lesson41_Lesson42.local_runtime.agent import run_agent
+from PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors import rag
 
 st.title('Помічник українського магазину')
 mode=st.radio('Режим',['RAG','Агент'])

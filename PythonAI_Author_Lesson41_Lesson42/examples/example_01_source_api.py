@@ -1,9 +1,5 @@
 """Розібраний навчальний приклад; API викликається тільки при запуску."""
-import sys
-from pathlib import Path
-PACKAGE = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PACKAGE))
-from api_client import send
+from PythonAI_Author_Lesson41_Lesson42.api_client import send
 
 def run():
     response = send({'instructions': 'Відповідай тільки за документом. Назви джерело.',

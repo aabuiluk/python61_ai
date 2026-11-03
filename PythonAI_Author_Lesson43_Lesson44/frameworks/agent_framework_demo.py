@@ -1,15 +1,12 @@
 """Microsoft Agent Framework + OpenAI: наступник AutoGen і Semantic Kernel.
 
-Встановлення: python -m pip install -r frameworks/requirements-agent-framework.txt
-Запуск з папки пакета: python frameworks/agent_framework_demo.py
+Встановлення: python -m pip install -r PythonAI_Author_Lesson43_Lesson44/frameworks/requirements-agent-framework.txt
+Запуск з кореня репозиторію: python -m PythonAI_Author_Lesson43_Lesson44.frameworks.agent_framework_demo
 """
 import asyncio
-from pathlib import Path
 import json
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import DOCS, retrieve, validate_answer
-from live_openai import MODEL, EMBEDDING_MODEL, require_key
+from PythonAI_Author_Lesson43_Lesson44.workshop import DOCS, retrieve, validate_answer
+from PythonAI_Author_Lesson43_Lesson44.live_openai import EMBEDDING_MODEL, MODEL, require_key
 
 require_key()  # читає OPENAI_API_KEY з .env; без ключа скрипт завершується
 

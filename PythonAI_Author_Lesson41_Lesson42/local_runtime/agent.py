@@ -1,11 +1,8 @@
 """Bounded local orchestration; tools execute here, LLM is real OpenAI API."""
 import json
-from pathlib import Path
 import sys
-PACKAGE=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(PACKAGE))
-from api_client import send
-from vectors import retrieve
+from PythonAI_Author_Lesson41_Lesson42.api_client import send
+from PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors import retrieve
 
 def execute(name,args):
     if not isinstance(args,dict): raise ValueError('Аргументи мають бути об’єктом')

@@ -17,10 +17,7 @@ Vertex AI у програмі — керована Google Cloud-платформ
 Не встановлюйте LlamaIndex із типовими модельними провайдерами заради таблиці: це може
 створити непотрібні вимоги до ключів. Огляд безкоштовний, а запуски моделей — окрема умова провайдера.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
 
 # %% Основний код
 choices = [

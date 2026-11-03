@@ -13,7 +13,7 @@
     python -m pip install -r PythonAI_Author_Lesson43_Lesson44/requirements.txt -r PythonAI_Author_Lesson43_Lesson44/requirements-live.txt
 
 Ключ: якщо є `PythonAI_Author_Lesson41_Lesson42/.env`, його буде знайдено автоматично. Інакше скопіюйте
-`.env.example` у `.env` у цій папці. Запуск з цієї папки: `python examples/live_01.py`, `python tasks/task_01.py`.
+`.env.example` у `.env` у цій папці. Запуск з кореня репозиторію: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_01`, `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_01`.
 
 `frameworks/` — окремі приклади LangChain, LlamaIndex, LangGraph, CrewAI, AutoGen, Semantic Kernel і
 Microsoft Agent Framework на OpenAI. Що встановити — у `frameworks/README.md`.

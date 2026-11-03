@@ -4,11 +4,11 @@ DocFlow цілком: retrieval → prompt → справжня модель →
 
 Офлайн-версія: examples/example_12.py. Без ключа скрипт друкує «пропущено».
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import *
-from live_openai import *
+import json
+from PythonAI_Author_Lesson43_Lesson44.live_openai import (
+    chain_with, live_json_model, require_key, USAGE,
+)
+from PythonAI_Author_Lesson43_Lesson44.workshop import retrieve, validate_answer
 
 require_key()
 

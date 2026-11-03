@@ -1,5 +1,5 @@
 # file: review_pipeline.py
-from classifier_live import client, MODEL
+from PythonAI_Author_Lesson41_Lesson42.examples.classifier_live import client, MODEL
 
 def call(instructions, text):
     r = client.responses.create(model=MODEL, instructions=instructions,

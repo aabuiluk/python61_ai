@@ -17,10 +17,7 @@ fixture на живу модель, повторіть ці самі кейси 
 Що дав framework? Стандартні контракти компонентів і композицію. Де пам’ять? У сховищі
 конкретної сесії, яке ми явно підставляємо в prompt. Де перечитати: блоки 1, 2, 8, 10, 11.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from PythonAI_Author_Lesson43_Lesson44.workshop import make_chain, retrieve, validate_answer
 
 # %% Основний код
 chain = make_chain()

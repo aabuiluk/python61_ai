@@ -11,10 +11,7 @@ diffusion-модель — створити зображення обклади�
 
 **За 15 хв:** 3 хв пригадати типи; 4 хв приклад; 6 хв власна вправа; 2 хв обговорення.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from PythonAI_Author_Lesson39_Lesson40.workshop import CATALOG
 
 # %% Основний код
 operations = {"визначити тему листа": "classification", "написати опис": "generation"}

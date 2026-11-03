@@ -78,6 +78,14 @@ cd PythonAI_Author_Lesson31_Lesson32
 python Lesson32_05_wine_map.py
 ```
 
+Пари 35–44 (`PythonAI_Author_Lesson35_Lesson36` … `PythonAI_Author_Lesson43_Lesson44`) використовують явні імпорти
+на кшталт `from PythonAI_Author_Lesson43_Lesson44.workshop import retrieve`. Їхні скрипти запускайте з кореня репозиторію
+як модулі або кнопкою Run у PyCharm:
+
+```bash
+python -m PythonAI_Author_Lesson43_Lesson44.examples.live_01
+```
+
 У папках лишилися власні `requirements.txt` — вони потрібні, якщо хочете поставити залежності лише для однієї пари.
 
 ## Пари

@@ -8,11 +8,11 @@
 
 Подивіться examples/live_03.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import *
-from live_openai import *
+from langchain_core.runnables import RunnableLambda
+from PythonAI_Author_Lesson43_Lesson44.live_openai import (
+    chain_with, live_json_model, print_usage, require_key,
+)
+from PythonAI_Author_Lesson43_Lesson44.workshop import fixture_model
 
 require_key()
 

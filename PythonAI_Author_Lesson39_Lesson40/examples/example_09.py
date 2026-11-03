@@ -28,10 +28,8 @@ JSON. Дані відділяйте від інструкцій і прямо п
 Контрольний приклад: правильні ключі з price=299 не проходять предметну перевірку.
 Для Gemini та ChatGPT лишається той самий формат і той самий Python-валідатор.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
+from PythonAI_Author_Lesson39_Lesson40.workshop import CATALOG
 
 # %% Основний код
 context = json.dumps(CATALOG[0], ensure_ascii=False)

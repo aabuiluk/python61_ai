@@ -3,7 +3,7 @@ import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-from rag_live import retrieve
+from PythonAI_Author_Lesson41_Lesson42.examples.rag_live import retrieve
 
 load_dotenv()
 client = OpenAI()

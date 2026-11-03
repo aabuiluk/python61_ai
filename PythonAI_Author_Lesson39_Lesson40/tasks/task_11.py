@@ -8,10 +8,6 @@ source_version, останню пару user/assistant та нову задач�
 
 Критерій: Є п’ять модулів, актуальна ціна 450, перевірений стан і пара реплік; стара ціна не перенесена.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Ваш код
 # Напишіть власний код за умовою.

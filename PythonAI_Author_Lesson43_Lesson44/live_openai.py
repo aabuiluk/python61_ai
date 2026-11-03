@@ -14,7 +14,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 
 try:  # у скриптах беремо спільні функції з workshop.py; у ноутбуці вони вже визначені
-    from workshop import DOCS, context_for, retrieve  # noqa: F401
+    from PythonAI_Author_Lesson43_Lesson44.workshop import context_for, DOCS, retrieve
 except ImportError:
     pass
 

@@ -7,10 +7,6 @@
 
 Критерій: Чотири фрагменти; останній 16–20; два крайові випадки перевірені.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Ваш код
 # Напишіть власний код за умовою.

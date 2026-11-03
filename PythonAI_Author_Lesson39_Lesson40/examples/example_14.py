@@ -19,10 +19,7 @@ Cloud project групує ресурси, квоти та зв'язок із bi
 Не створюйте проєкт, billing account чи trial. Код нижче перевіряє навчальну конфігурацію,
 а не реальні дозволи Google Cloud і не готовність до продакшену.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
 
 # %% Основний код
 architecture = {"client":"shop_app","identity":"service_account","permission":"model_invoke",

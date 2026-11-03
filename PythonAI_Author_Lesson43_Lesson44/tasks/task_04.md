@@ -1,6 +1,6 @@
 ### Зараз виконайте завдання 4
 
-Відкрийте `tasks/task_04.py`. Це копія `examples/live_04.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_04.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_04.py`. Це копія `examples/live_04.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_04` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 4.** Отримайте відповідь про самовивіз у Львові напряму через OpenAI SDK, без LangChain. Надрукуйте відповідь і кількість токенів.
 

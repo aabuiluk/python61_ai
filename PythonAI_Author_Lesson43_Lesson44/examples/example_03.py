@@ -15,10 +15,7 @@ Agent у циклі обирає наступну дію за станом і ob
 У прикладі карта зв’язує власні функції з компонентами майбутнього DocFlow. На 44 ми
 використаємо справжні Runnable. На 43 порівнюємо архітектури; список назв не є запуском пакетів.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
 
 # %% Основний код
 layers = {"model":"fixture_model або окремий провайдерський конектор",

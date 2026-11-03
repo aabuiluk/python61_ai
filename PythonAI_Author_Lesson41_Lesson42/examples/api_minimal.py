@@ -1,7 +1,7 @@
 # file: api_minimal.py
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from classifier_live import classify
+from PythonAI_Author_Lesson41_Lesson42.examples.classifier_live import classify
 
 app = FastAPI(title='Ukraine Store Demo')
 class Request(BaseModel):

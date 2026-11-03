@@ -15,10 +15,6 @@
 провайдерів у межах одного досліду. Збережіть усі відповіді, модель і дату. При вичерпанні
 безкоштовного ліміту використовуйте fixtures та явно назвіть дослід симуляцією агрегації.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Основний код
 from collections import Counter

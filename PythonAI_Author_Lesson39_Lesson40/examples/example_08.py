@@ -15,10 +15,6 @@ Reflexion — не просто «перевір себе». Після звор
 REFLECTION. Результат кожного збережіть окремо. Код нижче — відтворювана ручна симуляція,
 не автоматичний LLM-агент. Власна критика моделі теж може бути хибною; перевіряйте її джерелом.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Основний код
 draft = {"price":299,"return_days":30}

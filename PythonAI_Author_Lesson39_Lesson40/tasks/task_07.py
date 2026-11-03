@@ -7,10 +7,6 @@
 
 Критерій: Для 800 обрано A+B, 770 грн, score=7; для 600 — None; журнал має два рівні й відкинуті гілки.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Ваш код
 # Напишіть власний код за умовою.

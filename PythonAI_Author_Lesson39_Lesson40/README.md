@@ -4,7 +4,7 @@
 
 16 окремих examples та 16 tasks. Почніть із PythonAI_Author_Lesson39_Lesson40.html/.md/.ipynb у батьківській папці.
 
-Працюйте у спільному середовищі python61_ai. Приклад: python examples/example_01.py. За потреби: python -m pip install -r requirements.txt. Код не потребує API чи оплати. Графічні блоки відокремлені # %%; при запуску .py закрийте вікно схеми для завершення.
+Працюйте у спільному середовищі python61_ai. Приклад: python -m PythonAI_Author_Lesson39_Lesson40.examples.example_01. За потреби: python -m pip install -r requirements.txt. Код не потребує API чи оплати. Графічні блоки відокремлені # %%; при запуску .py закрийте вікно схеми для завершення.
 
 PROMPTS.md та data/prompts.json містять промпти для Gemini або ChatGPT. У кожному блоці є вказівка «Зараз виконайте завдання», критерій і посилання на відповідні файли.
 

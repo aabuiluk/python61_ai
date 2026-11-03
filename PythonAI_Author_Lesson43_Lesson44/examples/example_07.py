@@ -13,10 +13,7 @@ JSON із фігурними дужками передавайте через з
 документа не стає system-повідомленням. Ролі допомагають розділяти контекст, але не є
 самодостатнім захистом від prompt injection: валідатор і межі tools залишаються потрібними.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 
 # %% Основний код
 template = PromptTemplate.from_template("Дані: {context}\nПитання: {question}")

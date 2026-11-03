@@ -11,10 +11,8 @@ LLM-агент. Невідома дія повинна завершитись п
 повертає observation з порожнім списком. LangGraph згодом може організувати переходи стану,
 але не прийме за вас бізнес-рішення, які інструменти дозволені.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
+from PythonAI_Author_Lesson43_Lesson44.workshop import retrieve
 
 # %% Основний код
 request = {"tool":"search_knowledge","arguments":{"question":"Доставка Україною"}}

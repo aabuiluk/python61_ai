@@ -16,7 +16,7 @@
 ## Запуск
 
 Активуйте .venv спільного репозиторію. Або встановіть залежності тільки цієї папки: python -m pip install -r requirements.txt.
-З кореня пакета: python examples/example_01.py; python tasks/task_01.py.
+З кореня репозиторію: python -m PythonAI_Author_Lesson35_Lesson36.examples.example_01; python -m PythonAI_Author_Lesson35_Lesson36.tasks.task_01.
 Можна також запускати з кореня репозиторію, вказавши шлях до файла.
 
 Кожен .py розділений маркерами # %% на контекст, основний код та окрему візуалізацію.

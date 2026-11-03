@@ -22,10 +22,6 @@ AutoGen історично пов’язаний із взаємодією аг�
 і критерії передачі. Навіть найсильніший framework не має права нескінченно повторювати запит.
 У прикладі нижче — ручна схема переходів, не імпорт LangGraph або CrewAI.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
 
 # %% Основний код
 edges = {"retrieve":"answer","answer":"validate","validate_ok":"stop",

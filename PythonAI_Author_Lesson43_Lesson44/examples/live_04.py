@@ -4,11 +4,11 @@
 
 Офлайн-версія: examples/example_04.py. Без ключа скрипт друкує «пропущено».
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import *
-from live_openai import *
+import json
+from PythonAI_Author_Lesson43_Lesson44.live_openai import (
+    chain_with, client, live_json_model, MODEL, print_usage, record_usage, require_key,
+)
+from PythonAI_Author_Lesson43_Lesson44.workshop import context_for
 
 require_key()
 

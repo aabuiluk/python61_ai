@@ -4,11 +4,10 @@
 
 Офлайн-версія: examples/example_10.py. Без ключа скрипт друкує «пропущено».
 """
-from pathlib import Path
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import *
-from live_openai import *
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables.history import RunnableWithMessageHistory
+from PythonAI_Author_Lesson43_Lesson44.live_openai import live_model, print_usage, require_key
 
 require_key()
 

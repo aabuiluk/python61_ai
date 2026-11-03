@@ -9,17 +9,12 @@
 
 Готово, якщо: CSV існує, ID після читання збігаються, self-history відсутня, fallback підписано.
 """
-from pathlib import Path
-import sys
 
 # Працює і з кореня репозиторію, і з папки examples/tasks.
-PACKAGE = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(PACKAGE))
-from workshop import (
-    np, pd, plt, KMeans, DBSCAN, StandardScaler, TfidfVectorizer,
-    cosine_similarity, books, events, train, test, cutoff, customer_data,
-    rating_matrix, user_similarities, predict_rating, popularity,
-    recommend_user, OUTPUT_DIR,
+from PythonAI_Author_Lesson35_Lesson36.workshop import (
+    books, cosine_similarity, customer_data, cutoff, DBSCAN, events, KMeans, np, OUTPUT_DIR, pd,
+    plt, popularity, predict_rating, rating_matrix, recommend_user, StandardScaler, test,
+    TfidfVectorizer, train, user_similarities,
 )
 
 # %% Початковий контекст

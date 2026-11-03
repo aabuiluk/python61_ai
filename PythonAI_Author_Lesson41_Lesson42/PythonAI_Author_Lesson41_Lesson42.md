@@ -31,7 +31,7 @@
 python -m pip install -r requirements-local.txt
 ```
 
-Кореневий requirements.txt теж підключає ці залежності. Для команд запуску нижче перейдіть у PythonAI_Author_Lesson41_Lesson42. Ключ — у .env біля api_client.py. OPENAI_EMBEDDING_MODEL=text-embedding-3-small. Дані й індекс залишаються локально, embeddings і генерація виконуються OpenAI API.
+Кореневий requirements.txt теж підключає ці залежності. Команди запуску нижче виконуйте з кореня репозиторію. Ключ — у .env біля api_client.py. OPENAI_EMBEDDING_MODEL=text-embedding-3-small. Дані й індекс залишаються локально, embeddings і генерація виконуються OpenAI API.
 
 
 ## TXT, PDF і CSV → локальні документи
@@ -48,7 +48,7 @@ local_products.csv: lamp → «Настільна лампа коштує 850 г
 Після прикладу виконайте L01: прочитайте 3 файли, отримайте 4 документи та перевірте source/page/row. Додайте свій товар. Змініть розмір чанків і overlap, перевірте ID. API на цьому кроці ще не потрібний.
 
 ```bash
-python local_runtime/ingest.py
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.ingest
 ```
 
 ## Справжні embeddings OpenAI → локальний vector search
@@ -65,9 +65,9 @@ Embeddings отримуємо через справжній OpenAI API з вла
 L02: побудуйте індекс із власним .env. Відкрийте JSON, перевірте embedding_model і dimensions. Знайдіть лампу прямим питанням і перефразуванням. L03: виконайте два ask, перевірте JSON answer/sources та вручну зіставте факти. Зафіксуйте usage embedding та генерації окремо.
 
 ```bash
-python local_runtime/vectors.py build
-python local_runtime/vectors.py search "Скільки коштує лампа?"
-python local_runtime/vectors.py ask "Яка доставка Україною?"
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors build
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors search "Скільки коштує лампа?"
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors ask "Яка доставка Україною?"
 ```
 
 ## Локальна Knowledge Base, збереження та перевірка RAG
@@ -84,7 +84,7 @@ python local_runtime/vectors.py ask "Яка доставка Україною?"
 L04: складіть 5 питань із очікуваними source та один відсутній факт. Порахуйте recall@2, перевірте невідомий ID, зіпсований JSON і prompt injection у копії документа. Порівняйте TF-IDF з embeddings на однакових питаннях; не підміняйте живі результати fixtures.
 
 ```bash
-python local_runtime/vectors.py search "Яка доставка Україною?"
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.vectors search "Яка доставка Україною?"
 ```
 
 ## Tools, Function Calling та локальна оркестрація
@@ -101,7 +101,7 @@ run_agent отримує call_id і додає результат з тим са
 L05: після готового прикладу виконайте комбіноване питання. Покажіть два tools, call_id і фінальну відповідь. Перевірте allowlist, типи, зайві параметри й вичерпання ліміту. Записуйте назви tools, час та usage без ключів.
 
 ```bash
-python local_runtime/agent.py "Яка ціна лампи і доставка Україною?"
+python -m PythonAI_Author_Lesson41_Lesson42.local_runtime.agent "Яка ціна лампи і доставка Україною?"
 ```
 
 ## ReAct, Planner–Executor, Knowledge Retriever та фреймворки

@@ -10,10 +10,7 @@
 
 **За 15 хв:** 3 хв структура промпту; 4 хв приклад; 6 хв вправа; 2 хв перевірка.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+from PythonAI_Author_Lesson39_Lesson40.workshop import validate
 
 # %% Основний код
 fixture = '{"book_id":"b01","price":320}'

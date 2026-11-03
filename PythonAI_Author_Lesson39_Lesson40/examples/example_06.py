@@ -13,10 +13,8 @@ ReAct поєднує планування дії та отримання спо�
 Поверніть тільки {"action":"lookup_book","book_id":"b01"}. Не вигадуйте observation».
 Виконайте lookup у Python та наступною реплікою передайте фактичний результат.
 """
-from pathlib import Path
-import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from workshop import *
+import json
+from PythonAI_Author_Lesson39_Lesson40.workshop import CATALOG
 
 # %% Основний код
 request = {"action":"lookup_book", "book_id":"b01"}  # ручний запит

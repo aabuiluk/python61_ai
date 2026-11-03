@@ -39,8 +39,8 @@ RAG-пошук справжній локальний TF-IDF; це лексичн
 4. Ноутбук: встановіть `python -m pip install jupyterlab ipykernel` через Python цього ж середовища,
    запустіть `python -m jupyterlab` і відкрийте `PythonAI_Author_Lesson43_Lesson44.ipynb`.
    Виконуйте згори вниз. Усі демонстрації мають власні вхідні дані; завдання пишіть у комірках із їхнім номером.
-5. Окремий приклад: `python PythonAI_Author_Lesson43_Lesson44/examples/example_01.py`;
-   завдання: `python PythonAI_Author_Lesson43_Lesson44/tasks/task_01.py`.
+5. Окремий приклад: `python -m PythonAI_Author_Lesson43_Lesson44.examples.example_01`;
+   завдання: `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_01`.
    У цих командах `python` означає Python активного середовища; без активації вкажіть повний шлях з кроку 3.
 6. HTML — автономна читанка з виконаними прикладами та схемами, Python у ньому не запускається.
    Меню зліва залишається на місці при прокрутці; на телефоні воно над текстом.
@@ -62,7 +62,7 @@ live-прикладу з 1–2 місцями `TODO`: подивіться пр�
    `PythonAI_Author_Lesson43_Lesson44` і вставте свій `OPENAI_API_KEY`.
 2. З кореня репозиторію встановіть пакети:
    `python -m pip install -r PythonAI_Author_Lesson43_Lesson44/requirements.txt -r PythonAI_Author_Lesson43_Lesson44/requirements-live.txt`.
-3. Запускайте з папки пакета: `python examples/live_03.py`, `python tasks/task_03.py`.
+3. Запускайте з кореня репозиторію: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_03`, `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_03`.
    У ноутбуці один раз виконайте комірку live-налаштування.
 
 Модель за замовчуванням — `gpt-4.1-mini`, embeddings — `text-embedding-3-small`; змінити
@@ -238,7 +238,7 @@ plt.show()
 
 TF-IDF шукає однакові слова. Embeddings порівнюють зміст. Перевірте питання, у якому немає слова «доставка».
 
-Запуск: `python examples/live_01.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_01` (без ключа крок буде пропущено).
 
 ```python
 import math
@@ -279,7 +279,7 @@ print_usage()
 
 ### Зараз виконайте завдання 1
 
-Відкрийте `tasks/task_01.py`. Це копія `examples/live_01.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_01.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_01.py`. Це копія `examples/live_01.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_01` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 1.** Перепишіть питання про самовивіз без слів «самовивіз» і «Львів». Порівняйте TF-IDF і embeddings. Потім додайте поріг: результати зі score нижче `threshold` не повертаються.
 
@@ -388,7 +388,7 @@ plt.show()
 
 Тепер рішення «викликати інструмент» ухвалює справжня модель. Allowlist, ліміт кроків і журнал лишаються в нашому коді.
 
-Запуск: `python examples/live_02.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_02` (без ключа крок буде пропущено).
 
 ```python
 tools = [{"type": "function", "name": "search_knowledge", "strict": True,
@@ -438,7 +438,7 @@ print_usage()
 
 ### Зараз виконайте завдання 2
 
-Відкрийте `tasks/task_02.py`. Це копія `examples/live_02.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_02.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_02.py`. Це копія `examples/live_02.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_02` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 2.** Запустіть агентний цикл з `examples/live_02.py` на своєму питанні: о котрій відкривається магазин. Додайте перевірку allowlist: якщо модель викликала інструмент не зі списку `ALLOWED`, програма зупиняється з помилкою.
 
@@ -544,7 +544,7 @@ plt.show()
 
 Шари ті самі: context → prompt → model → parser. Змінюється лише model-вузол: замість `fixture_model` стоїть `live_json_model`.
 
-Запуск: `python examples/live_03.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_03` (без ключа крок буде пропущено).
 
 ```python
 question = "Доставка Україною"
@@ -572,7 +572,7 @@ tool selection, step limit. Розкладіть їх за model/chain/retrieval
 
 ### Зараз виконайте завдання 3
 
-Відкрийте `tasks/task_03.py`. Це копія `examples/live_03.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_03.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_03.py`. Це копія `examples/live_03.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_03` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 3.** Запустіть той самий DocFlow-ланцюжок двічі: з `fixture_model` і з OpenAI. Порівняйте відповіді на трьох питаннях.
 
@@ -674,7 +674,7 @@ plt.show()
 
 Той самий запит двома способами: сирим OpenAI SDK без фреймворку і через LangChain-ланцюжок.
 
-Запуск: `python examples/live_04.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_04` (без ключа крок буде пропущено).
 
 ```python
 question = "Доставка Україною"
@@ -712,7 +712,7 @@ Cloud-доступу з IAM. Дайте таблицю: сценарій, мін
 
 ### Зараз виконайте завдання 4
 
-Відкрийте `tasks/task_04.py`. Це копія `examples/live_04.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_04.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_04.py`. Це копія `examples/live_04.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_04` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 4.** Отримайте відповідь про самовивіз у Львові напряму через OpenAI SDK, без LangChain. Надрукуйте відповідь і кількість токенів.
 
@@ -808,7 +808,7 @@ plt.show()
 
 Ручний граф станів answer → validate → stop, але відповідь дає справжня модель. Ліміт повторів задає програма.
 
-Запуск: `python examples/live_05.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_05` (без ключа крок буде пропущено).
 
 ```python
 def run_docflow(question, max_attempts=2):
@@ -856,7 +856,7 @@ reviewer звіряє її з джерелами. Дозволено один re
 
 ### Зараз виконайте завдання 5
 
-Відкрийте `tasks/task_05.py`. Це копія `examples/live_05.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_05.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_05.py`. Це копія `examples/live_05.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_05` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 5.** Зробіть цикл повторів: викликайте ланцюжок, доки відповідь не пройде `validate_answer`, але не більше 2 разів. Перевірте на «Самовивіз у Львові» і на «Марсіанський телепорт».
 
@@ -945,7 +945,7 @@ plt.show()
 
 Модель може запропонувати чернетку ADR. Перевірку форми робить код, а рішення ухвалює команда.
 
-Запуск: `python examples/live_06.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_06` (без ключа крок буде пропущено).
 
 ```python
 REQUIRED = {"context", "decision", "rejected", "risk", "acceptance"}
@@ -980,7 +980,7 @@ acceptance. Запропонуйте мінімальний стек і конк
 
 ### Зараз виконайте завдання 6
 
-Відкрийте `tasks/task_06.py`. Це копія `examples/live_06.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_06.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_06.py`. Це копія `examples/live_06.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_06` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 6.** Попросіть модель написати чернетку ADR на інше питання: «Чи потрібен LlamaIndex для 3 правил магазину?». Перевірте, що в чернетці рівно 5 потрібних ключів, і надрукуйте рішення.
 
@@ -1066,7 +1066,7 @@ plt.show()
 
 Шаблон відправляємо справжній моделі. Окремо перевіряємо документ з інʼєкцією всередині контексту.
 
-Запуск: `python examples/live_07.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_07` (без ключа крок буде пропущено).
 
 ```python
 chat = ChatPromptTemplate.from_messages([
@@ -1101,7 +1101,7 @@ ChatPromptTemplate.invoke(...).to_messages() на context і question.
 
 ### Зараз виконайте завдання 7
 
-Відкрийте `tasks/task_07.py`. Це копія `examples/live_07.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_07.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_07.py`. Це копія `examples/live_07.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_07` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 7.** Допишіть chat-шаблон: додайте повідомлення human зі змінними `{context}` і `{question}`. Запитайте, коли працює магазин, і передайте знайдений контекст.
 
@@ -1189,7 +1189,7 @@ plt.show()
 
 Той самий LCEL `prompt | model | parser`, але model-вузол — справжній виклик API. `invoke` робить один запит, `batch` — кілька.
 
-Запуск: `python examples/live_08.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_08` (без ключа крок буде пропущено).
 
 ```python
 prompt = ChatPromptTemplate.from_messages([("system", "Відповідайте одним коротким реченням."),
@@ -1222,7 +1222,7 @@ dict → PromptValue → AIMessage → str. Наведіть мінімальн�
 
 ### Зараз виконайте завдання 8
 
-Відкрийте `tasks/task_08.py`. Це копія `examples/live_08.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_08.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_08.py`. Це копія `examples/live_08.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_08` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 8.** Додайте ще два питання і запустіть їх одним `batch`. Надрукуйте відповіді та кількість викликів API.
 
@@ -1310,7 +1310,7 @@ plt.show()
 
 Справжня модель отримує чотири питання. Подивіться, де контракт пройдено, а факт хибний.
 
-Запуск: `python examples/live_09.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_09` (без ключа крок буде пропущено).
 
 ```python
 chain = chain_with(live_json_model)
@@ -1348,7 +1348,7 @@ print_usage()
 
 ### Зараз виконайте завдання 9
 
-Відкрийте `tasks/task_09.py`. Це копія `examples/live_09.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_09.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_09.py`. Це копія `examples/live_09.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_09` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 9.** Перевірте три питання справжньою моделлю: доставка Україною, «Марсіанський телепорт» і доставка в Польщу. Для кожного надрукуйте результат `validate_answer` і чи збігається answer дослівно з джерелом.
 
@@ -1451,7 +1451,7 @@ plt.show()
 
 `RunnableWithMessageHistory` зі справжньою моделлю: сесія A представляється, сесія B ставить те саме питання.
 
-Запуск: `python examples/live_10.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_10` (без ключа крок буде пропущено).
 
 ```python
 store = {}
@@ -1494,7 +1494,7 @@ RunnableWithMessageHistory. Є A з двома питаннями та B з од
 
 ### Зараз виконайте завдання 10
 
-Відкрийте `tasks/task_10.py`. Це копія `examples/live_10.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_10.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_10.py`. Це копія `examples/live_10.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_10` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 10.** Перевірте ізоляцію пам'яті: у сесії A представтесь і запитайте своє ім'я, у сесії B запитайте ім'я без представлення.
 
@@ -1587,7 +1587,7 @@ plt.show()
 
 Бюджет памʼяті в справжніх токенах: та сама відповідь з усією історією і з останніми чотирма повідомленнями.
 
-Запуск: `python examples/live_11.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_11` (без ключа крок буде пропущено).
 
 ```python
 history = []
@@ -1621,7 +1621,7 @@ system-інструкції лишаються окремо. Поясніть р
 
 ### Зараз виконайте завдання 11
 
-Відкрийте `tasks/task_11.py`. Це копія `examples/live_11.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_11.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_11.py`. Це копія `examples/live_11.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_11` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 11.** Порівняйте ціну запиту з повною історією і з двома останніми повідомленнями. Надрукуйте `input_tokens` обох варіантів.
 
@@ -1712,7 +1712,7 @@ plt.show()
 
 DocFlow цілком: retrieval → prompt → справжня модель → parser → validate → журнал з токенами.
 
-Запуск: `python examples/live_12.py` (без ключа крок буде пропущено).
+Запуск: `python -m PythonAI_Author_Lesson43_Lesson44.examples.live_12` (без ключа крок буде пропущено).
 
 ```python
 chain = chain_with(live_json_model)
@@ -1747,7 +1747,7 @@ print("Офлайн-тести не змінились: make_chain() і далі
 
 ### Зараз виконайте завдання 12
 
-Відкрийте `tasks/task_12.py`. Це копія `examples/live_12.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_12.py` з папки пакета. Потрібен OPENAI_API_KEY.
+Відкрийте `tasks/task_12.py`. Це копія `examples/live_12.py` з місцями `TODO`: допишіть їх і запустіть `python -m PythonAI_Author_Lesson43_Lesson44.tasks.task_12` з кореня репозиторію. Потрібен OPENAI_API_KEY.
 
 **Завдання 12.** Зберіть функцію `docflow(question)`, яка повертає один запис журналу: питання, answer, sources, valid і токени. Запустіть її на двох питаннях.
 

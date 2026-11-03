@@ -1,14 +1,11 @@
 """LlamaIndex + OpenAI: індекс документів, embeddings і відповідь з джерелами.
 
-Встановлення: python -m pip install -r frameworks/requirements-llamaindex.txt
-Запуск з папки пакета: python frameworks/llamaindex_demo.py
+Встановлення: python -m pip install -r PythonAI_Author_Lesson43_Lesson44/frameworks/requirements-llamaindex.txt
+Запуск з кореня репозиторію: python -m PythonAI_Author_Lesson43_Lesson44.frameworks.llamaindex_demo
 """
-from pathlib import Path
 import json
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from workshop import DOCS, retrieve, validate_answer
-from live_openai import MODEL, EMBEDDING_MODEL, require_key
+from PythonAI_Author_Lesson43_Lesson44.workshop import DOCS, retrieve, validate_answer
+from PythonAI_Author_Lesson43_Lesson44.live_openai import EMBEDDING_MODEL, MODEL, require_key
 
 require_key()  # читає OPENAI_API_KEY з .env; без ключа скрипт завершується
 
