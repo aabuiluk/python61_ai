@@ -9,23 +9,28 @@
 | `langchain_demo.py` | ланцюжок `prompt \| ChatOpenAI \| parser` і виклик інструмента | `python -m pip install -r frameworks/requirements-langchain.txt` |
 | `llamaindex_demo.py` | індекс документів, embeddings, відповідь з id джерела | `python -m pip install -r frameworks/requirements-llamaindex.txt` |
 | `langgraph_demo.py` | граф станів retrieve → answer → validate з лімітом повторів | `python -m pip install -r frameworks/requirements-langgraph.txt` |
-| `crewai_demo.py` | дві ролі (дослідник і редактор) виконують задачі по черзі | `python -m pip install -r frameworks/requirements-crewai.txt` |
+| `crewai_demo.py` | дві ролі (дослідник і редактор) виконують задачі по черзі | окреме середовище Python 3.12, див. нижче |
 | `autogen_demo.py` | агент AutoGen з інструментом пошуку | `python -m pip install -r frameworks/requirements-autogen.txt` |
 | `semantic_kernel_demo.py` | агент Semantic Kernel з плагіном | окреме середовище Python 3.12, див. нижче |
 | `agent_framework_demo.py` | Microsoft Agent Framework — наступник AutoGen і Semantic Kernel | `python -m pip install -r frameworks/requirements-agent-framework.txt` |
 
 Запуск з папки `PythonAI_Author_Lesson43_Lesson44`: `python frameworks/langchain_demo.py`.
 
-Ставте лише той фреймворк, який запускаєте. Якщо потрібні всі одразу, крім Semantic Kernel:
-`python -m pip install -r frameworks/requirements-all.txt` (близько 1.4 ГБ). CrewAI і LlamaIndex можуть
-понизити версію пакета `openai` до 2.x. Це нормально: приклади й завдання 41–44 з нею працюють.
+Ставте лише той фреймворк, який запускаєте. Якщо потрібні всі одразу, крім CrewAI і Semantic Kernel:
+`python -m pip install -r frameworks/requirements-all.txt` (близько 1.4 ГБ, працює на Python 3.14). LlamaIndex
+може понизити версію пакета `openai` до 2.x. Це нормально: приклади й завдання 41–44 з нею працюють.
 
-**Semantic Kernel** поки не встановлюється на Python 3.14. Створіть для нього окреме середовище:
+**CrewAI і Semantic Kernel** поки не підтримують Python 3.14 (`pip` повідомить «No matching distribution»).
+Для них створіть окреме середовище на Python 3.12 у корені репозиторію:
 
-    python3.12 -m venv .venv-sk
-    .venv-sk/bin/python -m pip install -r frameworks/requirements-semantic-kernel.txt
-    .venv-sk/bin/python frameworks/semantic_kernel_demo.py
+    python3.12 -m venv .venv-312
+    .venv-312/bin/python -m pip install -r PythonAI_Author_Lesson43_Lesson44/frameworks/requirements-crewai.txt
+    .venv-312/bin/python -m pip install -r PythonAI_Author_Lesson43_Lesson44/frameworks/requirements-semantic-kernel.txt
+    cd PythonAI_Author_Lesson43_Lesson44
+    ../.venv-312/bin/python frameworks/crewai_demo.py
+    ../.venv-312/bin/python frameworks/semantic_kernel_demo.py
 
+Python 3.12 на macOS: `brew install python@3.12` або інсталятор з python.org.
 На Windows замість `.venv-sk/bin/python` — `.venv-sk\Scripts\python`.
 
 Що порівнювати: у кожному фреймворку модель лише пропонує дію або текст. Пошук, перевірку джерел і

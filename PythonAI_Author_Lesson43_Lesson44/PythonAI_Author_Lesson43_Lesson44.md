@@ -73,7 +73,8 @@ live-прикладу з 1–2 місцями `TODO`: подивіться пр�
 Окремі приклади фреймворків на OpenAI лежать у папці `frameworks/`: `langchain_demo.py`,
 `llamaindex_demo.py`, `langgraph_demo.py`, `crewai_demo.py`, `autogen_demo.py`,
 `semantic_kernel_demo.py` і `agent_framework_demo.py`. Що встановити для кожного —
-у `frameworks/README.md`. Ставте лише той фреймворк, який запускаєте.
+у `frameworks/README.md`. Ставте лише той фреймворк, який запускаєте. CrewAI і Semantic Kernel
+поки не працюють на Python 3.14: для них потрібне окреме середовище Python 3.12.
 <!-- live-openai:end -->
 ## Додатково: той самий промпт у Gemini або ChatGPT
 

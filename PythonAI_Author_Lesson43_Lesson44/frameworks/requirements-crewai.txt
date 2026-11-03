@@ -1,4 +1,4 @@
-# CrewAI + OpenAI
+# CrewAI + OpenAI. Лише Python 3.10–3.13 (на 3.14 pip його не встановлює).
 -r ../requirements.txt
 -r ../requirements-live.txt
 crewai>=1.15,<2

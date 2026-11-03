@@ -1,9 +1,7 @@
 """Semantic Kernel + OpenAI: агент з плагіном, функцію якого модель викликає сама.
 
-Semantic Kernel поки не встановлюється на Python 3.14. Потрібне окреме середовище 3.12:
-    python3.12 -m venv .venv-sk
-    .venv-sk/bin/python -m pip install -r frameworks/requirements-semantic-kernel.txt
-    .venv-sk/bin/python frameworks/semantic_kernel_demo.py
+Semantic Kernel поки не встановлюється на Python 3.14. Потрібне окреме середовище 3.10–3.13,
+див. frameworks/README.md (розділ про .venv-312).
 """
 import asyncio
 from pathlib import Path

@@ -1,7 +1,7 @@
 """CrewAI + OpenAI: дві ролі (дослідник і редактор) виконують задачі по черзі.
 
-Встановлення: python -m pip install -r frameworks/requirements-crewai.txt
-Запуск з папки пакета: python frameworks/crewai_demo.py
+CrewAI поки не встановлюється на Python 3.14. Потрібне окреме середовище 3.10–3.13,
+див. frameworks/README.md (розділ про .venv-312).
 """
 import os
 os.environ.setdefault("CREWAI_TELEMETRY_OPT_OUT", "true")  # не надсилати телеметрію
