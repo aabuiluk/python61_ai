@@ -1,18 +1,36 @@
-"""**Завдання 10.** Створіть wrapper з двома сесіями. Надішліть два питання в A і одне в B.
-Перевірте кількість повідомлень (4 і 2), порядок human/ai та відсутність тексту A
-в історії B. Покажіть, що store є локальною пам’яттю процесу.
+"""**Завдання 10.** Перевірте ізоляцію пам'яті: у сесії A представтесь і запитайте своє ім'я, у сесії B запитайте ім'я без представлення.
 
-Підказки: 1. Новий store для вправи. 2. Окремий session_id у config. 3. Один invoke додає human та ai.
+Підказки:
+1. Функція `ask(session, question)` уже готова, потрібні лише два виклики.
+2. Кількість повідомлень у кожній сесії друкує останній рядок.
 
-Готово, якщо: Сесія A має 4 повідомлення, B — 2; порядок human/ai збережено, витоку між сесіями немає.
+Готово, якщо: Сесія A називає ваше ім'я, сесія B — ні. У `store` у сесії A 4 повідомлення, у B — 2.
 
-Окремі файли: examples/example_10.py і tasks/task_10.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_10.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+store = {}
+def history_for(session_id):
+    return store.setdefault(session_id, InMemoryChatMessageHistory())
+
+prompt = ChatPromptTemplate.from_messages([("system", "Ви консультант магазину. Відповідайте коротко."),
+                                           MessagesPlaceholder("history"), ("human", "{question}")])
+chat = RunnableWithMessageHistory(prompt | live_model, history_for,
+                                  input_messages_key="question", history_messages_key="history")
+
+def ask(session, question):
+    reply = chat.invoke({"question": question}, config={"configurable": {"session_id": session}})
+    print(f"[{session}] {question} → {reply.content}")
+
+ask("A", "Мене звати Олена.")  # можна вказати своє ім'я
+# TODO 1: у сесії A запитайте «Як мене звати?»
+# TODO 2: у сесії B запитайте «Як мене звати?»
+print({session: len(history.messages) for session, history in store.items()})

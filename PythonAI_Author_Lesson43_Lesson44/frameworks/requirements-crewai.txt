@@ -1,0 +1,4 @@
+# CrewAI + OpenAI
+-r ../requirements.txt
+-r ../requirements-live.txt
+crewai>=1.15,<2

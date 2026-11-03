@@ -1,18 +1,27 @@
-"""**Завдання 3.** Розкладіть шість компонентів за шарами: сформувати prompt, знайти top-k,
-викликати модель, перевірити JSON, обрати наступний tool, обмежити кроки.
-Позначте, які вже реалізовані у 41–42, а які винесете в LCEL.
+"""**Завдання 3.** Запустіть той самий DocFlow-ланцюжок двічі: з `fixture_model` і з OpenAI. Порівняйте відповіді на трьох питаннях.
 
-Підказки: 1. top-k — retrieval. 2. parser — етап chain. 3. tool selection та steps належать керуванню агентом.
+Підказки:
+1. `chain_with(model)` уже складає context → prompt → model → parser.
+2. Потрібен один рядок у циклі: `print("  OpenAI: ", openai_chain.invoke(question))`.
 
-Готово, якщо: Шість компонентів розкладено за шарами; є відповідність власному коду 41–42 і компонентам 44.
+Готово, якщо: Для кожного з трьох питань надруковано дві відповіді. Ви записали, де вони відрізняються (текст, кількість джерел, відмова).
 
-Окремі файли: examples/example_03.py і tasks/task_03.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_03.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+questions = ["Доставка Україною", "Самовивіз у Львові", "Марсіанський телепорт"]
+fixture_chain = chain_with(RunnableLambda(fixture_model))
+openai_chain = chain_with(live_json_model)
+for question in questions:
+    print(question)
+    print("  fixture:", fixture_chain.invoke(question))
+    # TODO: надрукуйте відповідь openai_chain на це саме питання
+print_usage()

@@ -2,8 +2,21 @@
 
 Почніть із PythonAI_Author_Lesson43_Lesson44.html, .md або .ipynb у цій папці чи її батьківському каталозі.
 
-30 + 100 + 100 хв; 12 examples і 12 tasks. Встановлення з папки пакета: python -m pip install -r requirements.txt. Приклад: python examples/example_01.py. Графіка відокремлена # %%; закрийте вікно графіка для завершення скрипта. Повний текст містить «Зараз виконайте завдання», «Готово, якщо» і шляхи до файлів. Обов’язковий код без мережі й API-ключів; реальний langchain-core, ручний модельний fixture. PROMPTS.md: однакові промпти для Gemini та ChatGPT. COVERAGE.md: відповідність програмі.
+30 + 100 + 100 хв; 12 блоків. У кожному блоці:
 
-Студентські tasks містять тільки умови, підказки й місце для коду.
+- `examples/example_NN.py` — офлайн-приклад на `fixture_model`, без мережі;
+- `examples/live_NN.py` — той самий крок зі справжньою моделлю OpenAI;
+- `tasks/task_NN.py` — завдання на OpenAI: копія live-прикладу з 1–2 місцями `TODO`.
 
-Необов'язково, з OPENAI_API_KEY: examples/live_01.py … live_12.py запускають ті самі кроки на справжній моделі OpenAI (live_openai.py, requirements-live.txt, .env.example). Ключ із PythonAI_Author_Lesson41_Lesson42/.env підхоплюється автоматично. Без ключа live-скрипти друкують «пропущено».
+Встановлення з кореня репозиторію:
+
+    python -m pip install -r PythonAI_Author_Lesson43_Lesson44/requirements.txt -r PythonAI_Author_Lesson43_Lesson44/requirements-live.txt
+
+Ключ: якщо є `PythonAI_Author_Lesson41_Lesson42/.env`, його буде знайдено автоматично. Інакше скопіюйте
+`.env.example` у `.env` у цій папці. Запуск з цієї папки: `python examples/live_01.py`, `python tasks/task_01.py`.
+
+`frameworks/` — окремі приклади LangChain, LlamaIndex, LangGraph, CrewAI, AutoGen, Semantic Kernel і
+Microsoft Agent Framework на OpenAI. Що встановити — у `frameworks/README.md`.
+
+Графіка відокремлена `# %%`; закрийте вікно графіка для завершення скрипта.
+PROMPTS.md: однакові промпти для Gemini та ChatGPT. COVERAGE.md: відповідність програмі.

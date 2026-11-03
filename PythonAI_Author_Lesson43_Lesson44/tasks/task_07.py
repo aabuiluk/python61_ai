@@ -1,18 +1,27 @@
-"""**Завдання 7.** Створіть chat-шаблон: system задає відповідь тільки за джерелом; human містить
-context і question. Підставте pickup_lviv та питання про вартість самовивозу.
-Перевірте типи повідомлень і поведінку за відсутності question.
+"""**Завдання 7.** Допишіть chat-шаблон: додайте повідомлення human зі змінними `{context}` і `{question}`. Запитайте, коли працює магазин, і передайте знайдений контекст.
 
-Підказки: 1. ChatPromptTemplate.from_messages. 2. invoke(...).to_messages(). 3. Пропущене question має спричинити KeyError до моделі.
+Підказки:
+1. Формат рядка як у `examples/live_07.py`: `("human", "<context>{context}</context>\nПитання: {question}")`.
+2. Після TODO 1 `chat.input_variables` має показати `['context', 'question']`.
 
-Готово, якщо: Два повідомлення system/human, context підставлено; відсутнє question відхилено до виклику моделі.
+Готово, якщо: Надруковано `['context', 'question']` і одне речення з «09:00» та «18:00».
 
-Окремі файли: examples/example_07.py і tasks/task_07.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_07.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+chat = ChatPromptTemplate.from_messages([
+    ("system", "Ви консультант магазину. Відповідайте українською одним реченням лише за контекстом."),
+    # TODO 1: додайте ("human", ...) зі змінними {context} і {question}
+])
+print("Змінні шаблону:", chat.input_variables)
+chain = chat | live_model | StrOutputParser()
+question = "Коли працює магазин?"
+# TODO 2: надрукуйте chain.invoke({"context": context_for(question), "question": question})

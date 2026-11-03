@@ -1,0 +1,4 @@
+# Semantic Kernel + OpenAI. Лише Python 3.10–3.13 (на 3.14 не встановлюється).
+-r ../requirements.txt
+-r ../requirements-live.txt
+semantic-kernel>=1.36,<2

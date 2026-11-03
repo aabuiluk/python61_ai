@@ -1,0 +1,4 @@
+# Microsoft Agent Framework + OpenAI
+-r ../requirements.txt
+-r ../requirements-live.txt
+agent-framework>=1.19,<2

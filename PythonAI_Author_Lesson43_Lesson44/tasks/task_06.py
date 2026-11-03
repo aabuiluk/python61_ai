@@ -1,18 +1,28 @@
-"""**Завдання 6.** Напишіть ADR із шістьма полями context, requirements, decision, alternatives,
-consequences, acceptance. Додайте умову, за якої ви переглянете рішення (наприклад,
-відновлення довгого процесу після збою). Збережіть results_43_44/ADR.json.
+"""**Завдання 6.** Попросіть модель написати чернетку ADR на інше питання: «Чи потрібен LlamaIndex для 3 правил магазину?». Перевірте, що в чернетці рівно 5 потрібних ключів, і надрукуйте рішення.
 
-Підказки: 1. Вимоги не мають містити назви бажаної бібліотеки. 2. Наслідки включають мінус. 3. Acceptance — спостережуваний результат.
+Підказки:
+1. Змініть лише `question`.
+2. Перевірка ключів: `set(draft) == REQUIRED`. Рішення: `draft["decision"]`.
 
-Готово, якщо: Є шість полів ADR, ризик, альтернатива, умова перегляду та три критерії перевірки.
+Готово, якщо: Надруковано чернетку, `True`/`False` для ключів і рядок з рішенням. Ви погоджуєтесь або не погоджуєтесь з рішенням і пишете чому.
 
-Окремі файли: examples/example_06.py і tasks/task_06.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_06.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+REQUIRED = {"context", "decision", "rejected", "risk", "acceptance"}
+question = "Чи додавати LangGraph?"  # TODO 1: запитайте «Чи потрібен LlamaIndex для 3 правил магазину?»
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Ви пишете короткий ADR українською. Поверніть JSON рівно з ключами: "
+               "context, decision, rejected, risk, acceptance."),
+    ("human", "DocFlow: 3 локальні правила магазину, TF-IDF пошук, тести без мережі. {question}")])
+draft = (prompt | live_json_model | JsonOutputParser()).invoke({"question": question})
+print(json.dumps(draft, ensure_ascii=False, indent=2))
+# TODO 2: надрукуйте, чи set(draft) == REQUIRED, і рішення draft["decision"]

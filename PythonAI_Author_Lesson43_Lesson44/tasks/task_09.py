@@ -1,18 +1,28 @@
-"""**Завдання 9.** Перевірте чотири об’єкти: правильна відповідь; невідоме джерело; sources як рядок;
-null із непорожнім sources. Додайте окрему точну перевірку факту для тексту про доставку
-та покажіть різницю на відповіді «900 грн» із правильним id.
+"""**Завдання 9.** Перевірте три питання справжньою моделлю: доставка Україною, «Марсіанський телепорт» і доставка в Польщу. Для кожного надрукуйте результат `validate_answer` і чи збігається answer дослівно з джерелом.
 
-Підказки: 1. validate_answer для структури. 2. Для цього малого тесту зіставте answer з текстом delivery_ua. 3. Не називайте цей exact-match універсальною семантичною оцінкою.
+Підказки:
+1. Додайте два рядки в список `questions`.
+2. Дослівний збіг: `result["answer"] in [d["text"] for d in docs]`.
 
-Готово, якщо: Чотири перевірки дають True/False/False/False; окремо показано хибний факт із правильною структурою.
+Готово, якщо: Для трьох питань є `контракт` і `дослівно`. Ви знайшли випадок, де контракт `True`, а факт сумнівний (Польща).
 
-Окремі файли: examples/example_09.py і tasks/task_09.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_09.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+chain = chain_with(live_json_model)
+questions = ["Доставка Україною"]  # TODO 1: додайте «Марсіанський телепорт» і «Скільки коштує доставка у Польщу?»
+for question in questions:
+    docs = retrieve(question)
+    result = chain.invoke(question)
+    print(question, "→", result)
+    print("   контракт:", validate_answer(result, docs))
+    # TODO 2: надрукуйте, чи result["answer"] дослівно є серед текстів docs
+print_usage()

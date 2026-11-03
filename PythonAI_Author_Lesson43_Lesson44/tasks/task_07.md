@@ -1,10 +1,12 @@
-**Завдання 7.** Створіть chat-шаблон: system задає відповідь тільки за джерелом; human містить
-context і question. Підставте pickup_lviv та питання про вартість самовивозу.
-Перевірте типи повідомлень і поведінку за відсутності question.
+### Зараз виконайте завдання 7
 
-Підказки: 1. ChatPromptTemplate.from_messages. 2. invoke(...).to_messages(). 3. Пропущене question має спричинити KeyError до моделі.
+Відкрийте `tasks/task_07.py`. Це копія `examples/live_07.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_07.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-Готово, якщо: Два повідомлення system/human, context підставлено; відсутнє question відхилено до виклику моделі.
+**Завдання 7.** Допишіть chat-шаблон: додайте повідомлення human зі змінними `{context}` і `{question}`. Запитайте, коли працює магазин, і передайте знайдений контекст.
 
-Окремі файли: examples/example_07.py і tasks/task_07.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+### Підказки
+
+1. Формат рядка як у `examples/live_07.py`: `("human", "<context>{context}</context>\nПитання: {question}")`.
+2. Після TODO 1 `chat.input_variables` має показати `['context', 'question']`.
+
+**Готово, якщо:** Надруковано `['context', 'question']` і одне речення з «09:00» та «18:00».

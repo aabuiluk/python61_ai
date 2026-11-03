@@ -1,0 +1,5 @@
+# LangGraph + OpenAI
+-r ../requirements.txt
+-r ../requirements-live.txt
+langgraph>=1.2,<2
+langchain-openai>=1.7,<2

@@ -1,0 +1,7 @@
+# Усі фреймворки, крім Semantic Kernel, в одному середовищі (~1.4 ГБ). Python 3.10–3.14.
+-r requirements-langchain.txt
+-r requirements-llamaindex.txt
+-r requirements-langgraph.txt
+-r requirements-crewai.txt
+-r requirements-autogen.txt
+-r requirements-agent-framework.txt

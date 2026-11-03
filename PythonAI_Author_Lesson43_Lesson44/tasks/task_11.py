@@ -1,18 +1,29 @@
-"""**Завдання 11.** Напишіть keep_pairs(messages,n), яка приймає тільки завершені human/ai пари й n>=0.
-Для трьох пар залиште останні дві; для n=0 поверніть []; незавершену пару відхиліть.
-Не змінюйте вихідний список. Поясніть, який додатковий контроль потрібен для токенів.
+"""**Завдання 11.** Порівняйте ціну запиту з повною історією і з двома останніми повідомленнями. Надрукуйте `input_tokens` обох варіантів.
 
-Підказки: 1. Перевірте парну довжину й типи через m.type. 2. Окремий випадок n=0: slice [-0:] повернув би все. 3. Повертайте новий список.
+Підказки:
+1. Додайте в список другий варіант: `("останні 2", history[-2:])`.
+2. Число токенів лежить у `reply.response_metadata["input_tokens"]`.
 
-Готово, якщо: Залишено дві цілі пари; n=0 і неповна пара оброблені; вихідний список не змінено; токени не переплутано з репліками.
+Готово, якщо: Надруковано два числа `input_tokens`, і друге помітно менше. Відповідь в обох випадках правильна.
 
-Окремі файли: examples/example_11.py і tasks/task_11.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_11.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+history = []
+for i in range(1, 7):
+    history += [HumanMessage(content=f"Питання {i}: нагадайте правила доставки."),
+                AIMessage(content="Доставка Україною коштує 90 грн. " * 3)]
+prompt = ChatPromptTemplate.from_messages([("system", "Відповідайте одним реченням."),
+                                           MessagesPlaceholder("history"), ("human", "{question}")])
+variants = [("уся історія", history)]  # TODO: додайте ("останні 2", history[-2:])
+for name, part in variants:
+    reply = (prompt | live_model).invoke({"history": part, "question": "Скільки коштує доставка?"})
+    print(f"{name}: повідомлень {len(part)}, input_tokens {reply.response_metadata['input_tokens']}")

@@ -50,25 +50,30 @@ RAG-пошук справжній локальний TF-IDF; це лексичн
 реальна інсталяція потрібна тільки для langchain-core у 44.
 
 <!-- live-openai:start -->
-## Необов'язково: live-режим з OPENAI_API_KEY
+## OpenAI API у парах 43–44
 
-Обов'язкова частина й тести працюють без мережі на `fixture_model`. Якщо у вас є ключ
-OpenAI API з пар 41–42, у більшості блоків є додатковий крок «Альтернатива з
-OPENAI_API_KEY». У ньому той самий ланцюжок працює зі справжньою моделлю: видно,
-де модель відповідає інакше, ніж заготовка, і скільки токенів коштує кожен виклик.
+Пояснення та приклади `examples/example_NN.py` працюють без мережі на `fixture_model`.
+Альтернатива з OPENAI_API_KEY у кожному блоці (`examples/live_NN.py`) і завдання
+`tasks/task_NN.py` працюють зі справжньою моделлю OpenAI. Кожне завдання — це копія
+live-прикладу з 1–2 місцями `TODO`: подивіться приклад, допишіть рядки, запустіть.
 
 1. Ключ уже лежить у `PythonAI_Author_Lesson41_Lesson42/.env`? Тоді нічого робити не треба:
    `live_openai.py` знайде його сам. Інакше скопіюйте `.env.example` у `.env` у папці
    `PythonAI_Author_Lesson43_Lesson44` і вставте свій `OPENAI_API_KEY`.
-2. Встановіть два пакети (кореневий `requirements.txt` для 41–42 їх уже містить):
-   `python -m pip install -r PythonAI_Author_Lesson43_Lesson44/requirements-live.txt`.
-3. Запуск із папки пакета: `python examples/live_03.py`. У ноутбуці виконайте комірку
-   live-налаштування один раз, далі live-комірки в блоках.
+2. З кореня репозиторію встановіть пакети:
+   `python -m pip install -r PythonAI_Author_Lesson43_Lesson44/requirements.txt -r PythonAI_Author_Lesson43_Lesson44/requirements-live.txt`.
+3. Запускайте з папки пакета: `python examples/live_03.py`, `python tasks/task_03.py`.
+   У ноутбуці один раз виконайте комірку live-налаштування.
 
 Модель за замовчуванням — `gpt-4.1-mini`, embeddings — `text-embedding-3-small`; змінити
-можна через `OPENAI_MODEL` і `OPENAI_EMBEDDING_MODEL` у `.env`. Усі live-кроки разом —
-кілька десятків коротких запитів, тобто центи. Без ключа кожен live-крок друкує
-«пропущено» і нічого не ламає. Не публікуйте `.env` і не вставляйте ключ у код.
+можна через `OPENAI_MODEL` і `OPENAI_EMBEDDING_MODEL` у `.env`. Усі 12 завдань разом —
+кілька десятків коротких запитів, тобто центи. Без ключа скрипти друкують «пропущено».
+Не публікуйте `.env` і не вставляйте ключ у код.
+
+Окремі приклади фреймворків на OpenAI лежать у папці `frameworks/`: `langchain_demo.py`,
+`llamaindex_demo.py`, `langgraph_demo.py`, `crewai_demo.py`, `autogen_demo.py`,
+`semantic_kernel_demo.py` і `agent_framework_demo.py`. Що встановити для кожного —
+у `frameworks/README.md`. Ставте лише той фреймворк, який запускаєте.
 <!-- live-openai:end -->
 ## Додатково: той самий промпт у Gemini або ChatGPT
 
@@ -228,7 +233,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_01.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 TF-IDF шукає однакові слова. Embeddings порівнюють зміст. Перевірте питання, у якому немає слова «доставка».
 
@@ -255,8 +260,6 @@ print_usage()
 ```
 
 **Що порівняти:** TF-IDF не знаходить нічого, бо слова не збігаються. Embeddings ставлять `delivery_ua` першим. Але для «Марсіанського телепорту» embeddings теж щось повертають: score вектора ніколи не дорівнює нулю, тому для відмови потрібен поріг.
-
-Додатково: підберіть поріг score, за якого «Марсіанський телепорт» дає порожній результат, а питання про посилку — ні. Запишіть, чому поріг залежить від моделі embeddings.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -275,25 +278,39 @@ print_usage()
 
 ### Зараз виконайте завдання 1
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_01.py`. Повторити демонстрацію можна в `examples/example_01.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_01.py`. Це копія `examples/live_01.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_01.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 1.** Знайдіть один фрагмент про самовивіз у Львові, побудуйте JSON-контекст із id/text.
-Перевірте пошук «Марсіанський телепорт» та порожній рядок. Поясніть значення score.
+**Завдання 1.** Перепишіть питання про самовивіз без слів «самовивіз» і «Львів». Порівняйте TF-IDF і embeddings. Потім додайте поріг: результати зі score нижче `threshold` не повертаються.
 
 ### Підказки
 
-1. retrieve(question,1). 2. Виберіть id/text. 3. Невідомий словник і порожній запит мають дати [].
+1. Почніть з `examples/live_01.py` — код майже такий самий.
+2. Поріг — це один рядок: залиште в `scored` тільки пари, де `score >= threshold`.
+3. Якщо телепорт усе ще знаходиться, підніміть поріг (0.3 → 0.35 → 0.4).
 
-**Готово, якщо:** Знайдено pickup_lviv, є JSON-контекст, два порожні результати та пояснення score.
-
-Окремі файли: `examples/example_01.py` і `tasks/task_01.py` у папці пакета.
-
-
+**Готово, якщо:** TF-IDF не знаходить `pickup_lviv`, embeddings знаходять. «Марсіанський телепорт» з вашим порогом дає `[]`.
 
 ```python
-# Завдання 1: напишіть власний код за умовою.
+import math
 
+def cosine(a, b):
+    dot = sum(x * y for x, y in zip(a, b))
+    return dot / (math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b)))
+
+def embed_retrieve(question, k=1, threshold=0.0):
+    doc_vectors = embed([d["text"] for d in DOCS])
+    [q] = embed([question])
+    scored = sorted(((cosine(q, v), d["id"]) for v, d in zip(doc_vectors, DOCS)), reverse=True)
+    # TODO 2: залиште в scored тільки пари, де score >= threshold
+    return [{"id": doc_id, "score": round(score, 3)} for score, doc_id in scored[:k]]
+
+question = "Скільки коштує самовивіз у Львові?"  # TODO 1: перепишіть без слів «самовивіз» і «Львів»
+print("TF-IDF:    ", retrieve(question, k=1))
+print("Embeddings:", embed_retrieve(question, threshold=0.3))
+print("Телепорт:  ", embed_retrieve("Марсіанський телепорт", threshold=0.3))
+print_usage()
 ```
+
 # Блок 2. 42 · Агентний цикл і явний стан
 
 **15–30 хв.**
@@ -366,7 +383,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_02.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Тепер рішення «викликати інструмент» ухвалює справжня модель. Allowlist, ліміт кроків і журнал лишаються в нашому коді.
 
@@ -402,8 +419,6 @@ print_usage()
 ```
 
 **Що порівняти:** Подивіться, яке `question` модель передала в інструмент. Воно не дорівнює вашому питанню: модель переформулювала його сама. TF-IDF чутливий до форми слова, тому порожній observation тут означає проблему пошуку, а не моделі.
-
-Додатково: змініть питання на «Яка погода у Львові?» і перевірте, що модель або не викликає інструмент, або отримує порожній observation і чесно відмовляє.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -422,26 +437,46 @@ print_usage()
 
 ### Зараз виконайте завдання 2
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_02.py`. Повторити демонстрацію можна в `examples/example_02.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_02.py`. Це копія `examples/live_02.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_02.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 2.** Напишіть dispatch для search_knowledge. Приймайте тільки рядкове question і жодних
-зайвих аргументів. Перевірте відомий tool, невідомий delete_all та question=123.
-Покажіть стан steps і max_steps до наступного кроку.
+**Завдання 2.** Запустіть агентний цикл з `examples/live_02.py` на своєму питанні: о котрій відкривається магазин. Додайте перевірку allowlist: якщо модель викликала інструмент не зі списку `ALLOWED`, програма зупиняється з помилкою.
 
 ### Підказки
 
-1. Перевірте типи та ключі. 2. Не використовуйте eval/exec. 3. steps < max_steps — умова продовження.
+1. Змініть лише `question`, решта циклу вже готова.
+2. Перевірка — два рядки: `if call.name not in ALLOWED:` і `raise ValueError(...)`.
+3. Якщо observation порожній, TF-IDF не знайшов слів моделі. Це видно в `arguments`.
 
-**Готово, якщо:** Валідний пошук працює; два некоректні запити відхилено; умова ліміту кроків явна.
-
-Окремі файли: `examples/example_02.py` і `tasks/task_02.py` у папці пакета.
-
-
+**Готово, якщо:** У `trace` є крок з `search_knowledge` і його `arguments`. Модель відповідає «09:00» або чесно каже, що не знайшла правила.
 
 ```python
-# Завдання 2: напишіть власний код за умовою.
-
+tools = [{"type": "function", "name": "search_knowledge", "strict": True,
+          "description": "Пошук у правилах магазину. Повертає фрагменти з id.",
+          "parameters": {"type": "object", "additionalProperties": False,
+                         "properties": {"question": {"type": "string"}}, "required": ["question"]}}]
+ALLOWED = {"search_knowledge"}
+question = "Скільки коштує доставка Україною?"  # TODO 1: запитайте, о котрій відкривається магазин
+messages = [{"role": "user", "content": question + " Відповідай лише за знайденими правилами."}]
+trace = []
+for step in range(1, 4):  # не більше 3 кроків
+    response = client().responses.create(model=MODEL, input=messages, tools=tools,
+                                          store=False, max_output_tokens=300)
+    record_usage(response)
+    calls = [item for item in response.output if item.type == "function_call"]
+    if not calls:
+        print("Відповідь моделі:", response.output_text)
+        break
+    for call in calls:
+        # TODO 2: якщо call.name немає в ALLOWED — raise ValueError("Невідомий tool: " + call.name)
+        arguments = json.loads(call.arguments)
+        observation = retrieve(arguments["question"], 1)
+        trace.append({"step": step, "arguments": arguments, "observation": [h["id"] for h in observation]})
+        messages += [{"type": "function_call", "call_id": call.call_id, "name": call.name, "arguments": call.arguments},
+                     {"type": "function_call_output", "call_id": call.call_id,
+                      "output": json.dumps(observation, ensure_ascii=False)}]
+print(json.dumps(trace, ensure_ascii=False, indent=2))
 ```
+
 # Блок 3. 43.1 · Model → chain → retrieval → agent
 
 **30–55 хв.**
@@ -504,7 +539,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_03.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Шари ті самі: context → prompt → model → parser. Змінюється лише model-вузол: замість `fixture_model` стоїть `live_json_model`.
 
@@ -518,8 +553,6 @@ print_usage()
 ```
 
 **Що порівняти:** Обидва вузли повертають `AIMessage`, тому parser і решта ланцюжка не змінились. Fixture копіює перше джерело дослівно. Модель формулює відповідь сама і може вказати кілька джерел.
-
-Додатково: запустіть обидва варіанти на «Самовивіз у Львові» та «Марсіанський телепорт» і запишіть, де відповіді розходяться.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -538,26 +571,28 @@ tool selection, step limit. Розкладіть їх за model/chain/retrieval
 
 ### Зараз виконайте завдання 3
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_03.py`. Повторити демонстрацію можна в `examples/example_03.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_03.py`. Це копія `examples/live_03.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_03.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 3.** Розкладіть шість компонентів за шарами: сформувати prompt, знайти top-k,
-викликати модель, перевірити JSON, обрати наступний tool, обмежити кроки.
-Позначте, які вже реалізовані у 41–42, а які винесете в LCEL.
+**Завдання 3.** Запустіть той самий DocFlow-ланцюжок двічі: з `fixture_model` і з OpenAI. Порівняйте відповіді на трьох питаннях.
 
 ### Підказки
 
-1. top-k — retrieval. 2. parser — етап chain. 3. tool selection та steps належать керуванню агентом.
+1. `chain_with(model)` уже складає context → prompt → model → parser.
+2. Потрібен один рядок у циклі: `print("  OpenAI: ", openai_chain.invoke(question))`.
 
-**Готово, якщо:** Шість компонентів розкладено за шарами; є відповідність власному коду 41–42 і компонентам 44.
-
-Окремі файли: `examples/example_03.py` і `tasks/task_03.py` у папці пакета.
-
-
+**Готово, якщо:** Для кожного з трьох питань надруковано дві відповіді. Ви записали, де вони відрізняються (текст, кількість джерел, відмова).
 
 ```python
-# Завдання 3: напишіть власний код за умовою.
-
+questions = ["Доставка Україною", "Самовивіз у Львові", "Марсіанський телепорт"]
+fixture_chain = chain_with(RunnableLambda(fixture_model))
+openai_chain = chain_with(live_json_model)
+for question in questions:
+    print(question)
+    print("  fixture:", fixture_chain.invoke(question))
+    # TODO: надрукуйте відповідь openai_chain на це саме питання
+print_usage()
 ```
+
 # Блок 4. 43.2 · LangChain, LlamaIndex та Vertex AI
 
 **55–80 хв.**
@@ -634,7 +669,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_04.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Той самий запит двома способами: сирим OpenAI SDK без фреймворку і через LangChain-ланцюжок.
 
@@ -656,7 +691,7 @@ print_usage()
 
 **Що порівняти:** Результат однаковий. LangChain не робить модель розумнішою: він дає стандартні вузли, які легко міняти й тестувати. Для одного виклику сирого SDK досить.
 
-Додатково: порахуйте рядки коду в обох варіантах і запишіть, з якої кількості схожих викликів LangChain почне економити код.
+Окремі приклади на OpenAI: `frameworks/langchain_demo.py`, `frameworks/llamaindex_demo.py`. Встановлення — у `frameworks/README.md`.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -676,26 +711,32 @@ Cloud-доступу з IAM. Дайте таблицю: сценарій, мін
 
 ### Зараз виконайте завдання 4
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_04.py`. Повторити демонстрацію можна в `examples/example_04.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_04.py`. Це копія `examples/live_04.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_04.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 4.** Для трьох сценаріїв запропонуйте стек і альтернативу: 1) три локальні правила;
-2) тисячі PDF з метаданими; 3) корпоративні Cloud-проєкти з IAM.
-Для кожного вкажіть мінімальний варіант, причину та одну перевірку до впровадження.
+**Завдання 4.** Отримайте відповідь про самовивіз у Львові напряму через OpenAI SDK, без LangChain. Надрукуйте відповідь і кількість токенів.
 
 ### Підказки
 
-1. Малому корпусу не потрібен новий Cloud-індекс. 2. Для PDF оцініть якість витягу. 3. IAM не замінює retrieval.
+1. Подивіться, як у `examples/live_04.py` збирається повідомлення user: `f"<context>{context}</context>\nПитання: {question}"`.
+2. Токени лежать у `response.usage.input_tokens` і `response.usage.output_tokens`.
 
-**Готово, якщо:** Є три рішення, три альтернативи й перевірки; бібліотеку не названо заміною IAM/білінгу.
-
-Окремі файли: `examples/example_04.py` і `tasks/task_04.py` у папці пакета.
-
-
+**Готово, якщо:** Надруковано JSON з `answer` і `sources: ["pickup_lviv"]` та два числа токенів.
 
 ```python
-# Завдання 4: напишіть власний код за умовою.
-
+question = "Самовивіз у Львові"
+context = context_for(question)
+response = client().responses.create(
+    model=MODEL, store=False, max_output_tokens=200,
+    text={"format": {"type": "json_object"}},
+    input=[
+        {"role": "system", "content": "Працюйте лише за контекстом. Поверніть answer та sources у JSON."},
+        # TODO 1: додайте повідомлення {"role": "user", "content": ...} з context і question
+    ])
+record_usage(response)
+print("Відповідь:", json.loads(response.output_text))
+# TODO 2: надрукуйте response.usage.input_tokens і response.usage.output_tokens
 ```
+
 # Блок 5. 43.3 · LangGraph, CrewAI, AutoGen і Semantic Kernel
 
 **80–105 хв.**
@@ -762,7 +803,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_05.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Ручний граф станів answer → validate → stop, але відповідь дає справжня модель. Ліміт повторів задає програма.
 
@@ -794,7 +835,7 @@ print_usage()
 
 **Що порівняти:** Цикл зупиняється завжди: або на валідній відповіді, або після `max_attempts`. Модель не вирішує, скільки разів повторювати.
 
-Додатково: поставте `max_attempts=1` і зіпсуйте system-промпт (наприклад, «Поверніть текст»). Перевірте, що стан завершується `valid: False`, а не нескінченним циклом.
+Окремі приклади на OpenAI: `frameworks/langgraph_demo.py`, `frameworks/crewai_demo.py`, `frameworks/autogen_demo.py`, `frameworks/semantic_kernel_demo.py`, `frameworks/agent_framework_demo.py`. Встановлення — у `frameworks/README.md`.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -814,26 +855,30 @@ reviewer звіряє її з джерелами. Дозволено один re
 
 ### Зараз виконайте завдання 5
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_05.py`. Повторити демонстрацію можна в `examples/example_05.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_05.py`. Це копія `examples/live_05.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_05.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 5.** Опишіть маршрут DocFlow з одним repair і трьома ролями. Для кожної ролі задайте
-вхід і вихід; для процесу — max_repairs=1 та кінцевий stop. Поясніть, коли обрали б
-явний граф станів, а коли організацію співпраці ролей.
+**Завдання 5.** Зробіть цикл повторів: викликайте ланцюжок, доки відповідь не пройде `validate_answer`, але не більше 2 разів. Перевірте на «Самовивіз у Львові» і на «Марсіанський телепорт».
 
 ### Підказки
 
-1. Результат researcher — документи з id. 2. Editor не вигадує джерел. 3. Reviewer повертає дефекти, а не автоматичну істину.
+1. Зупинити цикл можна через `break`, коли `ok` дорівнює `True`.
+2. Ліміт уже задано в `range(1, max_attempts + 1)`: модель не вирішує, скільки разів повторювати.
 
-**Готово, якщо:** Три ролі з контрактами, один repair і кінцевий stop; пояснено два стилі організації.
-
-Окремі файли: `examples/example_05.py` і `tasks/task_05.py` у папці пакета.
-
-
+**Готово, якщо:** Для кожного питання надруковано не більше 2 спроб. Після першої валідної відповіді цикл зупиняється.
 
 ```python
-# Завдання 5: напишіть власний код за умовою.
-
+chain = chain_with(live_json_model)
+max_attempts = 2
+question = "Самовивіз у Львові"  # потім змініть на "Марсіанський телепорт"
+docs = retrieve(question)
+for attempt in range(1, max_attempts + 1):
+    result = chain.invoke(question)
+    ok = validate_answer(result, docs)
+    print(f"Спроба {attempt}: {result} → valid={ok}")
+    # TODO: якщо ok — зупиніть цикл
+print_usage()
 ```
+
 # Блок 6. 43.4 · ADR: обрати мінімальний стек
 
 **105–130 хв.**
@@ -895,7 +940,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_06.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Модель може запропонувати чернетку ADR. Перевірку форми робить код, а рішення ухвалює команда.
 
@@ -915,8 +960,6 @@ print_usage()
 ```
 
 **Що порівняти:** Порівняйте чернетку з вашим ADR із завдання 6. Чи назвала модель перевірюваний критерій acceptance, а не загальне «покращити якість»?
-
-Додатково: знайдіть у чернетці одне твердження без перевірки і перепишіть його у вимірюваний критерій.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -936,26 +979,29 @@ acceptance. Запропонуйте мінімальний стек і конк
 
 ### Зараз виконайте завдання 6
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_06.py`. Повторити демонстрацію можна в `examples/example_06.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_06.py`. Це копія `examples/live_06.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_06.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 6.** Напишіть ADR із шістьма полями context, requirements, decision, alternatives,
-consequences, acceptance. Додайте умову, за якої ви переглянете рішення (наприклад,
-відновлення довгого процесу після збою). Збережіть results_43_44/ADR.json.
+**Завдання 6.** Попросіть модель написати чернетку ADR на інше питання: «Чи потрібен LlamaIndex для 3 правил магазину?». Перевірте, що в чернетці рівно 5 потрібних ключів, і надрукуйте рішення.
 
 ### Підказки
 
-1. Вимоги не мають містити назви бажаної бібліотеки. 2. Наслідки включають мінус. 3. Acceptance — спостережуваний результат.
+1. Змініть лише `question`.
+2. Перевірка ключів: `set(draft) == REQUIRED`. Рішення: `draft["decision"]`.
 
-**Готово, якщо:** Є шість полів ADR, ризик, альтернатива, умова перегляду та три критерії перевірки.
-
-Окремі файли: `examples/example_06.py` і `tasks/task_06.py` у папці пакета.
-
-
+**Готово, якщо:** Надруковано чернетку, `True`/`False` для ключів і рядок з рішенням. Ви погоджуєтесь або не погоджуєтесь з рішенням і пишете чому.
 
 ```python
-# Завдання 6: напишіть власний код за умовою.
-
+REQUIRED = {"context", "decision", "rejected", "risk", "acceptance"}
+question = "Чи додавати LangGraph?"  # TODO 1: запитайте «Чи потрібен LlamaIndex для 3 правил магазину?»
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Ви пишете короткий ADR українською. Поверніть JSON рівно з ключами: "
+               "context, decision, rejected, risk, acceptance."),
+    ("human", "DocFlow: 3 локальні правила магазину, TF-IDF пошук, тести без мережі. {question}")])
+draft = (prompt | live_json_model | JsonOutputParser()).invoke({"question": question})
+print(json.dumps(draft, ensure_ascii=False, indent=2))
+# TODO 2: надрукуйте, чи set(draft) == REQUIRED, і рішення draft["decision"]
 ```
+
 # Блок 7. 44.1 · PromptTemplate і ChatPromptTemplate
 
 **130–145 хв.**
@@ -1015,7 +1061,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_07.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Шаблон відправляємо справжній моделі. Окремо перевіряємо документ з інʼєкцією всередині контексту.
 
@@ -1035,8 +1081,6 @@ print_usage()
 ```
 
 **Що порівняти:** Часто модель ігнорує інʼєкцію, бо system-роль каже, що контекст — дані. Але це не гарантія: інша модель або інше формулювання може дати «безкоштовна». Тому валідатор у блоці 9 потрібен і далі.
-
-Додатково: приберіть із system-повідомлення речення про «дані, а не інструкції» і повторіть запуск. Запишіть, чи змінилась відповідь.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1056,26 +1100,28 @@ ChatPromptTemplate.invoke(...).to_messages() на context і question.
 
 ### Зараз виконайте завдання 7
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_07.py`. Повторити демонстрацію можна в `examples/example_07.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_07.py`. Це копія `examples/live_07.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_07.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 7.** Створіть chat-шаблон: system задає відповідь тільки за джерелом; human містить
-context і question. Підставте pickup_lviv та питання про вартість самовивозу.
-Перевірте типи повідомлень і поведінку за відсутності question.
+**Завдання 7.** Допишіть chat-шаблон: додайте повідомлення human зі змінними `{context}` і `{question}`. Запитайте, коли працює магазин, і передайте знайдений контекст.
 
 ### Підказки
 
-1. ChatPromptTemplate.from_messages. 2. invoke(...).to_messages(). 3. Пропущене question має спричинити KeyError до моделі.
+1. Формат рядка як у `examples/live_07.py`: `("human", "<context>{context}</context>\nПитання: {question}")`.
+2. Після TODO 1 `chat.input_variables` має показати `['context', 'question']`.
 
-**Готово, якщо:** Два повідомлення system/human, context підставлено; відсутнє question відхилено до виклику моделі.
-
-Окремі файли: `examples/example_07.py` і `tasks/task_07.py` у папці пакета.
-
-
+**Готово, якщо:** Надруковано `['context', 'question']` і одне речення з «09:00» та «18:00».
 
 ```python
-# Завдання 7: напишіть власний код за умовою.
-
+chat = ChatPromptTemplate.from_messages([
+    ("system", "Ви консультант магазину. Відповідайте українською одним реченням лише за контекстом."),
+    # TODO 1: додайте ("human", ...) зі змінними {context} і {question}
+])
+print("Змінні шаблону:", chat.input_variables)
+chain = chat | live_model | StrOutputParser()
+question = "Коли працює магазин?"
+# TODO 2: надрукуйте chain.invoke({"context": context_for(question), "question": question})
 ```
+
 # Блок 8. 44.2 · LCEL: контракт кожного Runnable
 
 **145–165 хв.**
@@ -1138,7 +1184,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_08.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Той самий LCEL `prompt | model | parser`, але model-вузол — справжній виклик API. `invoke` робить один запит, `batch` — кілька.
 
@@ -1156,8 +1202,6 @@ print_usage()
 ```
 
 **Що порівняти:** Без parser вузол повертає `AIMessage` з метаданими (модель, токени). `StrOutputParser` лишає тільки текст. `batch` відправляє кілька незалежних запитів: це не одна дешевша операція.
-
-Додатково: додайте в ланцюжок `RunnableLambda(len)` після parser і поясніть, яку довжину він рахує.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1177,26 +1221,28 @@ dict → PromptValue → AIMessage → str. Наведіть мінімальн�
 
 ### Зараз виконайте завдання 8
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_08.py`. Повторити демонстрацію можна в `examples/example_08.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_08.py`. Це копія `examples/live_08.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_08.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 8.** Побудуйте справжній LCEL prompt | RunnableLambda | StrOutputParser для питання
-про самовивіз. Модельний fixture має повернути AIMessage з префіксом FIXTURE: та текстом
-останнього human-повідомлення. Перевірте invoke і batch із двох різних питань.
+**Завдання 8.** Додайте ще два питання і запустіть їх одним `batch`. Надрукуйте відповіді та кількість викликів API.
 
 ### Підказки
 
-1. Lambda отримує PromptValue. 2. Останнє повідомлення: to_messages()[-1].content. 3. Кінцевий результат — str.
+1. Кожне питання — словник `{"question": "..."}`.
+2. Кількість викликів: `len(USAGE)`.
 
-**Готово, якщо:** Використано реальний |; вихід str; batch повертає два відповідні результати; жодного API-виклику.
-
-Окремі файли: `examples/example_08.py` і `tasks/task_08.py` у папці пакета.
-
-
+**Готово, якщо:** Надруковано 3 відповіді і число 3. Ви пояснили, що `batch` — це 3 окремі запити, а не один дешевший.
 
 ```python
-# Завдання 8: напишіть власний код за умовою.
-
+prompt = ChatPromptTemplate.from_messages([("system", "Відповідайте одним коротким реченням."),
+                                           ("human", "{question}")])
+chain = prompt | live_model | StrOutputParser()
+questions = [{"question": "Що таке RAG?"}]  # TODO 1: додайте ще два питання
+answers = chain.batch(questions)
+for item, answer in zip(questions, answers):
+    print(item["question"], "→", answer)
+# TODO 2: надрукуйте кількість викликів API: len(USAGE)
 ```
+
 # Блок 9. 44.3 · Parser і предметна валідація
 
 **165–180 хв.**
@@ -1259,7 +1305,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_09.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Справжня модель отримує чотири питання. Подивіться, де контракт пройдено, а факт хибний.
 
@@ -1282,8 +1328,6 @@ print_usage()
 ```
 
 **Що порівняти:** Питання про Варшаву знаходить `delivery_ua` (збіг слова «доставка»). Модель може відповісти «90 грн» з правильним id: контракт `True`, але правило стосується лише України. Структурна валідація не ловить такий факт.
-
-Додатково: додайте перевірку, яка відхиляє відповідь, якщо в питанні є місто чи країна, якої немає в тексті джерела.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1303,26 +1347,29 @@ print_usage()
 
 ### Зараз виконайте завдання 9
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_09.py`. Повторити демонстрацію можна в `examples/example_09.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_09.py`. Це копія `examples/live_09.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_09.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 9.** Перевірте чотири об’єкти: правильна відповідь; невідоме джерело; sources як рядок;
-null із непорожнім sources. Додайте окрему точну перевірку факту для тексту про доставку
-та покажіть різницю на відповіді «900 грн» із правильним id.
+**Завдання 9.** Перевірте три питання справжньою моделлю: доставка Україною, «Марсіанський телепорт» і доставка в Польщу. Для кожного надрукуйте результат `validate_answer` і чи збігається answer дослівно з джерелом.
 
 ### Підказки
 
-1. validate_answer для структури. 2. Для цього малого тесту зіставте answer з текстом delivery_ua. 3. Не називайте цей exact-match універсальною семантичною оцінкою.
+1. Додайте два рядки в список `questions`.
+2. Дослівний збіг: `result["answer"] in [d["text"] for d in docs]`.
 
-**Готово, якщо:** Чотири перевірки дають True/False/False/False; окремо показано хибний факт із правильною структурою.
-
-Окремі файли: `examples/example_09.py` і `tasks/task_09.py` у папці пакета.
-
-
+**Готово, якщо:** Для трьох питань є `контракт` і `дослівно`. Ви знайшли випадок, де контракт `True`, а факт сумнівний (Польща).
 
 ```python
-# Завдання 9: напишіть власний код за умовою.
-
+chain = chain_with(live_json_model)
+questions = ["Доставка Україною"]  # TODO 1: додайте «Марсіанський телепорт» і «Скільки коштує доставка у Польщу?»
+for question in questions:
+    docs = retrieve(question)
+    result = chain.invoke(question)
+    print(question, "→", result)
+    print("   контракт:", validate_answer(result, docs))
+    # TODO 2: надрукуйте, чи result["answer"] дослівно є серед текстів docs
+print_usage()
 ```
+
 # Блок 10. 44.4 · Memory: історія як вхідні дані та ізоляція сесій
 
 **180–200 хв.**
@@ -1399,7 +1446,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_10.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 `RunnableWithMessageHistory` зі справжньою моделлю: сесія A представляється, сесія B ставить те саме питання.
 
@@ -1427,8 +1474,6 @@ print_usage()
 ```
 
 **Що порівняти:** Сесія A памʼятає імʼя, бо історія підставлена через `MessagesPlaceholder`. Сесія B не знає нічого: у моделі немає власної памʼяті між запитами, памʼять — це наш словник `store`.
-
-Додатково: приберіть `MessagesPlaceholder("history")` з шаблону і повторіть. Поясніть, чому історія в `store` росте, а модель «забуває».
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1448,26 +1493,37 @@ RunnableWithMessageHistory. Є A з двома питаннями та B з од
 
 ### Зараз виконайте завдання 10
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_10.py`. Повторити демонстрацію можна в `examples/example_10.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_10.py`. Це копія `examples/live_10.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_10.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 10.** Створіть wrapper з двома сесіями. Надішліть два питання в A і одне в B.
-Перевірте кількість повідомлень (4 і 2), порядок human/ai та відсутність тексту A
-в історії B. Покажіть, що store є локальною пам’яттю процесу.
+**Завдання 10.** Перевірте ізоляцію пам'яті: у сесії A представтесь і запитайте своє ім'я, у сесії B запитайте ім'я без представлення.
 
 ### Підказки
 
-1. Новий store для вправи. 2. Окремий session_id у config. 3. Один invoke додає human та ai.
+1. Функція `ask(session, question)` уже готова, потрібні лише два виклики.
+2. Кількість повідомлень у кожній сесії друкує останній рядок.
 
-**Готово, якщо:** Сесія A має 4 повідомлення, B — 2; порядок human/ai збережено, витоку між сесіями немає.
-
-Окремі файли: `examples/example_10.py` і `tasks/task_10.py` у папці пакета.
-
-
+**Готово, якщо:** Сесія A називає ваше ім'я, сесія B — ні. У `store` у сесії A 4 повідомлення, у B — 2.
 
 ```python
-# Завдання 10: напишіть власний код за умовою.
+store = {}
+def history_for(session_id):
+    return store.setdefault(session_id, InMemoryChatMessageHistory())
 
+prompt = ChatPromptTemplate.from_messages([("system", "Ви консультант магазину. Відповідайте коротко."),
+                                           MessagesPlaceholder("history"), ("human", "{question}")])
+chat = RunnableWithMessageHistory(prompt | live_model, history_for,
+                                  input_messages_key="question", history_messages_key="history")
+
+def ask(session, question):
+    reply = chat.invoke({"question": question}, config={"configurable": {"session_id": session}})
+    print(f"[{session}] {question} → {reply.content}")
+
+ask("A", "Мене звати Олена.")  # можна вказати своє ім'я
+# TODO 1: у сесії A запитайте «Як мене звати?»
+# TODO 2: у сесії B запитайте «Як мене звати?»
+print({session: len(history.messages) for session, history in store.items()})
 ```
+
 # Блок 11. 44.5 · Бюджет пам’яті та межі контексту
 
 **200–215 хв.**
@@ -1526,7 +1582,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_11.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 Бюджет памʼяті в справжніх токенах: та сама відповідь з усією історією і з останніми чотирма повідомленнями.
 
@@ -1546,8 +1602,6 @@ print_usage()
 ```
 
 **Що порівняти:** Кожен запит платить за всю історію знову. Обрізання до останніх реплік зменшує input_tokens у кілька разів, а відповідь лишається правильною, поки потрібний факт є в останніх репліках.
-
-Додатково: перенесіть факт про ціну лише в перше повідомлення історії, обріжте до останніх 4 і перевірте, чи модель ще знає ціну.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1566,26 +1620,30 @@ system-інструкції лишаються окремо. Поясніть р
 
 ### Зараз виконайте завдання 11
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_11.py`. Повторити демонстрацію можна в `examples/example_11.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_11.py`. Це копія `examples/live_11.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_11.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 11.** Напишіть keep_pairs(messages,n), яка приймає тільки завершені human/ai пари й n>=0.
-Для трьох пар залиште останні дві; для n=0 поверніть []; незавершену пару відхиліть.
-Не змінюйте вихідний список. Поясніть, який додатковий контроль потрібен для токенів.
+**Завдання 11.** Порівняйте ціну запиту з повною історією і з двома останніми повідомленнями. Надрукуйте `input_tokens` обох варіантів.
 
 ### Підказки
 
-1. Перевірте парну довжину й типи через m.type. 2. Окремий випадок n=0: slice [-0:] повернув би все. 3. Повертайте новий список.
+1. Додайте в список другий варіант: `("останні 2", history[-2:])`.
+2. Число токенів лежить у `reply.response_metadata["input_tokens"]`.
 
-**Готово, якщо:** Залишено дві цілі пари; n=0 і неповна пара оброблені; вихідний список не змінено; токени не переплутано з репліками.
-
-Окремі файли: `examples/example_11.py` і `tasks/task_11.py` у папці пакета.
-
-
+**Готово, якщо:** Надруковано два числа `input_tokens`, і друге помітно менше. Відповідь в обох випадках правильна.
 
 ```python
-# Завдання 11: напишіть власний код за умовою.
-
+history = []
+for i in range(1, 7):
+    history += [HumanMessage(content=f"Питання {i}: нагадайте правила доставки."),
+                AIMessage(content="Доставка Україною коштує 90 грн. " * 3)]
+prompt = ChatPromptTemplate.from_messages([("system", "Відповідайте одним реченням."),
+                                           MessagesPlaceholder("history"), ("human", "{question}")])
+variants = [("уся історія", history)]  # TODO: додайте ("останні 2", history[-2:])
+for name, part in variants:
+    reply = (prompt | live_model).invoke({"history": part, "question": "Скільки коштує доставка?"})
+    print(f"{name}: повідомлень {len(part)}, input_tokens {reply.response_metadata['input_tokens']}")
 ```
+
 # Блок 12. 44.6 · Збираємо DocFlow і перевіряємо перехід
 
 **215–230 хв.**
@@ -1649,7 +1707,7 @@ plt.show()
 
 ![Схема потоку даних](PythonAI_Author_Lesson43_Lesson44/figures/example_12.png)
 <!-- live-openai:start -->
-### Альтернатива з OPENAI_API_KEY (необов'язково)
+### Альтернатива з OPENAI_API_KEY
 
 DocFlow цілком: retrieval → prompt → справжня модель → parser → validate → журнал з токенами.
 
@@ -1668,8 +1726,6 @@ print("Офлайн-тести не змінились: make_chain() і далі
 ```
 
 **Що порівняти:** Перехід на справжню модель не зачепив retrieval, parser і валідатор. Для невідомого питання контекст порожній, і модель має повернути `answer: null`, `sources: []`. Якщо вона вигадала відповідь, валідатор це відхилить.
-
-Додатково: додайте до журналу час виконання кожного виклику (`time.perf_counter`) і порівняйте з fixture.
 <!-- live-openai:end -->
 ### Промпт: Gemini або ChatGPT
 
@@ -1690,27 +1746,31 @@ print("Офлайн-тести не змінились: make_chain() і далі
 
 ### Зараз виконайте завдання 12
 
-Після пояснення, прикладу й схеми відкрийте `tasks/task_12.py`. Повторити демонстрацію можна в `examples/example_12.py`. У ноутбуці пишіть у наступній комірці; далі переходьте після перевірки критерію.
+Відкрийте `tasks/task_12.py`. Це копія `examples/live_12.py` з місцями `TODO`: допишіть їх і запустіть `python tasks/task_12.py` з папки пакета. Потрібен OPENAI_API_KEY.
 
-**Завдання 12.** Запустіть DocFlow для доставки, самовивозу й невідомого факту. Створіть звіт із
-question, answer, sources, passed, mode. Для відомих питань перевірте точний текст
-першого документа; для невідомого — null/[]. Збережіть results_43_44/report.json.
-Додайте один негативний кейс невідомого source id. Напишіть два речення про межі fixtures.
+**Завдання 12.** Зберіть функцію `docflow(question)`, яка повертає один запис журналу: питання, answer, sources, valid і токени. Запустіть її на двох питаннях.
 
 ### Підказки
 
-1. Для кожного питання повторно отримайте docs. 2. passed об’єднує контракт і очікуваний факт. 3. mode завжди fixture, не live.
+1. `result` — це словник з `answer` і `sources`.
+2. Токени останнього виклику: `USAGE[-1]`.
+3. Порівняйте з `examples/live_12.py`.
 
-**Готово, якщо:** Три кейси пройшли контракт і точну перевірку; негативний id відхилено; JSON-звіт має mode=fixture й чесний висновок.
-
-Окремі файли: `examples/example_12.py` і `tasks/task_12.py` у папці пакета.
-
-
+**Готово, якщо:** Для двох питань надруковано записи з п'ятьма ключами. Для «Марсіанського телепорту» `answer` = `null`, `valid` = `true`.
 
 ```python
-# Завдання 12: напишіть власний код за умовою.
+chain = chain_with(live_json_model)
 
+def docflow(question):
+    docs = retrieve(question)
+    result = chain.invoke(question)
+    # TODO: поверніть словник з ключами question, answer, sources, valid, tokens
+    return {"question": question, "result": result}
+
+for question in ["Доставка Україною", "Марсіанський телепорт"]:
+    print(json.dumps(docflow(question), ensure_ascii=False, indent=2))
 ```
+
 # Після практикуму
 
 Здайте власні tasks, ADR.json, report.json і короткий REPORT.md. У REPORT поясніть:

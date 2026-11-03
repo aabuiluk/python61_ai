@@ -1,0 +1,4 @@
+# LangChain + OpenAI
+-r ../requirements.txt
+-r ../requirements-live.txt
+langchain-openai>=1.7,<2

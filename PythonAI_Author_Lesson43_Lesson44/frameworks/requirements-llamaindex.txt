@@ -1,0 +1,6 @@
+# LlamaIndex + OpenAI
+-r ../requirements.txt
+-r ../requirements-live.txt
+llama-index-core>=0.14,<0.15
+llama-index-llms-openai>=0.8,<0.9
+llama-index-embeddings-openai>=0.5,<1

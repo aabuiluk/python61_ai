@@ -1,18 +1,31 @@
-"""**Завдання 4.** Для трьох сценаріїв запропонуйте стек і альтернативу: 1) три локальні правила;
-2) тисячі PDF з метаданими; 3) корпоративні Cloud-проєкти з IAM.
-Для кожного вкажіть мінімальний варіант, причину та одну перевірку до впровадження.
+"""**Завдання 4.** Отримайте відповідь про самовивіз у Львові напряму через OpenAI SDK, без LangChain. Надрукуйте відповідь і кількість токенів.
 
-Підказки: 1. Малому корпусу не потрібен новий Cloud-індекс. 2. Для PDF оцініть якість витягу. 3. IAM не замінює retrieval.
+Підказки:
+1. Подивіться, як у `examples/live_04.py` збирається повідомлення user: `f"<context>{context}</context>\nПитання: {question}"`.
+2. Токени лежать у `response.usage.input_tokens` і `response.usage.output_tokens`.
 
-Готово, якщо: Є три рішення, три альтернативи й перевірки; бібліотеку не названо заміною IAM/білінгу.
+Готово, якщо: Надруковано JSON з `answer` і `sources: ["pickup_lviv"]` та два числа токенів.
 
-Окремі файли: examples/example_04.py і tasks/task_04.py у папці пакета.
-Промпти для Gemini та ChatGPT — у PROMPTS.md.
+Подивіться examples/live_04.py — там той самий код без TODO. Потрібен OPENAI_API_KEY (див. README.md).
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from workshop import *
+from live_openai import *
 
-# %% Ваш код
-# Напишіть власний розв’язок.
+require_key()
+
+# %% Ваш код: допишіть місця TODO
+question = "Самовивіз у Львові"
+context = context_for(question)
+response = client().responses.create(
+    model=MODEL, store=False, max_output_tokens=200,
+    text={"format": {"type": "json_object"}},
+    input=[
+        {"role": "system", "content": "Працюйте лише за контекстом. Поверніть answer та sources у JSON."},
+        # TODO 1: додайте повідомлення {"role": "user", "content": ...} з context і question
+    ])
+record_usage(response)
+print("Відповідь:", json.loads(response.output_text))
+# TODO 2: надрукуйте response.usage.input_tokens і response.usage.output_tokens
