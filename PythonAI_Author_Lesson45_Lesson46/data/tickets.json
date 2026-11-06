@@ -1,0 +1,17 @@
+{
+  "T101": {
+    "ticket_id": "T101",
+    "priority": "urgent",
+    "status": "open"
+  },
+  "T102": {
+    "ticket_id": "T102",
+    "priority": "normal",
+    "status": "open"
+  },
+  "T103": {
+    "ticket_id": "T103",
+    "priority": "low",
+    "status": "resolved"
+  }
+}

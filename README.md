@@ -123,3 +123,6 @@ python -m PythonAI_Author_Lesson43_Lesson44.examples.live_01
 
 
 Пари 43–44 з переходом від 41–42: [HTML](PythonAI_Author_Lesson43_Lesson44.html), [ноутбук](PythonAI_Author_Lesson43_Lesson44.ipynb), [ZIP](PythonAI_Author_Lesson43_Lesson44.zip). 12 вправ, LangChain, LCEL, пам’ять, промпти для Gemini або ChatGPT.
+
+
+Пари 45–46 з переходом 43–44, реальний OpenAI API: [HTML](PythonAI_Author_Lesson45_Lesson46.html), [ноутбук](PythonAI_Author_Lesson45_Lesson46.ipynb), [пакет](PythonAI_Author_Lesson45_Lesson46.zip). Tools, Function Calling, workflow, validation, repair і HITL.
