@@ -126,3 +126,11 @@ python -m PythonAI_Author_Lesson43_Lesson44.examples.live_01
 
 
 Пари 45–46 з переходом 43–44, реальний OpenAI API: [HTML](PythonAI_Author_Lesson45_Lesson46.html), [ноутбук](PythonAI_Author_Lesson45_Lesson46.ipynb), [пакет](PythonAI_Author_Lesson45_Lesson46.zip). Tools, Function Calling, workflow, validation, repair і HITL.
+
+Встановити **лише залежності пар 45–46**, включно з JupyterLab, із кореня репозиторію:
+
+```bash
+python -m pip install -r requirements-45-46.txt
+```
+
+Профіль [requirements-45-46.txt](requirements-45-46.txt) підключений також окремим позначеним блоком у спільний `requirements.txt`.

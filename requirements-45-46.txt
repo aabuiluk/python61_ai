@@ -1,0 +1,8 @@
+# Тільки пари 45–46. Запуск із кореня репозиторію:
+# python -m pip install -r requirements-45-46.txt
+# API, tools і workflow — єдине джерело версій у пакеті пари:
+-r PythonAI_Author_Lesson45_Lesson46/requirements.txt
+
+# Для відкриття та запуску .ipynb у JupyterLab:
+jupyterlab>=4.2
+ipykernel>=6.29

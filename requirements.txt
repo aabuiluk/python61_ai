@@ -35,3 +35,11 @@ ipykernel>=6.29
 
 # Необовʼязково, пара 30, завдання 6.3.4 (distilGPT2, ~350 МБ при першому запуску):
 # transformers>=4.40
+
+# === ПАРИ 45–46: OpenAI API, LangChain Tools, workflow та Jupyter ===
+# Окремий профіль: тільки залежності цих пар, без решти курсу.
+# З кореня репозиторію: python -m pip install -r requirements-45-46.txt
+# Runtime: openai==3.46.0, langchain-core==1.7.4, python-dotenv==1.2.1.
+# Ноутбуки: jupyterlab>=4.2, ipykernel>=6.29.
+-r requirements-45-46.txt
+# === КІНЕЦЬ БЛОКУ ПАР 45–46 ===
