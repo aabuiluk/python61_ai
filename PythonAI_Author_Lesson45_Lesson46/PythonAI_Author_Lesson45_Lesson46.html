@@ -41,16 +41,18 @@ python runtime.py review results/ВСТАВТЕ_REQUEST_ID.json edit --answer &q
 python runtime.py review results/ВСТАВТЕ_REQUEST_ID.json reject</code></pre>
 <p>Для одного стану оберіть лише одне рішення. Повторне схвалення завершеного стану відхиляється. Схвалення затверджує навчальну чернетку: код не відправляє повідомлень і не здійснює виплат. Це локальна послідовна вправа; для багатокористувацького сервісу потрібні авторизація, транзакційне сховище й контроль одночасних рішень.</p>
 <h2>Порядок роботи</h2>
-<div class="table-scroll"><table><tr><th>Хвилини</th><th>Блок</th><th>Завдання</th></tr><tr><td>0–15</td><td>43 → API · LCEL з реальною моделлю</td><td>1</td></tr><tr><td>15–30</td><td>44 → API · Історія двох live-сесій</td><td>2</td></tr><tr><td>30–55</td><td>45.1 · LangChain @tool і схема OpenAI</td><td>3</td></tr><tr><td>55–80</td><td>45.2 · JSON-аргументи: parse → validate → dispatch</td><td>4</td></tr><tr><td>80–105</td><td>45.3 · Справжній Function Calling: call_id та observation</td><td>5</td></tr><tr><td>105–130</td><td>45.4 · ReAct-цикл: межі та помилки</td><td>6</td></tr><tr><td>130–150</td><td>46.1 · Модельний router і локальна політика</td><td>7</td></tr><tr><td>150–170</td><td>46.2 · Sequential workflow і незалежний validator</td><td>8</td></tr><tr><td>170–185</td><td>46.3 · Repair і retry budget</td><td>9</td></tr><tr><td>185–200</td><td>46.4 · HITL: зберегти стан і поставити паузу</td><td>10</td></tr><tr><td>200–215</td><td>46.5 · Resume: approve, edit, reject</td><td>11</td></tr><tr><td>215–230</td><td>46.6 · Повний workflow, журнал і захист</td><td>12</td></tr></table></div><pre><code>from pathlib import Path
+<div class="table-scroll"><table><tr><th>Хвилини</th><th>Блок</th><th>Завдання</th></tr><tr><td>0–15</td><td>43 → API · LCEL з реальною моделлю</td><td>1</td></tr><tr><td>15–30</td><td>44 → API · Історія двох live-сесій</td><td>2</td></tr><tr><td>30–55</td><td>45.1 · LangChain @tool і схема OpenAI</td><td>3</td></tr><tr><td>55–80</td><td>45.2 · JSON-аргументи: parse → validate → dispatch</td><td>4</td></tr><tr><td>80–105</td><td>45.3 · Справжній Function Calling: call_id та observation</td><td>5</td></tr><tr><td>105–130</td><td>45.4 · ReAct-цикл: межі та помилки</td><td>6</td></tr><tr><td>130–150</td><td>46.1 · Модельний router і локальна політика</td><td>7</td></tr><tr><td>150–170</td><td>46.2 · Sequential workflow і незалежний validator</td><td>8</td></tr><tr><td>170–185</td><td>46.3 · Repair і retry budget</td><td>9</td></tr><tr><td>185–200</td><td>46.4 · HITL: зберегти стан і поставити паузу</td><td>10</td></tr><tr><td>200–215</td><td>46.5 · Resume: approve, edit, reject</td><td>11</td></tr><tr><td>215–230</td><td>46.6 · Повний workflow, журнал і захист</td><td>12</td></tr></table></div>
+<p><strong>Імпорти студентської версії:</strong> <code>PythonAI_Author_Lesson45_Lesson46.runtime</code>. Відкрийте python61_ai як корінь проєкту та виберіть Python зі встановленими requirements-45-46.txt.</p><pre><code>from pathlib import Path
 import sys
-candidates = [Path.cwd()/&quot;PythonAI_Author_Lesson45_Lesson46&quot;, Path.cwd()/&quot;lesson45_46_teacher&quot;, Path.cwd()]
-package = next((p for p in candidates if (p/&quot;runtime.py&quot;).is_file()),None)
-if package is None:
-    raise RuntimeError(&quot;Відкрийте ноутбук із папки репозиторію або пакета 45–46&quot;)
-sys.path.insert(0,str(package.resolve()))
+package_relative = Path(&#x27;PythonAI_Author_Lesson45_Lesson46&#x27;)
+candidates = [Path.cwd(), Path.cwd()/&quot;python61_ai&quot;, Path.cwd()/&quot;lesson_helper&quot;, *Path.cwd().parents]
+repository = next((p for p in candidates if (p/package_relative/&quot;runtime.py&quot;).is_file()), None)
+if repository is None:
+    raise RuntimeError(&quot;Відкрийте ноутбук із папки репозиторію або розпакуйте ZIP зі збереженням структури папок.&quot;)
+sys.path.insert(0,str(repository.resolve()))
 from pathlib import Path
 import json
-from runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
+from PythonAI_Author_Lesson45_Lesson46.runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
     ANSWER_SCHEMA, ROUTE_SCHEMA, dispatch, validate, run_agent, route_query,
     draft_for, repair_once, run_workflow, resume, show)
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

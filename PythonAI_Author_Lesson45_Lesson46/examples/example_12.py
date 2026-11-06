@@ -11,10 +11,11 @@ Exit ticket: хто виконав дію; як перевірено факт; �
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+REPOSITORY = Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(REPOSITORY))
 from pathlib import Path
 import json
-from runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
+from PythonAI_Author_Lesson45_Lesson46.runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
     ANSWER_SCHEMA, ROUTE_SCHEMA, dispatch, validate, run_agent, route_query,
     draft_for, repair_once, run_workflow, resume, show)
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

@@ -102,18 +102,22 @@ python runtime.py review results/ВСТАВТЕ_REQUEST_ID.json reject
 | 215–230 | 46.6 · Повний workflow, журнал і захист | 12 |
 
 
+**Імпорти студентської версії:** `PythonAI_Author_Lesson45_Lesson46.runtime`. Відкрийте python61_ai як корінь проєкту та виберіть Python зі встановленими requirements-45-46.txt.
+
+
 
 ```python
 from pathlib import Path
 import sys
-candidates = [Path.cwd()/"PythonAI_Author_Lesson45_Lesson46", Path.cwd()/"lesson45_46_teacher", Path.cwd()]
-package = next((p for p in candidates if (p/"runtime.py").is_file()),None)
-if package is None:
-    raise RuntimeError("Відкрийте ноутбук із папки репозиторію або пакета 45–46")
-sys.path.insert(0,str(package.resolve()))
+package_relative = Path('PythonAI_Author_Lesson45_Lesson46')
+candidates = [Path.cwd(), Path.cwd()/"python61_ai", Path.cwd()/"lesson_helper", *Path.cwd().parents]
+repository = next((p for p in candidates if (p/package_relative/"runtime.py").is_file()), None)
+if repository is None:
+    raise RuntimeError("Відкрийте ноутбук із папки репозиторію або розпакуйте ZIP зі збереженням структури папок.")
+sys.path.insert(0,str(repository.resolve()))
 from pathlib import Path
 import json
-from runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
+from PythonAI_Author_Lesson45_Lesson46.runtime import (ClassroomAPI, ClassroomError, API_TOOLS, TOOLS, TICKETS, SLA,
     ANSWER_SCHEMA, ROUTE_SCHEMA, dispatch, validate, run_agent, route_query,
     draft_for, repair_once, run_workflow, resume, show)
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
