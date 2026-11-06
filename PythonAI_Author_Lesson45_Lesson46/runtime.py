@@ -18,7 +18,21 @@ from langchain_core.utils.function_calling import convert_to_openai_function
 PACKAGE = Path(__file__).resolve().parent
 RESULTS = PACKAGE/'results'
 load_dotenv(PACKAGE/'.env', override=False)
-MODEL = os.getenv('OPENAI_MODEL','gpt-4.1-mini')
+MODEL = os.getenv('OPENAI_MODEL','gpt-4.1-mini').strip()
+# Chat models allowed in the classroom OpenAI project (Settings → Limits → Allowed models).
+# text-embedding-3-small is also allowed there, but it is not a chat model.
+ALLOWED_MODELS = (
+    'gpt-4.1-mini',
+    'gpt-4o-mini','gpt-4o-mini-2024-07-18',
+    'gpt-4o-2024-08-06',
+    'gpt-5-mini','gpt-5-mini-2025-08-07',
+    'gpt-5-2025-08-07',
+    'gpt-3.5-turbo-16k',
+)
+# Reasoning models spend part of max_output_tokens on hidden reasoning.
+REASONING_PREFIXES = ('gpt-5',)
+# No strict JSON schema / strict function calling: only plain text tasks work.
+TEXT_ONLY_MODELS = {'gpt-3.5-turbo-16k'}
 TICKETS = {
     'T101':{'ticket_id':'T101','priority':'urgent','status':'open'},
     'T102':{'ticket_id':'T102','priority':'normal','status':'open'},
@@ -87,6 +101,10 @@ class ClassroomError(RuntimeError):
 class ClassroomAPI:
     def __init__(self, client=None, model=None, max_calls=12, output_dir=None):
         self.model = model or MODEL
+        if self.model not in ALLOWED_MODELS:
+            raise ClassroomError('OPENAI_MODEL='+self.model+' недоступна в проєкті. Оберіть одну з: '+
+                                 ', '.join(ALLOWED_MODELS))
+        self.reasoning = self.model.startswith(REASONING_PREFIXES)
         self._client = client
         self.max_calls = max_calls
         self.calls_used = 0
@@ -106,6 +124,9 @@ class ClassroomAPI:
     def request(self, input, *, instructions=SYSTEM, tools=None, schema=None, stage='model'):
         if self.calls_used>=self.max_calls:
             raise ClassroomError('call_budget_exhausted')
+        if self.model in TEXT_ONLY_MODELS and (tools is not None or schema is not None):
+            raise ClassroomError(self.model+' не підтримує structured output і function calling; '
+                                 'для цього завдання оберіть gpt-4.1-mini, gpt-4o-mini або gpt-5-mini.')
         client = self.client
         self.calls_used += 1
         if hasattr(input,'to_messages'):
@@ -113,6 +134,11 @@ class ClassroomAPI:
             input = [{'role':roles[m.type],'content':m.content} for m in input.to_messages()]
         params = dict(model=self.model,input=input,instructions=instructions,
                       max_output_tokens=800,store=False)
+        if self.reasoning:
+            # Low effort keeps classroom latency and cost down; extra room for reasoning tokens.
+            # store=False: reasoning items must travel back encrypted in the agent loop.
+            params.update(max_output_tokens=4000,reasoning={'effort':'low'},
+                          include=['reasoning.encrypted_content'])
         if tools is not None:
             params['tools']=tools
         if schema is not None:
