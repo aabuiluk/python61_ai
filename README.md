@@ -137,3 +137,6 @@ python -m pip install -r requirements-45-46.txt
 
 
 Пари 47–48: [методичка](PythonAI_Author_Lesson47_Lesson48.html), [ноутбук](PythonAI_Author_Lesson47_Lesson48.ipynb), [ZIP](PythonAI_Author_Lesson47_Lesson48.zip), [готовий Qdrant RAG](PythonAI_Author_Lesson47_Lesson48/README.md). Встановлення з кореня: `python -m pip install -r requirements-47-48.txt`.
+
+
+Пари 47–48: **перехід із 45 — 20 хв** (`tasks/bridge_45.py`), **перехід із 46 — 20 хв** (`tasks/bridge_46.py`), далі основні 80 + 80 хв. Переходи з прикладами, завданнями й перевіркою включені в HTML та ноутбук пакета `PythonAI_Author_Lesson47_Lesson48`.

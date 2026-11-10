@@ -2,7 +2,7 @@
 
 Після 45–46 уже є tools, перевірка аргументів, workflow і зупинка перед зовнішньою дією. Тепер перевіряємо, як цей процес працює: де витрачаються токени, який документ знайшовся і чим підтверджена відповідь. У 48 поєднаємо ці кроки у готовий застосунок магазину СвітлоМаркет.
 
-Пара 47 — 80 хв: trace → метрики → golden cases → judge → порівняння інструментів. Пара 48 — 80 хв: PDF → embeddings → Qdrant → RAG → HITL → перевірка релізу. Додаткові експерименти можна виконати після заняття. Невідомі результати API не підміняємо заздалегідь записаними відповідями.
+Спочатку два окремі переходи: **пара 45 — 20 хв** (Tools / Function Calling, tasks/bridge_45.py), **пара 46 — 20 хв** (workflow / validator / HITL, tasks/bridge_46.py). Далі основна пара 47 — 80 хв: trace → метрики → golden cases → judge → порівняння інструментів. Пара 48 — 80 хв: PDF → embeddings → Qdrant → RAG → HITL → перевірка релізу. Загальний маршрут: **20 + 20 + 80 + 80 = 200 хв**. Переходи виконуються перед блоком 1; основні теми 47–48 збережені. Додаткові експерименти можна виконати після заняття. Невідомі результати API не підміняємо заздалегідь записаними відповідями.
 
 ## Підготовка з кореня репозиторію
 
@@ -42,6 +42,7 @@ repository=next((p for p in candidates if (p/package_relative/'runtime.py').is_f
 if repository is None:
     raise RuntimeError('Розпакуйте ZIP повністю; відкрийте ноутбук у корені або папці пакета.')
 sys.path.insert(0,str(repository))
+sys.path.insert(0,str(repository/package_relative))
 from PythonAI_Author_Lesson47_Lesson48.runtime import (
     PACKAGE, session, read_documents, validate_answer,
 )
@@ -49,6 +50,72 @@ import json
 import time
 import uuid
 
+```
+# Перехід із пари 45 · 20 хв
+
+## Tools і Function Calling → видимий виклик інструмента
+
+У парі 45 модель пропонувала виклик функції, а Python перевіряв ім’я й аргументи. Повторіть цей контракт на документах магазину: get_store_policy отримує topic, читає затверджений PDF і повертає текст із source_id. Модель не виконує Python сама. Після виконання застосунок надсилає function_call_output з тим самим call_id і отримує фінальну відповідь через справжній OpenAI API.
+
+Це підводка до пари 47: тепер у нас є конкретні кроки, які потрібно спостерігати — запит моделі, пропозиція tool, перевірка, виконання та фінальна відповідь. До пари 48: ручний вибір PDF через topic згодом замінить Qdrant retrieval; перевірка походження документа залишиться.
+
+0–4 хв — відновіть схему question → model → tool → model. 4–8 хв — запустіть examples/bridge_45.py. 8–17 хв — виконайте tasks/bridge_45.py. 17–20 хв — покажіть tool name, arguments, call_id, sources та підсумок. У цей час входять приклад і самостійна практика; це окремі 20 хв перед основною парою 47.
+
+### Приклад · справжній OpenAI API
+
+
+```python
+from bridge_runtime import bridge45
+result=bridge45('Який строк повернення невикористаного товару?')
+print(json.dumps(result,ensure_ascii=False,indent=2))
+```
+### Зараз виконайте перехід 45
+
+Після прикладу відкрийте tasks/bridge_45.py. Зробіть реальний запит про повернення й окремий — про доставку. Для кожного покажіть tool name/topic, call_id, джерела та відповідь. Локально перевірте відхилення невідомого tool і зайвого JSON-поля; негативні перевірки не повинні викликати API.
+
+**Готово, якщо:** У терміналі є два справжні результати: повернення — 14 календарних днів, стандартна доставка — 90 грн / безкоштовно від 3000 грн. Джерела перевірені у 06_returns.pdf та 04_delivery.pdf. Два некоректні виклики відхилено Python-кодом.
+
+
+```python
+from bridge_runtime import bridge45, dispatch
+questions=None  # TODO: питання про повернення та доставку
+if not questions:
+    raise NotImplementedError('Заповніть questions за умовою переходу 45')
+# TODO: викличте bridge45, покажіть tool_calls, sources та answer
+# TODO: dispatch для невідомого tool і зайвого поля; очікуйте ValueError
+```
+# Перехід із пари 46 · 20 хв
+
+## Workflow, validator і HITL → керований результат
+
+У парі 46 послідовність кроків стала workflow з явними результатами: answered, refused або pending_approval. Поверніть цю логіку до вже знайомого tool-прикладу. Спочатку перевіряємо ввід і дозволену дію, потім отримуємо відповідь через інструмент, а запит на лист зберігаємо як чернетку. Генерація тексту не є надсиланням.
+
+HITL у цьому переході означає збережену паузу: approval-файл має ідентифікатор, джерела, чернетку та sent=false. Функції надсилання немає. Непідтримувана дія чи порожнє питання відхиляються до платного API. Саме ці різні гілки будемо розрізняти у trace пари 47, а потім поєднаємо з Qdrant RAG пари 48.
+
+0–4 хв — відновіть стани та межу між інформацією й дією. 4–8 хв — запустіть examples/bridge_46.py. 8–17 хв — виконайте tasks/bridge_46.py. 17–20 хв — покажіть три статуси, approval-файл та sent=false. Це другі окремі 20 хв переходу; основні 80 хв пари 47 та 80 хв пари 48 не скорочуються.
+
+### Приклад · справжній OpenAI API
+
+
+```python
+from bridge_runtime import bridge46
+result=bridge46('Підготуй пояснення правил повернення.',action='draft_email')
+print(json.dumps(result,ensure_ascii=False,indent=2))
+```
+### Зараз виконайте перехід 46
+
+Після прикладу відкрийте tasks/bridge_46.py. Перевірте інформаційне питання, запит на чернетку та заборонену дію send_email. Покажіть answered / pending_approval / refused. Відкрийте artifacts/bridge_approval_UUID.json і перевірте sent=false; порівняйте run_id з bridge-подіями в artifacts/trace.jsonl.
+
+**Готово, якщо:** Є два live workflow-запуски і одна локальна відмова до API. Чернетка збережена, sent=false. Жоден лист не надіслано. Названо, які stage/status зручно досліджувати далі у парі 47.
+
+
+```python
+from bridge_runtime import bridge46
+question=None  # TODO: питання про правила повернення
+if not question:
+    raise NotImplementedError('Заповніть question за умовою переходу 46')
+# TODO: action answer, draft_email, send_email
+# TODO: перевірте статуси, approval-файл та sent=false
 ```
 # Блок 1. 47 · Перехід з workflow: один запит, кілька етапів
 

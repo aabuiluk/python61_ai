@@ -8,9 +8,9 @@ body.dark .lesson-nav{border-color:#526277}body.dark .lesson-nav a:hover{backgro
 svg{max-width:100%;height:auto}pre{max-width:100%;overflow-wrap:normal}h1{scroll-margin-top:20px}table{table-layout:fixed}td,th{overflow-wrap:anywhere}
 @media(max-width:900px){.layout{display:block;padding:16px}.layout main{padding:0 8px 64px}.lesson-nav{position:static;max-height:320px;margin-bottom:24px}}
 @media print{.layout{display:block;padding:0}.lesson-nav{display:none}.layout main{max-width:none;padding:0}}
-</style></head><body><div class="layout"><nav class="lesson-nav" aria-label="Зміст практикуму"><h2>Зміст практикуму</h2><a href="#block-1">1. 47 · Перехід з workflow: один запит, кілька етапів</a><a href="#block-2">2. 47 · JSONL trace: токени, затримка, помилка</a><a href="#block-3">3. 47 · Звіт про запуски та межі метрик</a><a href="#block-4">4. 47 · Golden cases: очікування до запуску</a><a href="#block-5">5. 47 · LLM-as-judge та ручна перевірка</a><a href="#block-6">6. 47 · JSONL, LangSmith та Monitoring: що бачимо</a><a href="#block-7">7. 48 · Десять PDF: extraction, chunking, provenance</a><a href="#block-8">8. 48 · OpenAI embeddings → Qdrant collection</a><a href="#block-9">9. 48 · Vector search: top-k, score та фільтр</a><a href="#block-10">10. 48 · RAG-відповідь, citations, hit і miss</a><a href="#block-11">11. 48 · HITL та перевірка набору кейсів</a><a href="#block-12">12. 48 · Локальний запуск, перевірка релізу й наступні кроки</a></nav><main><button onclick="document.body.classList.toggle('dark')">Світла / темна тема</button><h1>Пари 47–48 · Магазин: спостережуваність та Qdrant RAG</h1>
+</style></head><body><div class="layout"><nav class="lesson-nav" aria-label="Зміст практикуму"><h2>Зміст практикуму</h2><a href="#bridge-45">Перехід 45 · 20 хв · Tools і Function Calling → видимий виклик інструмента</a><a href="#bridge-46">Перехід 46 · 20 хв · Workflow, validator і HITL → керований результат</a><a href="#block-1">1. 47 · Перехід з workflow: один запит, кілька етапів</a><a href="#block-2">2. 47 · JSONL trace: токени, затримка, помилка</a><a href="#block-3">3. 47 · Звіт про запуски та межі метрик</a><a href="#block-4">4. 47 · Golden cases: очікування до запуску</a><a href="#block-5">5. 47 · LLM-as-judge та ручна перевірка</a><a href="#block-6">6. 47 · JSONL, LangSmith та Monitoring: що бачимо</a><a href="#block-7">7. 48 · Десять PDF: extraction, chunking, provenance</a><a href="#block-8">8. 48 · OpenAI embeddings → Qdrant collection</a><a href="#block-9">9. 48 · Vector search: top-k, score та фільтр</a><a href="#block-10">10. 48 · RAG-відповідь, citations, hit і miss</a><a href="#block-11">11. 48 · HITL та перевірка набору кейсів</a><a href="#block-12">12. 48 · Локальний запуск, перевірка релізу й наступні кроки</a></nav><main><button onclick="document.body.classList.toggle('dark')">Світла / темна тема</button><h1>Пари 47–48 · Магазин: спостережуваність та Qdrant RAG</h1>
 <p>Після 45–46 уже є tools, перевірка аргументів, workflow і зупинка перед зовнішньою дією. Тепер перевіряємо, як цей процес працює: де витрачаються токени, який документ знайшовся і чим підтверджена відповідь. У 48 поєднаємо ці кроки у готовий застосунок магазину СвітлоМаркет.</p>
-<p>Пара 47 — 80 хв: trace → метрики → golden cases → judge → порівняння інструментів. Пара 48 — 80 хв: PDF → embeddings → Qdrant → RAG → HITL → перевірка релізу. Додаткові експерименти можна виконати після заняття. Невідомі результати API не підміняємо заздалегідь записаними відповідями.</p>
+<p>Спочатку два окремі переходи: <strong>пара 45 — 20 хв</strong> (Tools / Function Calling, tasks/bridge_45.py), <strong>пара 46 — 20 хв</strong> (workflow / validator / HITL, tasks/bridge_46.py). Далі основна пара 47 — 80 хв: trace → метрики → golden cases → judge → порівняння інструментів. Пара 48 — 80 хв: PDF → embeddings → Qdrant → RAG → HITL → перевірка релізу. Загальний маршрут: <strong>20 + 20 + 80 + 80 = 200 хв</strong>. Переходи виконуються перед блоком 1; основні теми 47–48 збережені. Додаткові експерименти можна виконати після заняття. Невідомі результати API не підміняємо заздалегідь записаними відповідями.</p>
 <h2>Підготовка з кореня репозиторію</h2>
 <p>Потрібен Python 3.11 або новіший. Виберіть своє .venv в IDE. У корені python61_ai виконайте:</p>
 <pre><code>python -m pip install -r requirements-47-48.txt</code></pre>
@@ -31,13 +31,40 @@ repository=next((p for p in candidates if (p/package_relative/&#x27;runtime.py&#
 if repository is None:
     raise RuntimeError(&#x27;Розпакуйте ZIP повністю; відкрийте ноутбук у корені або папці пакета.&#x27;)
 sys.path.insert(0,str(repository))
+sys.path.insert(0,str(repository/package_relative))
 from PythonAI_Author_Lesson47_Lesson48.runtime import (
     PACKAGE, session, read_documents, validate_answer,
 )
 import json
 import time
 import uuid
-</code></pre><h1 id="block-1">Блок 1. 47 · Перехід з workflow: один запит, кілька етапів</h1>
+</code></pre><h1 id="bridge-45">Перехід із пари 45 · 20 хв</h1>
+<h2>Tools і Function Calling → видимий виклик інструмента</h2>
+<p>У парі 45 модель пропонувала виклик функції, а Python перевіряв ім’я й аргументи. Повторіть цей контракт на документах магазину: get_store_policy отримує topic, читає затверджений PDF і повертає текст із source_id. Модель не виконує Python сама. Після виконання застосунок надсилає function_call_output з тим самим call_id і отримує фінальну відповідь через справжній OpenAI API.</p>
+<p>Це підводка до пари 47: тепер у нас є конкретні кроки, які потрібно спостерігати — запит моделі, пропозиція tool, перевірка, виконання та фінальна відповідь. До пари 48: ручний вибір PDF через topic згодом замінить Qdrant retrieval; перевірка походження документа залишиться.</p>
+<p>0–4 хв — відновіть схему question → model → tool → model. 4–8 хв — запустіть examples/bridge_45.py. 8–17 хв — виконайте tasks/bridge_45.py. 17–20 хв — покажіть tool name, arguments, call_id, sources та підсумок. У цей час входять приклад і самостійна практика; це окремі 20 хв перед основною парою 47.</p><h3>Приклад · справжній OpenAI API</h3><pre><code>from bridge_runtime import bridge45
+result=bridge45(&#x27;Який строк повернення невикористаного товару?&#x27;)
+print(json.dumps(result,ensure_ascii=False,indent=2))</code></pre><h3>Зараз виконайте перехід 45</h3>
+<p>Після прикладу відкрийте tasks/bridge_45.py. Зробіть реальний запит про повернення й окремий — про доставку. Для кожного покажіть tool name/topic, call_id, джерела та відповідь. Локально перевірте відхилення невідомого tool і зайвого JSON-поля; негативні перевірки не повинні викликати API.</p>
+<p><strong>Готово, якщо:</strong> У терміналі є два справжні результати: повернення — 14 календарних днів, стандартна доставка — 90 грн / безкоштовно від 3000 грн. Джерела перевірені у 06_returns.pdf та 04_delivery.pdf. Два некоректні виклики відхилено Python-кодом.</p><pre><code>from bridge_runtime import bridge45, dispatch
+questions=None  # TODO: питання про повернення та доставку
+if not questions:
+    raise NotImplementedError(&#x27;Заповніть questions за умовою переходу 45&#x27;)
+# TODO: викличте bridge45, покажіть tool_calls, sources та answer
+# TODO: dispatch для невідомого tool і зайвого поля; очікуйте ValueError</code></pre><h1 id="bridge-46">Перехід із пари 46 · 20 хв</h1>
+<h2>Workflow, validator і HITL → керований результат</h2>
+<p>У парі 46 послідовність кроків стала workflow з явними результатами: answered, refused або pending_approval. Поверніть цю логіку до вже знайомого tool-прикладу. Спочатку перевіряємо ввід і дозволену дію, потім отримуємо відповідь через інструмент, а запит на лист зберігаємо як чернетку. Генерація тексту не є надсиланням.</p>
+<p>HITL у цьому переході означає збережену паузу: approval-файл має ідентифікатор, джерела, чернетку та sent=false. Функції надсилання немає. Непідтримувана дія чи порожнє питання відхиляються до платного API. Саме ці різні гілки будемо розрізняти у trace пари 47, а потім поєднаємо з Qdrant RAG пари 48.</p>
+<p>0–4 хв — відновіть стани та межу між інформацією й дією. 4–8 хв — запустіть examples/bridge_46.py. 8–17 хв — виконайте tasks/bridge_46.py. 17–20 хв — покажіть три статуси, approval-файл та sent=false. Це другі окремі 20 хв переходу; основні 80 хв пари 47 та 80 хв пари 48 не скорочуються.</p><h3>Приклад · справжній OpenAI API</h3><pre><code>from bridge_runtime import bridge46
+result=bridge46(&#x27;Підготуй пояснення правил повернення.&#x27;,action=&#x27;draft_email&#x27;)
+print(json.dumps(result,ensure_ascii=False,indent=2))</code></pre><h3>Зараз виконайте перехід 46</h3>
+<p>Після прикладу відкрийте tasks/bridge_46.py. Перевірте інформаційне питання, запит на чернетку та заборонену дію send_email. Покажіть answered / pending_approval / refused. Відкрийте artifacts/bridge_approval_UUID.json і перевірте sent=false; порівняйте run_id з bridge-подіями в artifacts/trace.jsonl.</p>
+<p><strong>Готово, якщо:</strong> Є два live workflow-запуски і одна локальна відмова до API. Чернетка збережена, sent=false. Жоден лист не надіслано. Названо, які stage/status зручно досліджувати далі у парі 47.</p><pre><code>from bridge_runtime import bridge46
+question=None  # TODO: питання про правила повернення
+if not question:
+    raise NotImplementedError(&#x27;Заповніть question за умовою переходу 46&#x27;)
+# TODO: action answer, draft_email, send_email
+# TODO: перевірте статуси, approval-файл та sent=false</code></pre><h1 id="block-1">Блок 1. 47 · Перехід з workflow: один запит, кілька етапів</h1>
 <p><strong>0–12 хв.</strong></p>
 <p>У 45–46 модель могла запропонувати tool, а Python перевіряв назву, аргументи та право на дію. Тепер потрібно відрізнити три причини поганої відповіді: документ не знайдено, генерація спотворила факт або перевірка пропустила помилку. Один print(answer) цього не показує.</p>
 <p>Запит має run_id, який зв’язує етапи retrieval, embedding, generate та result. Response ID належить окремому API-виклику; один run_id може мати кілька response_id. Тривалість вимірюємо монотонним perf_counter, календарний час зберігаємо в UTC.</p>
