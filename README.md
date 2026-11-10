@@ -134,3 +134,6 @@ python -m pip install -r requirements-45-46.txt
 ```
 
 Профіль [requirements-45-46.txt](requirements-45-46.txt) підключений також окремим позначеним блоком у спільний `requirements.txt`.
+
+
+Пари 47–48: [методичка](PythonAI_Author_Lesson47_Lesson48.html), [ноутбук](PythonAI_Author_Lesson47_Lesson48.ipynb), [ZIP](PythonAI_Author_Lesson47_Lesson48.zip), [готовий Qdrant RAG](PythonAI_Author_Lesson47_Lesson48/README.md). Встановлення з кореня: `python -m pip install -r requirements-47-48.txt`.

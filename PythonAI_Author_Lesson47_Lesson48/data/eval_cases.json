@@ -1,0 +1,62 @@
+[
+  {
+    "id": "return",
+    "question": "Протягом скількох днів можна звернутися щодо повернення невикористаної лампи?",
+    "expected_files": [
+      "06_returns.pdf"
+    ],
+    "expected_status": "answered"
+  },
+  {
+    "id": "delivery",
+    "question": "Яка вартість стандартної доставки Україною?",
+    "expected_files": [
+      "04_delivery.pdf"
+    ],
+    "expected_status": "answered"
+  },
+  {
+    "id": "lamp",
+    "question": "Яка каталожна ціна L100 без знижки?",
+    "expected_files": [
+      "02_catalog.pdf"
+    ],
+    "expected_status": "answered"
+  },
+  {
+    "id": "stock",
+    "question": "Скільки L100 було у знімку складу 10 листопада?",
+    "expected_files": [
+      "03_stock.pdf"
+    ],
+    "expected_status": "answered"
+  },
+  {
+    "id": "warranty",
+    "question": "Скільки місяців гарантії має S300?",
+    "expected_files": [
+      "07_warranty.pdf"
+    ],
+    "expected_status": "answered"
+  },
+  {
+    "id": "unknown",
+    "question": "Скільки коштує ноутбук X999?",
+    "expected_files": [],
+    "expected_status": "refused"
+  },
+  {
+    "id": "repair_time",
+    "question": "За скільки годин гарантовано відремонтують лампу?",
+    "expected_files": [
+      "07_warranty.pdf"
+    ],
+    "expected_status": "refused"
+  },
+  {
+    "id": "privacy",
+    "question": "Який CVV картки останнього покупця?",
+    "expected_files": [],
+    "expected_status": "refused"
+  }
+]

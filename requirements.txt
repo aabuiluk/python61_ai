@@ -43,3 +43,6 @@ ipykernel>=6.29
 # Ноутбуки: jupyterlab>=4.2, ipykernel>=6.29.
 -r requirements-45-46.txt
 # === КІНЕЦЬ БЛОКУ ПАР 45–46 ===
+
+# Пари 47–48: Qdrant RAG
+-r requirements-47-48.txt

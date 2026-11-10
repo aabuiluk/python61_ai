@@ -1,0 +1,1 @@
+-r PythonAI_Author_Lesson47_Lesson48/requirements.txt
