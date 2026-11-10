@@ -2,9 +2,10 @@
 from pathlib import Path
 import sys
 import json
-sys.path.insert(0,str(Path(__file__).resolve().parent))
+REPOSITORY = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(REPOSITORY))
 import streamlit as st
-from runtime import PACKAGE, open_store, read_documents
+from PythonAI_Author_Lesson47_Lesson48.runtime import PACKAGE, open_store, read_documents
 
 st.set_page_config(page_title='СвітлоМаркет · Qdrant RAG',layout='wide')
 st.title('СвітлоМаркет · PDF → Qdrant → OpenAI')

@@ -3,14 +3,15 @@
 """
 from pathlib import Path
 import sys
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from runtime import PACKAGE, session, read_documents, validate_answer
+REPOSITORY = Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(REPOSITORY))
+from PythonAI_Author_Lesson47_Lesson48.runtime import PACKAGE, session, read_documents, validate_answer
 import json
 import time
 import uuid
 
 def main():
-    from bridge_runtime import bridge45, dispatch
+    from PythonAI_Author_Lesson47_Lesson48.bridge_runtime import bridge45, dispatch
     questions=None  # TODO: питання про повернення та доставку
     if not questions:
         raise NotImplementedError('Заповніть questions за умовою переходу 45')

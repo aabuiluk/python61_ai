@@ -6,8 +6,9 @@ import os
 import sys
 import uuid
 from datetime import datetime, timezone
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from runtime import PACKAGE
+REPOSITORY = Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(REPOSITORY))
+from PythonAI_Author_Lesson47_Lesson48.runtime import PACKAGE
 from dotenv import load_dotenv
 
 def main():

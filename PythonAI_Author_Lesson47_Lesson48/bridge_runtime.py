@@ -2,7 +2,7 @@
 import json
 import uuid
 import time
-from runtime import PACKAGE, StoreRAG, read_documents
+from PythonAI_Author_Lesson47_Lesson48.runtime import PACKAGE, StoreRAG, read_documents
 from dotenv import load_dotenv
 
 TOPICS={'refund':'06_returns.pdf','delivery':'04_delivery.pdf','exchange':'08_exchange.pdf','support':'10_support_privacy.pdf'}
