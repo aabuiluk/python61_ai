@@ -10,8 +10,12 @@ import time
 import uuid
 
 def main():
-    # TODO: Після блоку 1 відкрийте trace.jsonl в IDE. Знайдіть один run_id і його generate. Напишіть перевірку, що кожен рядок має run_id/stage/status, а API-ключ відсутній. Додайте підрахунок токенів.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    trace=PACKAGE/'artifacts/trace.jsonl'
+    rows=[json.loads(x) for x in trace.read_text(encoding='utf-8').splitlines()]
+    required_fields=None  # TODO: обов'язкові поля рядка trace
+    if not required_fields:
+        raise NotImplementedError('Вкажіть поля контракту trace')
+    # TODO: перевірте поля, відсутність секретів та суми usage
 
 if __name__=="__main__":
     main()

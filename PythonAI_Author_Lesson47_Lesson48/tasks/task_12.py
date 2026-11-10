@@ -10,8 +10,13 @@ import time
 import uuid
 
 def main():
-    # TODO: Запустіть UI з кореня, покажіть hit/miss, джерело зі сторінкою, trace і pending_approval. Закрийте UI, виконайте stats та переконайтеся, що індекс зберігся. Підготуйте README зі своїм середовищем і таблицею результатів.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    report_file=PACKAGE/'artifacts/eval_report.json'
+    report=json.loads(report_file.read_text(encoding='utf-8'))
+    expected_cases=None  # TODO: кількість базових кейсів
+    if expected_cases is None:
+        raise NotImplementedError('Вкажіть expected_cases')
+    # TODO: кількість PDF, trace, eval cases, збереження індексу
+    # TODO: README з фактичними результатами live-перевірки
 
 if __name__=="__main__":
     main()

@@ -10,8 +10,11 @@ import time
 import uuid
 
 def main():
-    # TODO: Складіть порівняння JSONL / LangSmith / Vertex Monitoring за чотирма ознаками: де зберігаються дані, які метрики бачимо, що потрібно налаштувати, чого інструмент не доводить. Необов’язково надішліть один очищений trace у LangSmith.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    comparison={}
+    # TODO: JSONL / LangSmith / Vertex Monitoring, чотири ознаки за умовою
+    if len(comparison)!=3:
+        raise NotImplementedError('Заповніть порівняння трьох інструментів')
+    print(json.dumps(comparison,ensure_ascii=False,indent=2))
 
 if __name__=="__main__":
     main()

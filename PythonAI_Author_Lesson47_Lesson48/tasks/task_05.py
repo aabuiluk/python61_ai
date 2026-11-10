@@ -10,8 +10,15 @@ import time
 import uuid
 
 def main():
-    # TODO: Викличте judge для двох відповідей: 14 і 30 календарних днів. Запишіть власну оцінку перед API, порівняйте relevant/supported і reason. Додайте суперечливий фрагмент тільки до локальної копії контексту.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    docs=[d for d in read_documents() if d['file']=='06_returns.pdf']
+    answers=None  # TODO: дві відповіді та власні оцінки до API
+    if not answers:
+        raise NotImplementedError('Заповніть варіанти відповіді')
+    with session() as rag:
+        for answer in answers:
+            # TODO: live judge та порівняння з власною оцінкою
+            pass
+    # TODO: суперечливий контекст тільки в копії
 
 if __name__=="__main__":
     main()

@@ -10,8 +10,12 @@ import time
 import uuid
 
 def main():
-    # TODO: Створіть таблицю по stage: кількість, середня duration_ms, кількість status=error. Окремо порівняйте дві фрази з запереченням і поясніть, чому overlap не перевіряє факт.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    rows=[json.loads(x) for x in (PACKAGE/'artifacts/trace.jsonl').read_text(encoding='utf-8').splitlines()]
+    group_by=None  # TODO: поле для групування етапів
+    if not group_by:
+        raise NotImplementedError('Вкажіть поле групування')
+    # TODO: count, mean_ms, errors для кожної групи
+    # TODO: контрприклад overlap із запереченням
 
 if __name__=="__main__":
     main()

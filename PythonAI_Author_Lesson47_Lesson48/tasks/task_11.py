@@ -10,8 +10,13 @@ import time
 import uuid
 
 def main():
-    # TODO: Створіть одну чернетку в UI, знайдіть approval-файл і sent=false. Запустіть eval. Для одного невдалого або складного кейсу знайдіть trace та PDF і поясніть причину. За бажанням порівняйте judge.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    question=None  # TODO: запит на підготовку чернетки про повернення
+    if not question:
+        raise NotImplementedError('Заповніть question')
+    with session() as rag:
+        # TODO: ask із external_action=True; перевірте approval-файл і sent
+        # TODO: evaluate базових кейсів і ручний розбір одного результату
+        pass
 
 if __name__=="__main__":
     main()

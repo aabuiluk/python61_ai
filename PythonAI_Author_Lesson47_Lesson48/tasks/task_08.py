@@ -10,8 +10,13 @@ import time
 import uuid
 
 def main():
-    # TODO: Запустіть build двічі, потім stats. Запишіть points і dimensions. Другий build має cached=true, а points не збільшується. У Docker dashboard відкрийте collection → points → payload; без Docker перегляньте payload через наступний search.
-    raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+    docs=read_documents()
+    confirm_live=False  # TODO: після конфігурації .env погодьте один build
+    if not confirm_live:
+        raise NotImplementedError('Підготуйте .env та встановіть confirm_live=True')
+    with session() as rag:
+        # TODO: два build, порівняння points і cached; перегляд trace
+        pass
 
 if __name__=="__main__":
     main()

@@ -54,8 +54,14 @@ with session() as rag:
 <h3>Підказки</h3>
 <p>Використайте generate без search. Невідомого факту немає у фрагменті; очікуйте refused або поясніть відхилення. Не вимагайте однакового тексту.</p>
 <p><strong>Готово, якщо:</strong> Є три фактичні результати, правильне джерело для строку 14 календарних днів і пояснення відмови або неоднозначності.</p>
-<p>Окремі файли: <code>examples/example_01.py</code> і <code>tasks/task_01.py</code> у папці пакета.</p><pre><code># TODO: Виконайте три реальні запити до того самого контексту: строк повернення, вартість ноутбука та неоднозначне «А якщо пізніше?». Для кожного збережіть status і run_id у власну таблицю. Звірте факти з PDF.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-2">Блок 2. 47 · JSONL trace: токени, затримка, помилка</h1>
+<p>Окремі файли: <code>examples/example_01.py</code> і <code>tasks/task_01.py</code> у папці пакета.</p><pre><code>docs=[d for d in read_documents() if d[&#x27;file&#x27;]==&#x27;06_returns.pdf&#x27;]
+questions=None  # TODO: три питання за умовою; очікування запишіть до API
+if not questions:
+    raise NotImplementedError(&#x27;Заповніть questions&#x27;)
+with session() as rag:
+    for question in questions:
+        run_id=str(uuid.uuid4())
+        # TODO: generate, status, run_id та ручна звірка з PDF</code></pre><h1 id="block-2">Блок 2. 47 · JSONL trace: токени, затримка, помилка</h1>
 <p><strong>12–26 хв.</strong></p>
 <p>JSONL зберігає один JSON-об’єкт на рядок. У artifacts/trace.jsonl є stage, run_id, status, duration_ms, model, usage та response_id. Питань, ключів і повного контексту там немає. Лог містить ідентифікатори джерел, тому його теж не слід публікувати без перевірки.</p>
 <p>Запис generate/status=ok означає, що API завершив запит і JSON розібрався. Це ще не перевірка правдивості. Після генерації окремо виконується validate_answer; підсумок у result може стати invalid. Помилка API фіксує тільки назву класу, без повного повідомлення сервера, яке може містити приватний текст.</p>
@@ -70,8 +76,12 @@ for row in rows[-5:]:
 <h3>Підказки</h3>
 <p>Не друкуйте ключ для перевірки. Шукайте назви небажаних полів і префікс sk-. Embedding має тільки input_tokens; відсутнє поле не прирівнюйте до помилки.</p>
 <p><strong>Готово, якщо:</strong> Кожен рядок розбирається як JSON; ключів і текстів питань немає; usage підсумовано без подвійного рахунку result.</p>
-<p>Окремі файли: <code>examples/example_02.py</code> і <code>tasks/task_02.py</code> у папці пакета.</p><pre><code># TODO: Після блоку 1 відкрийте trace.jsonl в IDE. Знайдіть один run_id і його generate. Напишіть перевірку, що кожен рядок має run_id/stage/status, а API-ключ відсутній. Додайте підрахунок токенів.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-3">Блок 3. 47 · Звіт про запуски та межі метрик</h1>
+<p>Окремі файли: <code>examples/example_02.py</code> і <code>tasks/task_02.py</code> у папці пакета.</p><pre><code>trace=PACKAGE/&#x27;artifacts/trace.jsonl&#x27;
+rows=[json.loads(x) for x in trace.read_text(encoding=&#x27;utf-8&#x27;).splitlines()]
+required_fields=None  # TODO: обов&#x27;язкові поля рядка trace
+if not required_fields:
+    raise NotImplementedError(&#x27;Вкажіть поля контракту trace&#x27;)
+# TODO: перевірте поля, відсутність секретів та суми usage</code></pre><h1 id="block-3">Блок 3. 47 · Звіт про запуски та межі метрик</h1>
 <p><strong>26–40 хв.</strong></p>
 <p>Середня затримка всіх записів не є затримкою одного запиту: embedding і generate мають власні вимірювання, а result охоплює весь ask. Для відповіді покупцю дивіться result; для діагностики — конкретний stage. Порівнюйте однакові сценарії та модель, інакше змішуєте різні роботи.</p>
 <p>Relevance означає відповідність питанню. Supported/faithfulness означає підтримку тверджень наданим контекстом. Правдива цифра не гарантує релевантності, а точний переказ застарілого PDF не гарантує актуальності. Наявність дозволеного source_id доводить лише походження посилання, не відповідність усіх тверджень.</p>
@@ -87,8 +97,12 @@ for stage in sorted({r[&#x27;stage&#x27;] for r in rows}):
 <h3>Підказки</h3>
 <p>Групуйте записи за stage. Не додавайте result.duration_ms до generate.duration_ms як незалежні витрати часу.</p>
 <p><strong>Готово, якщо:</strong> Таблиця не змішує різні етапи; приклад overlap=0.75 не названий faithfulness.</p>
-<p>Окремі файли: <code>examples/example_03.py</code> і <code>tasks/task_03.py</code> у папці пакета.</p><pre><code># TODO: Створіть таблицю по stage: кількість, середня duration_ms, кількість status=error. Окремо порівняйте дві фрази з запереченням і поясніть, чому overlap не перевіряє факт.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-4">Блок 4. 47 · Golden cases: очікування до запуску</h1>
+<p>Окремі файли: <code>examples/example_03.py</code> і <code>tasks/task_03.py</code> у папці пакета.</p><pre><code>rows=[json.loads(x) for x in (PACKAGE/&#x27;artifacts/trace.jsonl&#x27;).read_text(encoding=&#x27;utf-8&#x27;).splitlines()]
+group_by=None  # TODO: поле для групування етапів
+if not group_by:
+    raise NotImplementedError(&#x27;Вкажіть поле групування&#x27;)
+# TODO: count, mean_ms, errors для кожної групи
+# TODO: контрприклад overlap із запереченням</code></pre><h1 id="block-4">Блок 4. 47 · Golden cases: очікування до запуску</h1>
 <p><strong>40–54 хв.</strong></p>
 <p>Golden set — невеликий контрольований набір питань, очікуваних джерел та поведінки. У data/eval_cases.json є позитивні й негативні приклади магазину. Очікування записані до фактичного виклику, щоб не підлаштовувати критерій під результат моделі.</p>
 <p>Retrieval hit@k у цьому практикумі — частка позитивних кейсів, де серед top-k знайдено хоча б один очікуваний файл. Це не recall усіх релевантних фрагментів і не правильність фінальної відповіді. Status accuracy — частка збігів answered/refused; вона теж не перевіряє цифри в тексті.</p>
@@ -102,8 +116,11 @@ for case in cases:
 <h3>Підказки</h3>
 <p>Джерела: 02_catalog.pdf і 04_delivery.pdf. У негативного кейсу документ може бути релевантний, але не містити потрібної відповіді.</p>
 <p><strong>Готово, якщо:</strong> Є 10 кейсів, очікувана ціна S300=690 грн, для експрес-доставки — refused. Новий набір окремо від базового.</p>
-<p>Окремі файли: <code>examples/example_04.py</code> і <code>tasks/task_04.py</code> у папці пакета.</p><pre><code># TODO: Додайте два власні кейси у копію набору: точне питання про ціну S300 та питання про невідому експрес-доставку. До запуску визначте expected_status і expected_files. Перевірте у PDF.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-5">Блок 5. 47 · LLM-as-judge та ручна перевірка</h1>
+<p>Окремі файли: <code>examples/example_04.py</code> і <code>tasks/task_04.py</code> у папці пакета.</p><pre><code>cases=json.loads((PACKAGE/&#x27;data/eval_cases.json&#x27;).read_text(encoding=&#x27;utf-8&#x27;))
+new_cases=[]  # TODO: ціна S300 та експрес-доставка, з очікуваннями
+if len(new_cases)!=2:
+    raise NotImplementedError(&#x27;Додайте два власні кейси&#x27;)
+# TODO: запишіть окремий artifacts/my_cases.json; не змінюйте базовий набір</code></pre><h1 id="block-5">Блок 5. 47 · LLM-as-judge та ручна перевірка</h1>
 <p><strong>54–68 хв.</strong></p>
 <p>Judge — ще один реальний API-запит із питанням, контекстом і відповіддю. Строга JSON-схема задає relevant, supported та reason. Вона контролює форму, але не робить модель безпомилковим арбітром. Контекст і відповідь передаються як недовірені дані.</p>
 <p>Спочатку вручну знайдіть у PDF 14 календарних днів. Потім перевірте правильну відповідь і навмисно хибну «30 днів». Judge має відрізнити підтриманий факт від вигаданого. Якщо помилився, це дані для аналізу, а не привід переписати звіт на очікуваний текст.</p>
@@ -118,8 +135,15 @@ with session() as rag:
 <h3>Підказки</h3>
 <p>Початковий PDF не змінюйте. Суперечність — привід для відмови або ручного уточнення, а не голосування за більшість.</p>
 <p><strong>Готово, якщо:</strong> Є власна оцінка й три реальні судження; відхилення judge від людини чесно зафіксовані.</p>
-<p>Окремі файли: <code>examples/example_05.py</code> і <code>tasks/task_05.py</code> у папці пакета.</p><pre><code># TODO: Викличте judge для двох відповідей: 14 і 30 календарних днів. Запишіть власну оцінку перед API, порівняйте relevant/supported і reason. Додайте суперечливий фрагмент тільки до локальної копії контексту.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-6">Блок 6. 47 · JSONL, LangSmith та Monitoring: що бачимо</h1>
+<p>Окремі файли: <code>examples/example_05.py</code> і <code>tasks/task_05.py</code> у папці пакета.</p><pre><code>docs=[d for d in read_documents() if d[&#x27;file&#x27;]==&#x27;06_returns.pdf&#x27;]
+answers=None  # TODO: дві відповіді та власні оцінки до API
+if not answers:
+    raise NotImplementedError(&#x27;Заповніть варіанти відповіді&#x27;)
+with session() as rag:
+    for answer in answers:
+        # TODO: live judge та порівняння з власною оцінкою
+        pass
+# TODO: суперечливий контекст тільки в копії</code></pre><h1 id="block-6">Блок 6. 47 · JSONL, LangSmith та Monitoring: що бачимо</h1>
 <p><strong>68–80 хв.</strong></p>
 <p>Локальний trace дає прозорий список подій без другого хмарного акаунта. LangSmith додає інтерфейс traces, дерев викликів, datasets та experiments. Це сервіс для спостереження й оцінювання, а не векторна база та не заміна бізнес-валідатора.</p>
 <p>Vertex Monitoring належить до іншої інфраструктури GCP; порівнюємо призначення, але обов’язкового Google-проєкту немає. Метрики застосунку й інфраструктури мають різні рівні: HTTP-запит може пройти, але відповідь виявитися непідтвердженою. Дані в сторонній tracing-сервіс треба надсилати свідомо; за замовчуванням приклад пише лише локально.</p>
@@ -134,8 +158,11 @@ print(&#x27;JSONL локально; dashboard Streamlit у парі 48; LangSmit
 <h3>Підказки</h3>
 <p>Локальний файл не має дерева автоматично. LangSmith потребує окремого ключа; Qdrant dashboard показує колекції, не вартість OpenAI.</p>
 <p><strong>Готово, якщо:</strong> Відрізняєте чотири інтерфейси: файл trace, UI додатка, Qdrant dashboard і optional LangSmith.</p>
-<p>Окремі файли: <code>examples/example_06.py</code> і <code>tasks/task_06.py</code> у папці пакета.</p><pre><code># TODO: Складіть порівняння JSONL / LangSmith / Vertex Monitoring за чотирма ознаками: де зберігаються дані, які метрики бачимо, що потрібно налаштувати, чого інструмент не доводить. Необов’язково надішліть один очищений trace у LangSmith.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-7">Блок 7. 48 · Десять PDF: extraction, chunking, provenance</h1>
+<p>Окремі файли: <code>examples/example_06.py</code> і <code>tasks/task_06.py</code> у папці пакета.</p><pre><code>comparison={}
+# TODO: JSONL / LangSmith / Vertex Monitoring, чотири ознаки за умовою
+if len(comparison)!=3:
+    raise NotImplementedError(&#x27;Заповніть порівняння трьох інструментів&#x27;)
+print(json.dumps(comparison,ensure_ascii=False,indent=2))</code></pre><h1 id="block-7">Блок 7. 48 · Десять PDF: extraction, chunking, provenance</h1>
 <p><strong>80–92 хв.</strong></p>
 <p>У data/pdf є десять реальних PDF із текстовим шаром українською: паспорт, каталог, склад, доставка, оплата, повернення, гарантія, обмін, акції та приватність. Джерело твердження «7 ламп» — 03_stock.pdf, а не прихований словник. Питання для eval зберігаються окремо й не індексуються.</p>
 <p>read_documents читає кожну сторінку pypdf, нормалізує пробіли та ріже текст на 850 символів з overlap=120. Це просте навчальне нарізання за символами; у production потрібні семантичні межі та контроль токенів. Фрагмент не переходить межу сторінки, отже посилання page залишається точним.</p>
@@ -150,8 +177,12 @@ print(stock[0][&#x27;source_id&#x27;],stock[0][&#x27;text&#x27;])</code></pre><h
 <h3>Підказки</h3>
 <p>Команда inspect не потребує токена. Не очікуйте 10 points: один PDF може мати кілька фрагментів.</p>
 <p><strong>Готово, якщо:</strong> Знайдено рівно 10 PDF, кількість chunks пояснена, 7 одиниць перевірено у видимому джерелі.</p>
-<p>Окремі файли: <code>examples/example_07.py</code> і <code>tasks/task_07.py</code> у папці пакета.</p><pre><code># TODO: Запустіть inspect з кореня. Відкрийте 03_stock.pdf і знайдіть 7 L100. Порівняйте кількість chunks при chunk_size=500 та 850. Перевірте page і непорожній text для всіх фрагментів.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-8">Блок 8. 48 · OpenAI embeddings → Qdrant collection</h1>
+<p>Окремі файли: <code>examples/example_07.py</code> і <code>tasks/task_07.py</code> у папці пакета.</p><pre><code>chunk_sizes=None  # TODO: два розміри з умови
+if not chunk_sizes:
+    raise NotImplementedError(&#x27;Заповніть chunk_sizes&#x27;)
+for size in chunk_sizes:
+    docs=read_documents(chunk_size=size,overlap=120)
+    # TODO: перевірте 10 файлів, page, text і джерело числа 7</code></pre><h1 id="block-8">Блок 8. 48 · OpenAI embeddings → Qdrant collection</h1>
 <p><strong>92–106 хв.</strong></p>
 <p>Embeddings обчислює OpenAI text-embedding-3-small; зберігання й cosine-пошук виконує Qdrant. Вектор не є текстом відповіді. Колекція має фіксовану розмірність та distance=COSINE. Зміна embedding model потребує нового індексу навіть тоді, коли розмірність збігається.</p>
 <p>Кожен point має стабільний UUID від source_id, vector та payload: file, page, text, embedding_model, corpus_hash. Повторний build того самого корпусу повертає cached=true і не витрачає embeddings повторно. При зміні корпусу або моделі створіть нову QDRANT_COLLECTION у .env; старі матеріали не видаляються.</p>
@@ -166,8 +197,13 @@ raise NotImplementedError(&quot;Виконайте завдання; підка�
 <h3>Підказки</h3>
 <p>Запускайте CLI після зупинки Streamlit. Якщо corpus/model mismatch — нова назва QDRANT_COLLECTION і повторний build. Ключ не копіюйте у звіт.</p>
 <p><strong>Готово, якщо:</strong> Кількість points стабільна; embedding етапів у trace під час cached build немає; база переживає закриття процесу.</p>
-<p>Окремі файли: <code>examples/example_08.py</code> і <code>tasks/task_08.py</code> у папці пакета.</p><pre><code># TODO: Запустіть build двічі, потім stats. Запишіть points і dimensions. Другий build має cached=true, а points не збільшується. У Docker dashboard відкрийте collection → points → payload; без Docker перегляньте payload через наступний search.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-9">Блок 9. 48 · Vector search: top-k, score та фільтр</h1>
+<p>Окремі файли: <code>examples/example_08.py</code> і <code>tasks/task_08.py</code> у папці пакета.</p><pre><code>docs=read_documents()
+confirm_live=False  # TODO: після конфігурації .env погодьте один build
+if not confirm_live:
+    raise NotImplementedError(&#x27;Підготуйте .env та встановіть confirm_live=True&#x27;)
+with session() as rag:
+    # TODO: два build, порівняння points і cached; перегляд trace
+    pass</code></pre><h1 id="block-9">Блок 9. 48 · Vector search: top-k, score та фільтр</h1>
 <p><strong>106–120 хв.</strong></p>
 <p>Пошук спочатку векторизує питання тією самою embedding-моделлю, потім query_points повертає найближчі фрагменти. top-k обмежує їх кількість. Score cosine — міра схожості, а не ймовірність правди. Поріг 0.25 є стартовим навчальним значенням, яке слід перевіряти на golden set.</p>
 <p>Payload-фільтр file звужує пошук до одного PDF. Це корисно, щоб показати різницю між не знайдено і не той документ. Якщо запит про ціну фільтрувати на гарантію, система не повинна вигадувати ціну з загальних знань.</p>
@@ -183,8 +219,12 @@ raise NotImplementedError(&quot;Виконайте завдання; підка�
 <h3>Підказки</h3>
 <p>CLI підтримує --top-k 4 та --source 07_warranty.pdf. Фільтр працює в Qdrant, а не як видалення результату після генерації.</p>
 <p><strong>Готово, якщо:</strong> Є два набори retrieval, у filtered немає чужих PDF; висновок про ціну спирається на каталог.</p>
-<p>Окремі файли: <code>examples/example_09.py</code> і <code>tasks/task_09.py</code> у папці пакета.</p><pre><code># TODO: Порівняйте top-k=1 і 4 для ціни L100. Потім застосуйте source=07_warranty.pdf. Випишіть, де є ціна 850 грн, а де її немає. Перевірте назву файлу кожного hit.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-10">Блок 10. 48 · RAG-відповідь, citations, hit і miss</h1>
+<p>Окремі файли: <code>examples/example_09.py</code> і <code>tasks/task_09.py</code> у папці пакета.</p><pre><code>question=None  # TODO: питання про ціну L100
+if not question:
+    raise NotImplementedError(&#x27;Заповніть question&#x27;)
+with session() as rag:
+    # TODO: top-k 1 і 4, потім file-фільтр на гарантію
+    pass</code></pre><h1 id="block-10">Блок 10. 48 · RAG-відповідь, citations, hit і miss</h1>
 <p><strong>120–134 хв.</strong></p>
 <p>ask поєднує search → generate → validate → trace. Якщо hits порожній, generation не викликається; query embedding усе ще міг бути платним. Якщо колекція порожня, навіть query embedding не виконується. При знайдених, але недостатніх фрагментах рішення про refused приймає генератор за інструкцією.</p>
 <p>Structured Outputs задає status, answer та sources. Python перевіряє типи, непорожній текст і належність кожного source_id знайденим фрагментам. Answered без sources перетворюється на invalid. Це структурний захист від вигаданих citations, який не доводить семантичної правильності; відкривайте PDF і звіряйте цифри.</p>
@@ -199,8 +239,13 @@ raise NotImplementedError(&quot;Виконайте завдання; підка�
 <h3>Підказки</h3>
 <p>Для детермінованого miss query embedding є, generate немає. Не плутайте refused з помилкою API або invalid citations.</p>
 <p><strong>Готово, якщо:</strong> У UI видно джерела доставки; miss не має generate з тим самим run_id; невідомий товар не отримав вигаданої ціни або чесно позначений як fail.</p>
-<p>Окремі файли: <code>examples/example_10.py</code> і <code>tasks/task_10.py</code> у папці пакета.</p><pre><code># TODO: У Streamlit запитайте про доставку (90 грн; безкоштовно від 3000), потім про ноутбук X999. Через CLI виконайте ask із --source does_not_exist.pdf. Порівняйте generate у trace для hit та порожнього retrieval.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-11">Блок 11. 48 · HITL та перевірка набору кейсів</h1>
+<p>Окремі файли: <code>examples/example_10.py</code> і <code>tasks/task_10.py</code> у папці пакета.</p><pre><code>questions=None  # TODO: доставка та невідомий ноутбук
+if not questions:
+    raise NotImplementedError(&#x27;Заповніть questions&#x27;)
+with session() as rag:
+    # TODO: live ask для обох питань, перевірка sources/status/run_id
+    # TODO: детермінований miss із неіснуючим source-файлом
+    pass</code></pre><h1 id="block-11">Блок 11. 48 · HITL та перевірка набору кейсів</h1>
 <p><strong>134–148 хв.</strong></p>
 <p>Для запиту на дію застосунок готує чернетку й зберігає approval_UUID.json зі статусом pending_approval та sent=false. Він не надсилає листів і не повертає гроші. Галочка в UI означає підготовку на перевірку, а не дозвіл на зовнішнє виконання.</p>
 <p>На відміну від trace, файл чернетки містить текст відповіді та локальні дані. Він знаходиться в gitignored artifacts. Production потребував би автентифікованого менеджера, окремого approval endpoint, перевірки версії та ідемпотентного виконання. Цього зовнішнього виконавця в навчальному додатку немає.</p>
@@ -215,8 +260,13 @@ raise NotImplementedError(&quot;Виконайте завдання; підка�
 <h3>Підказки</h3>
 <p>Команда eval без --judge дешевша. Є 8 питань, кожне може спричинити embeddings + generation. Approval створюється тільки після answered.</p>
 <p><strong>Готово, якщо:</strong> Чернетка з sent=false; eval_report має 8 кейсів та посилання run_id; висновок не приховує помилок.</p>
-<p>Окремі файли: <code>examples/example_11.py</code> і <code>tasks/task_11.py</code> у папці пакета.</p><pre><code># TODO: Створіть одну чернетку в UI, знайдіть approval-файл і sent=false. Запустіть eval. Для одного невдалого або складного кейсу знайдіть trace та PDF і поясніть причину. За бажанням порівняйте judge.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h1 id="block-12">Блок 12. 48 · Локальний запуск, перевірка релізу й наступні кроки</h1>
+<p>Окремі файли: <code>examples/example_11.py</code> і <code>tasks/task_11.py</code> у папці пакета.</p><pre><code>question=None  # TODO: запит на підготовку чернетки про повернення
+if not question:
+    raise NotImplementedError(&#x27;Заповніть question&#x27;)
+with session() as rag:
+    # TODO: ask із external_action=True; перевірте approval-файл і sent
+    # TODO: evaluate базових кейсів і ручний розбір одного результату
+    pass</code></pre><h1 id="block-12">Блок 12. 48 · Локальний запуск, перевірка релізу й наступні кроки</h1>
 <p><strong>148–160 хв.</strong></p>
 <p>Готовий додаток розгортається на вашому комп’ютері командою python -m streamlit run. Сайт журналу містить методичку та ZIP, а не ваш OpenAI-ключ або запущену базу кожного слухача. На Windows і macOS використовуйте явний шлях до пакета; wildcard ./*/runtime.py не є переносним.</p>
 <p>Перевірка релізу має кілька рівнів: extraction PDF; реальна Qdrant persistence; транспортні тести без платних API; ручний live hit/miss/HITL; UI і відсутність секретів у Git. Подвійний тест клієнта дозволяє відтворити incomplete або вигаданий citation, але не доводить якість живої моделі.</p>
@@ -232,8 +282,13 @@ print(&#x27;Не публікуйте .env або artifacts. Команда UI �
 <h3>Підказки</h3>
 <p>Якщо порт 8501 зайнятий, додайте --server.port 8502. Locked Qdrant означає інший процес із тим самим local path, а не неправильний API-ключ.</p>
 <p><strong>Готово, якщо:</strong> README відтворює запуск з кореня, результати перевірені за джерелами, секретів у здачі немає.</p>
-<p>Окремі файли: <code>examples/example_12.py</code> і <code>tasks/task_12.py</code> у папці пакета.</p><pre><code># TODO: Запустіть UI з кореня, покажіть hit/miss, джерело зі сторінкою, trace і pending_approval. Закрийте UI, виконайте stats та переконайтеся, що індекс зберігся. Підготуйте README зі своїм середовищем і таблицею результатів.
-raise NotImplementedError(&quot;Виконайте завдання; підказки у відповідному .md&quot;)</code></pre><h2>Фінальна перевірка та що здати</h2>
+<p>Окремі файли: <code>examples/example_12.py</code> і <code>tasks/task_12.py</code> у папці пакета.</p><pre><code>report_file=PACKAGE/&#x27;artifacts/eval_report.json&#x27;
+report=json.loads(report_file.read_text(encoding=&#x27;utf-8&#x27;))
+expected_cases=None  # TODO: кількість базових кейсів
+if expected_cases is None:
+    raise NotImplementedError(&#x27;Вкажіть expected_cases&#x27;)
+# TODO: кількість PDF, trace, eval cases, збереження індексу
+# TODO: README з фактичними результатами live-перевірки</code></pre><h2>Фінальна перевірка та що здати</h2>
 <p>Здайте таблицю кейсів з очікуваним і фактичним статусом, retrieval hit@k, власною перевіркою фактів та run_id. Додайте метадані trace, скриншот знайденого PDF/сторінки в UI та статистику колекції. Ключ, локальну базу і чернетки не комітьте. Файл eval_report.json містить статуси, а не доказ правильності тексту: факти звірте з PDF вручну.</p>
 <p>Питання: чому status=ok не дорівнює правильній відповіді? Чим relevance відрізняється від supported? Де генеруються embeddings? Яке джерело підтверджує 7 ламп? Чому Qdrant повертає score, а не ймовірність істини? Чому pending_approval не означає надсилання?</p>
 <p>Де перечитати: блоки 2–3 — trace, 4–5 — eval/judge, 7–9 — PDF та Qdrant, 10 — grounding, 11 — HITL. Джерела: [OpenAI embeddings](https://developers.openai.com/api/docs/guides/embeddings), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs), [Qdrant client / local mode](https://github.com/qdrant/qdrant-client), [Qdrant dashboard](https://qdrant.tech/documentation/quickstart/), [LangSmith observability](https://docs.langchain.com/langsmith/observability).</p>

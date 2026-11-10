@@ -101,8 +101,14 @@ Input передається окремим JSON із question та context; jud
 
 
 ```python
-# TODO: Виконайте три реальні запити до того самого контексту: строк повернення, вартість ноутбука та неоднозначне «А якщо пізніше?». Для кожного збережіть status і run_id у власну таблицю. Звірте факти з PDF.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+docs=[d for d in read_documents() if d['file']=='06_returns.pdf']
+questions=None  # TODO: три питання за умовою; очікування запишіть до API
+if not questions:
+    raise NotImplementedError('Заповніть questions')
+with session() as rag:
+    for question in questions:
+        run_id=str(uuid.uuid4())
+        # TODO: generate, status, run_id та ручна звірка з PDF
 ```
 # Блок 2. 47 · JSONL trace: токени, затримка, помилка
 
@@ -149,8 +155,12 @@ for row in rows[-5:]:
 
 
 ```python
-# TODO: Після блоку 1 відкрийте trace.jsonl в IDE. Знайдіть один run_id і його generate. Напишіть перевірку, що кожен рядок має run_id/stage/status, а API-ключ відсутній. Додайте підрахунок токенів.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+trace=PACKAGE/'artifacts/trace.jsonl'
+rows=[json.loads(x) for x in trace.read_text(encoding='utf-8').splitlines()]
+required_fields=None  # TODO: обов'язкові поля рядка trace
+if not required_fields:
+    raise NotImplementedError('Вкажіть поля контракту trace')
+# TODO: перевірте поля, відсутність секретів та суми usage
 ```
 # Блок 3. 47 · Звіт про запуски та межі метрик
 
@@ -198,8 +208,12 @@ for stage in sorted({r['stage'] for r in rows}):
 
 
 ```python
-# TODO: Створіть таблицю по stage: кількість, середня duration_ms, кількість status=error. Окремо порівняйте дві фрази з запереченням і поясніть, чому overlap не перевіряє факт.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+rows=[json.loads(x) for x in (PACKAGE/'artifacts/trace.jsonl').read_text(encoding='utf-8').splitlines()]
+group_by=None  # TODO: поле для групування етапів
+if not group_by:
+    raise NotImplementedError('Вкажіть поле групування')
+# TODO: count, mean_ms, errors для кожної групи
+# TODO: контрприклад overlap із запереченням
 ```
 # Блок 4. 47 · Golden cases: очікування до запуску
 
@@ -245,8 +259,11 @@ for case in cases:
 
 
 ```python
-# TODO: Додайте два власні кейси у копію набору: точне питання про ціну S300 та питання про невідому експрес-доставку. До запуску визначте expected_status і expected_files. Перевірте у PDF.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+cases=json.loads((PACKAGE/'data/eval_cases.json').read_text(encoding='utf-8'))
+new_cases=[]  # TODO: ціна S300 та експрес-доставка, з очікуваннями
+if len(new_cases)!=2:
+    raise NotImplementedError('Додайте два власні кейси')
+# TODO: запишіть окремий artifacts/my_cases.json; не змінюйте базовий набір
 ```
 # Блок 5. 47 · LLM-as-judge та ручна перевірка
 
@@ -297,8 +314,15 @@ Input передається окремим JSON із question та context; jud
 
 
 ```python
-# TODO: Викличте judge для двох відповідей: 14 і 30 календарних днів. Запишіть власну оцінку перед API, порівняйте relevant/supported і reason. Додайте суперечливий фрагмент тільки до локальної копії контексту.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+docs=[d for d in read_documents() if d['file']=='06_returns.pdf']
+answers=None  # TODO: дві відповіді та власні оцінки до API
+if not answers:
+    raise NotImplementedError('Заповніть варіанти відповіді')
+with session() as rag:
+    for answer in answers:
+        # TODO: live judge та порівняння з власною оцінкою
+        pass
+# TODO: суперечливий контекст тільки в копії
 ```
 # Блок 6. 47 · JSONL, LangSmith та Monitoring: що бачимо
 
@@ -345,8 +369,11 @@ print('JSONL локально; dashboard Streamlit у парі 48; LangSmith —
 
 
 ```python
-# TODO: Складіть порівняння JSONL / LangSmith / Vertex Monitoring за чотирма ознаками: де зберігаються дані, які метрики бачимо, що потрібно налаштувати, чого інструмент не доводить. Необов’язково надішліть один очищений trace у LangSmith.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+comparison={}
+# TODO: JSONL / LangSmith / Vertex Monitoring, чотири ознаки за умовою
+if len(comparison)!=3:
+    raise NotImplementedError('Заповніть порівняння трьох інструментів')
+print(json.dumps(comparison,ensure_ascii=False,indent=2))
 ```
 # Блок 7. 48 · Десять PDF: extraction, chunking, provenance
 
@@ -393,8 +420,12 @@ print(stock[0]['source_id'],stock[0]['text'])
 
 
 ```python
-# TODO: Запустіть inspect з кореня. Відкрийте 03_stock.pdf і знайдіть 7 L100. Порівняйте кількість chunks при chunk_size=500 та 850. Перевірте page і непорожній text для всіх фрагментів.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+chunk_sizes=None  # TODO: два розміри з умови
+if not chunk_sizes:
+    raise NotImplementedError('Заповніть chunk_sizes')
+for size in chunk_sizes:
+    docs=read_documents(chunk_size=size,overlap=120)
+    # TODO: перевірте 10 файлів, page, text і джерело числа 7
 ```
 # Блок 8. 48 · OpenAI embeddings → Qdrant collection
 
@@ -445,8 +476,13 @@ Input передається окремим JSON із question та context; jud
 
 
 ```python
-# TODO: Запустіть build двічі, потім stats. Запишіть points і dimensions. Другий build має cached=true, а points не збільшується. У Docker dashboard відкрийте collection → points → payload; без Docker перегляньте payload через наступний search.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+docs=read_documents()
+confirm_live=False  # TODO: після конфігурації .env погодьте один build
+if not confirm_live:
+    raise NotImplementedError('Підготуйте .env та встановіть confirm_live=True')
+with session() as rag:
+    # TODO: два build, порівняння points і cached; перегляд trace
+    pass
 ```
 # Блок 9. 48 · Vector search: top-k, score та фільтр
 
@@ -498,8 +534,12 @@ CLI підтримує --top-k 4 та --source 07_warranty.pdf. Фільтр п�
 
 
 ```python
-# TODO: Порівняйте top-k=1 і 4 для ціни L100. Потім застосуйте source=07_warranty.pdf. Випишіть, де є ціна 850 грн, а де її немає. Перевірте назву файлу кожного hit.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+question=None  # TODO: питання про ціну L100
+if not question:
+    raise NotImplementedError('Заповніть question')
+with session() as rag:
+    # TODO: top-k 1 і 4, потім file-фільтр на гарантію
+    pass
 ```
 # Блок 10. 48 · RAG-відповідь, citations, hit і miss
 
@@ -550,8 +590,13 @@ Input передається окремим JSON із question та context; jud
 
 
 ```python
-# TODO: У Streamlit запитайте про доставку (90 грн; безкоштовно від 3000), потім про ноутбук X999. Через CLI виконайте ask із --source does_not_exist.pdf. Порівняйте generate у trace для hit та порожнього retrieval.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+questions=None  # TODO: доставка та невідомий ноутбук
+if not questions:
+    raise NotImplementedError('Заповніть questions')
+with session() as rag:
+    # TODO: live ask для обох питань, перевірка sources/status/run_id
+    # TODO: детермінований miss із неіснуючим source-файлом
+    pass
 ```
 # Блок 11. 48 · HITL та перевірка набору кейсів
 
@@ -602,8 +647,13 @@ Input передається окремим JSON із question та context; jud
 
 
 ```python
-# TODO: Створіть одну чернетку в UI, знайдіть approval-файл і sent=false. Запустіть eval. Для одного невдалого або складного кейсу знайдіть trace та PDF і поясніть причину. За бажанням порівняйте judge.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+question=None  # TODO: запит на підготовку чернетки про повернення
+if not question:
+    raise NotImplementedError('Заповніть question')
+with session() as rag:
+    # TODO: ask із external_action=True; перевірте approval-файл і sent
+    # TODO: evaluate базових кейсів і ручний розбір одного результату
+    pass
 ```
 # Блок 12. 48 · Локальний запуск, перевірка релізу й наступні кроки
 
@@ -651,8 +701,13 @@ print('Не публікуйте .env або artifacts. Команда UI — у
 
 
 ```python
-# TODO: Запустіть UI з кореня, покажіть hit/miss, джерело зі сторінкою, trace і pending_approval. Закрийте UI, виконайте stats та переконайтеся, що індекс зберігся. Підготуйте README зі своїм середовищем і таблицею результатів.
-raise NotImplementedError("Виконайте завдання; підказки у відповідному .md")
+report_file=PACKAGE/'artifacts/eval_report.json'
+report=json.loads(report_file.read_text(encoding='utf-8'))
+expected_cases=None  # TODO: кількість базових кейсів
+if expected_cases is None:
+    raise NotImplementedError('Вкажіть expected_cases')
+# TODO: кількість PDF, trace, eval cases, збереження індексу
+# TODO: README з фактичними результатами live-перевірки
 ```
 ## Фінальна перевірка та що здати
 
