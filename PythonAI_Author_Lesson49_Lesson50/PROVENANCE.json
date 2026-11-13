@@ -1,0 +1,20 @@
+{
+  "prepared_at": "2026-11-13",
+  "reference_repo": "https://github.com/aabuiluk/python61ai",
+  "reference_revision": "8e6500a675aabb62e4cb28b6027349eab93e8097",
+  "sources": [
+    "Archive 5.zip: pairs49–50",
+    "Archive 15.zip: pairs47–48",
+    "python_ai_author/course.json: all modules",
+    "official documentation linked in handout"
+  ],
+  "timing": {
+    "pair49": 90,
+    "pair50": 90,
+    "presentations": 60,
+    "recap": 35,
+    "practice": 75
+  },
+  "personal_hosting_created_by_build": false,
+  "paid_api_calls_by_build": 0
+}
