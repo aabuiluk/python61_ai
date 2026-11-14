@@ -1,0 +1,56 @@
+--- a/rag/store.py
++++ b/rag/store.py
+@@ -65,6 +65,11 @@
+ 
+ 
+ class Store:
++    def close(self) -> None:
++        """Release SQLite before temporary files are removed on Windows."""
++        with self._lock:
++            self._conn.close()
++
+     def __init__(self, path: Path) -> None:
+         path.parent.mkdir(parents=True, exist_ok=True)
+         self._lock = threading.Lock()
+--- a/tests/test_admin.py
++++ b/tests/test_admin.py
+@@ -43,6 +43,8 @@
+         self.auth = basic("admin", PASSWORD)
+ 
+     def tearDown(self):
++        self.client.close()
++        self.runtime.store.close()
+         self._tmp.cleanup()
+ 
+     def csrf(self) -> str:
+@@ -52,7 +54,11 @@
+     def test_no_password_configured_disables_admin(self):
+         runtime = Runtime(make_settings(Path(self._tmp.name) / "x", admin_password=""))
+         client = TestClient(build_admin(runtime))
+-        self.assertEqual(client.get("/admin").status_code, 503)
++        try:
++            self.assertEqual(client.get("/admin").status_code, 503)
++        finally:
++            client.close()
++            runtime.store.close()
+ 
+     def test_requires_basic_auth(self):
+         self.assertEqual(self.client.get("/admin").status_code, 401)
+--- a/tests/test_rag.py
++++ b/tests/test_rag.py
+@@ -113,6 +113,7 @@
+         self.runtime = Runtime(make_settings(Path(self._tmp.name)))
+ 
+     def tearDown(self):
++        self.runtime.store.close()
+         self._tmp.cleanup()
+ 
+     def test_log_feedback_and_stats(self):
+@@ -143,6 +144,7 @@
+         self.app = create_app(self.runtime)
+ 
+     def tearDown(self):
++        self.runtime.store.close()
+         self._tmp.cleanup()
+ 
+     def _call(self, method, path, body=b"", query=""):

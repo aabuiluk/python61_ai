@@ -1,0 +1,3 @@
+# Lesson49–50 public check scripts: Python standard library only.
+# No pip install required for examples/.
+# Application dependencies: use requirements-dev.txt INSIDE your python61ai fork.
