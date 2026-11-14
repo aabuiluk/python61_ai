@@ -42,7 +42,6 @@ repository=next((p for p in candidates if (p/package_relative/'runtime.py').is_f
 if repository is None:
     raise RuntimeError('Розпакуйте ZIP повністю; відкрийте ноутбук у корені або папці пакета.')
 sys.path.insert(0,str(repository))
-sys.path.insert(0,str(repository/package_relative))
 from PythonAI_Author_Lesson47_Lesson48.runtime import (
     PACKAGE, session, read_documents, validate_answer,
 )
@@ -65,7 +64,7 @@ import uuid
 
 
 ```python
-from bridge_runtime import bridge45
+from PythonAI_Author_Lesson47_Lesson48.bridge_runtime import bridge45
 result=bridge45('Який строк повернення невикористаного товару?')
 print(json.dumps(result,ensure_ascii=False,indent=2))
 ```
@@ -77,7 +76,7 @@ print(json.dumps(result,ensure_ascii=False,indent=2))
 
 
 ```python
-from bridge_runtime import bridge45, dispatch
+from PythonAI_Author_Lesson47_Lesson48.bridge_runtime import bridge45, dispatch
 questions=None  # TODO: питання про повернення та доставку
 if not questions:
     raise NotImplementedError('Заповніть questions за умовою переходу 45')
@@ -98,7 +97,7 @@ HITL у цьому переході означає збережену паузу
 
 
 ```python
-from bridge_runtime import bridge46
+from PythonAI_Author_Lesson47_Lesson48.bridge_runtime import bridge46
 result=bridge46('Підготуй пояснення правил повернення.',action='draft_email')
 print(json.dumps(result,ensure_ascii=False,indent=2))
 ```
@@ -110,7 +109,7 @@ print(json.dumps(result,ensure_ascii=False,indent=2))
 
 
 ```python
-from bridge_runtime import bridge46
+from PythonAI_Author_Lesson47_Lesson48.bridge_runtime import bridge46
 question=None  # TODO: питання про правила повернення
 if not question:
     raise NotImplementedError('Заповніть question за умовою переходу 46')
